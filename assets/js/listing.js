@@ -246,34 +246,57 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Tạo các bảng tra cứu để chuyển slug -> tên có dấu
     // Tạo các bảng tra cứu để chuyển slug -> tên có dấu và dữ liệu gợi ý
+    // --- PHẦN TẠO BẢNG TRA CỨU DỮ LIỆU ---
     const cityLookup = {};
     const wardLookup = {};
+    const streetLookup = {};
     const categoryLookup = {};
-    const streetLookup = {}; // <-- THÊM MỚI
-    const locations = { streets: {}, wards: {} }; // Đã khai báo `locations`
+    const locations = { streets: {}, wards: {} };
 
+    // BƯỚC 1 (MỚI): Lấy dữ liệu từ Menu để đảm bảo có đủ tất cả các địa danh
+    // Điều này đảm bảo 'Hà Nội', 'Đà Nẵng'... luôn được nhận diện dù trang không có sản phẩm nào ở đó.
+    if (typeof initialMenuData !== 'undefined') {
+        ['Mua bán', 'Cho thuê', 'Dự án'].forEach(menuKey => {
+            if (initialMenuData[menuKey]) {
+                initialMenuData[menuKey].forEach(category => {
+                    if (category['Khu vực']) {
+                        category['Khu vực'].forEach(cityName => {
+                            if (cityName) {
+                                cityLookup[toSlug(cityName)] = cityName;
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    // BƯỚC 2: Bổ sung dữ liệu từ danh sách sản phẩm (giống như logic cũ)
+    // Điều này giúp bổ sung các Phường, Đường và các Thành phố khác không có trong Menu chính.
     allItems.forEach(item => {
-        // Dữ liệu cho breadcrumb và lọc URL
-        if (item.city) {
+        // City (chỉ thêm nếu chưa có, để ưu tiên dữ liệu từ menu)
+        if (item.city && !cityLookup[toSlug(item.city)]) {
             cityLookup[toSlug(item.city)] = item.city;
         }
+        
+        // Các mục còn lại giữ nguyên
         if (item.ward) {
             wardLookup[toSlug(item.ward)] = item.ward;
+        }
+        if (item.street) {
+            streetLookup[toSlug(item.street)] = item.street;
         }
         if (item.productCategory) {
             categoryLookup[toSlug(item.productCategory)] = item.productCategory;
         }
-
-        // Dữ liệu cho tính năng gợi ý tìm kiếm (đã sửa lỗi)
+        
+        // Dữ liệu cho gợi ý tìm kiếm
         if (item.street && !locations.streets[item.street]) {
             locations.streets[item.street] = item.ward;
         }
         if (item.ward && !locations.wards[item.ward]) {
             locations.wards[item.ward] = item.city;
         }
-        if (item.street) {
-        streetLookup[toSlug(item.street)] = item.street;
-    }
     });
 
     let visibleItems = [...allItems];

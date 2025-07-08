@@ -452,14 +452,7 @@
     <script src="assets/js/price-data-thue.js"></script> 
     
     <script src="assets/js/listing.js"></script>
-    <script type="module">
-    // =====================================================================
-    // == SCRIPT TỔNG HỢP CUỐI CÙNG (DESKTOP & MOBILE & STICKY HEADER) ==
-    // =====================================================================
-
-    document.addEventListener('DOMContentLoaded', () => {
-
-        // --- PHẦN 1: DỮ LIỆU & BIẾN TOÀN CỤC ---
+    <script>
         const initialMenuData = {
            "Dự án": [ { "Loại hình": "Chung cư", "Khu vực": ["TP. Hồ Chí Minh", "Bình Dương", "Đồng Nai"] }, { "Loại hình": "Khu đô thị", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Long An"] } ],
            "Mua bán": [ { "Loại hình": "Căn hộ", "Khu vực": ["TP. Hồ Chí Minh", "Lâm Đồng", "Bà Rịa - Vũng Tàu"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng"] } ],
@@ -468,6 +461,15 @@
            "Tin tức": [ { "Danh mục": "Dự án", "slug": "du-an" }, { "Danh mục": "Thị trường", "slug": "thi-truong" } ],
            "Doanh nghiệp": [ { "Danh mục": "Chủ đầu tư", "slug": "chu-dau-tu" }, { "Danh mục": "Nhà thầu thi công", "slug": "nha-thau-thi-cong" } ]
         };
+    </script>
+    <script type="module">
+    // =====================================================================
+    // == SCRIPT TỔNG HỢP CUỐI CÙNG (DESKTOP & MOBILE & STICKY HEADER) ==
+    // =====================================================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+       
         
         const featuredProjectsData = [
             {
