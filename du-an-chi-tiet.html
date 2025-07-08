@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Dự án - Chung Cư Tốt</title>
+    
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/menu.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/listing.css"> 
+</head>
+<body>
+
+    <div id="menu-overlay" class="menu-overlay"></div>
+    <header class="header-wrapper">
+        <div class="header-footer-limiter">
+            <div class="site-header">
+                <button class="hamburger-button" id="hamburger-button" aria-label="Mở menu">
+                    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </button>
+                <a href="index.html" class="logo-link"><img src="assets/images/logo.png" alt="Logo Chung Cư Tốt" class="logo"></a>
+                <nav class="main-nav" id="main-nav">
+                    <ul id="main-menu-list"></ul>
+                </nav>
+                <div class="header-actions">
+                    <a href="favorites.html" class="header-favorite-btn" aria-label="Danh sách yêu thích">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                        <span class="favorite-counter">0</span>
+                    </a>
+                    <a href="#" class="search-button-new" aria-label="Tìm kiếm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div id="cct-mega-menu">
+    <div class="menu-panel-overlay"></div>
+    <div class="menu-panel-columns">
+        <div class="menu-panel-col col-1">
+            <h4>Loại hình</h4>
+            <ul id="mega-menu-col-1-list"></ul>
+        </div>
+        <div class="menu-panel-col col-2">
+            <h4>Khu vực</h4>
+            <ul id="mega-menu-col-2-list"></ul>
+        </div>
+        <div class="menu-panel-col col-3">
+            <h4>Dự án nổi bật</h4>
+            <div id="mega-menu-col-3-content"></div>
+        </div>
+    </div>
+    </div>
+
+        <main>
+        <section class="project-hero-section">
+              <div class="hero-gallery-container">
+                <div class="gallery-image-list" style="display: none;">
+                    <a href="assets/images/project-gallery-1.jpg" data-caption="Phối cảnh tổng thể dự án"></a>
+                    <a href="assets/images/project-gallery-2.jpg" data-caption="Tiện ích hồ bơi nội khu"></a>
+                    <a href="assets/images/project-gallery-3.jpg" data-caption="Sảnh chờ sang trọng"></a>
+                    <a href="assets/images/project-gallery-4.jpg" data-caption="Phòng khách căn hộ mẫu"></a>
+                    <a href="assets/images/project-gallery-5.jpg" data-caption="Phòng ngủ căn hộ mẫu"></a>
+                    <a href="assets/images/project-gallery-6.jpg" data-caption="Khu vực Gym & Yoga"></a>
+                </div>
+
+                <div class="hero-gallery-desktop">
+                    <a href="javascript:void(0);" class="hero-gallery-item main-image gallery-trigger" data-index="0">
+                        <img src="assets/images/project-gallery-1.jpg" alt="Phối cảnh dự án">
+                    </a>
+                    <a href="javascript:void(0);" class="hero-gallery-item side-image gallery-trigger" data-index="1">
+                        <img src="assets/images/project-gallery-2.jpg" alt="Tiện ích hồ bơi">
+                    </a>
+                    <a href="javascript:void(0);" class="hero-gallery-item side-image-bottom gallery-trigger" data-index="2">
+                        <img src="assets/images/project-gallery-3.jpg" alt="Sảnh chờ">
+                        <div class="view-all-desktop-btn" id="view-all-desktop">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/></svg>
+                            <span>Xem tất cả ảnh</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="hero-gallery-mobile">
+                    <div class="mobile-main-image">
+                        <a href="javascript:void(0);" class="gallery-trigger" data-index="0">
+                            <img src="assets/images/project-gallery-1.jpg" alt="Ảnh chính của dự án" id="main-hero-image-mobile">
+                        </a>
+                    </div>
+                    <div class="hero-thumbnail-wrapper">
+                        <div class="hero-thumbnail-scroller">
+                            </div>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <button class="action-button favorite-btn" title="Thêm vào yêu thích">
+                            <svg class="heart-outline" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"></path>
+                        </svg>
+                        
+                        <svg class="heart-solid" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                        </svg>
+                        </button>
+                        <button class="action-button share-btn" aria-label="Chia sẻ">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18 8h-3v2h3v11H6V10h3V8H6c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM11 5.5V16h2V5.5l2.3 2.3 1.4-1.4L12 1.8l-4.7 4.6 1.4 1.4L11 5.5z"/>
+                            </svg>
+                        </button>
+                </div>
+            </div>
+
+
+            <div class="content-limiter">
+                <div class="project-hero-info">
+                    <div class="breadcrumb">
+                        Dự án &gt; Chung cư &gt; <a href="list-du-an.html?loaihinh=chung-cu&thanhpho=tp-ho-chi-minh">Tp. Hồ Chí Minh</a>&gt; Masteri Centre Point
+                    </div>
+                    <h1>Masteri Centre Point</h1>
+                    <p class="project-address-detail">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+                        Đại đô thị Vinhomes Grand Park, TP. Thủ Đức, TP.HCM
+                    </p>
+                    <div class="project-params-grid">
+                        <div class="param-item">Số tầng: <span><strong>22 - 39</strong></span></div>
+                        <div class="param-item">Số căn: <span><strong>5,094</strong></span></div>
+                        <div class="param-item">Diện tích đất: <span><strong>70,783 m²</strong></span></div>
+                        <div class="param-item">Giá bán: <span><strong>Từ 50 triệu/m²</strong></span></div>
+                        <div class="param-item">Năm bàn giao: <span><strong>2022</strong></span></div>
+                        <div class="param-item">Sản phẩm: <span><strong>Căn hộ, Duplex</strong></span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="project-overview-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2 class="section-title">Tổng quan dự án</h2>
+                    <p>Dễ dàng kết nối đến các tiện ích trọng điểm chỉ trong vài phút di chuyển.</p>
+                </div>
+                
+                <div class="overview-grid">
+                    <div class="overview-content">
+                        <p><strong>Masteri Centre Point</strong> là khu căn hộ compound cao cấp bậc nhất tại trung tâm đại đô thị Vinhomes Grand Park, được phát triển bởi Masterise Homes – nhà phát triển bất động sản quốc tế tiên phong áp dụng các chuẩn mực toàn cầu vào việc phát triển, vận hành và quản lý các sản phẩm, dịch vụ bất động sản tại Việt Nam và thế giới.</p>
+                        <p>Dự án mang đến một không gian sống đẳng cấp, riêng tư và tiện nghi vượt trội, với tầm nhìn trực diện ra sông Đồng Nai và sông Tắc, cũng như công viên trung tâm 36ha. Đây là lựa chọn hoàn hảo cho những gia đình hiện đại tìm kiếm một môi trường sống an toàn, xanh mát và đầy đủ tiện ích.</p>
+                    </div>
+                    <div class="overview-image">
+                        <a href="assets/images/project-overview.jpg" class="lightbox-trigger" data-src="assets/images/project-overview.jpg">
+                            <img src="assets/images/project-overview.jpg" alt="Tổng quan dự án">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="connectivity-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2>Liên kết vùng hoàn hảo</h2>
+                    <p>Dễ dàng kết nối đến các tiện ích trọng điểm chỉ trong vài phút di chuyển.</p>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <div class="timeline-marker">2-3 phút</div>
+                        <div class="timeline-card">
+                            <h4>Hệ thống nhà thuốc & Ga Metro số 1</h4>
+                            <p>Các nhà thuốc lớn trong khu vực chỉ cách vài bước chân, cùng với ga Metro Bến Thành - Suối Tiên giúp di chuyển vào trung tâm nhanh chóng.</p>
+                            <span class="distance-tag">Khoảng cách: 500m - 1km</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker">5 phút</div>
+                        <div class="timeline-card">
+                            <h4>Trường Vinschool & TTTM Vincom</h4>
+                            <p>Hệ thống giáo dục chuẩn quốc tế Vinschool và trung tâm thương mại Vincom Mega Mall lớn nhất miền Nam ở ngay cạnh dự án.</p>
+                            <span class="distance-tag">Khoảng cách: 1.5km - 2.5km</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker">10 phút</div>
+                        <div class="timeline-card">
+                            <h4>Trường Quốc tế Renaissance & KĐT Thủ Thiêm</h4>
+                            <p>Kết nối đến trường Renaissance và trung tâm tài chính mới Thủ Thiêm thông qua các tuyến đường huyết mạch.</p>
+                            <span class="distance-tag">Khoảng cách: 4km - 6km</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker">15 phút</div>
+                        <div class="timeline-card">
+                            <h4>Đại học RMIT & Bệnh viện FV</h4>
+                            <p>Dễ dàng tiếp cận các cơ sở giáo dục đại học và y tế tiêu chuẩn quốc tế tại khu Nam Sài Gòn.</p>
+                             <span class="distance-tag">Khoảng cách: 7km - 7.5km</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="floor-plan-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2>Mặt bằng chi tiết</h2>
+                    <p>Lựa chọn mặt bằng tầng và loại căn hộ phù hợp với nhu cầu của bạn.</p>
+                </div>
+
+                <div class="floor-plan-interactive-area">
+                    <div class="floor-plan-controls">
+                        <div class="floor-selector">
+                           <button class="floor-btn active" data-plan-src="assets/images/matbang1.jpg">Tầng 1</button>
+                            <button class="floor-btn" data-plan-src="assets/images/matbang2.jpg">Tầng 2</button>
+                            <button class="floor-btn" data-plan-src="assets/images/matbang3.jpg">Tầng 3</button>
+                            <div class="dropdown" id="other-floors-dropdown">
+                                <button class="dropdown-toggle-btn dropdown-toggle">
+                                    <span>Tầng khác</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a href="#" class="dropdown-item floor-btn" data-plan-src="assets/images/matbang4.jpg">Tầng 4</a>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="unit-selector">
+                            <label for="unit-select">Xem chi tiết căn hộ:</label>
+                            <select name="unit-select" id="unit-select">
+                                <option value="">Chọn mã căn</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="floor-plan-display">
+                       <a href="assets/images/matbang1.jpg" class="lightbox-trigger" id="main-floor-plan-link" data-src="assets/images/matbang1.jpg">
+                            <img id="main-floor-plan-img" src="assets/images/matbang1.jpg" alt="Mặt bằng tầng điển hình">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="amenities-section">
+            <div class="amenities-image-list" style="display: none;">
+                <a href="assets/images/hoboivocuc.jpg" data-caption="Hồ bơi vô cực"></a>
+                <a href="assets/images/congviencayxanh.jpg" data-caption="Công viên cây xanh"></a>
+                <a href="assets/images/gym-yoga.jpg" data-caption="Gym & Yoga Hiện đại"></a>
+                <a href="assets/images/anninh.jpg" data-caption="An ninh 24/7"></a>
+                <a href="assets/images/bbq.jpg" data-caption="Vườn BBQ ngoài trời"></a>
+                <a href="assets/images/khuvuichoi.jpg" data-caption="Khu vui chơi trẻ em"></a>
+                <a href="assets/images/sieuthi.jpg" data-caption="Siêu thị tiện lợi"></a>
+            </div>
+
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2>Hệ sinh thái tiện ích đặc quyền</h2>
+                    <p>Tận hưởng cuộc sống tiện nghi và đẳng cấp với chuỗi tiện ích đa dạng, đáp ứng mọi nhu cầu.</p>
+                </div>
+            </div>
+
+            <div class="content-limiter amenities-desktop-layout">
+                <div class="amenities-grid">
+                    <a href="javascript:void(0);" class="amenity-card amenity-trigger" data-index="1">
+                        <img src="assets/images/congviencayxanh.jpg" alt="Công viên cây xanh" class="amenity-bg">
+                        <div class="amenity-overlay"><h4>Công viên cây xanh</h4><p class="amenity-desc">Không gian xanh mát cho gia đình thư giãn.</p></div>
+                    </a>
+                    <a href="javascript:void(0);" class="amenity-card amenity-trigger" data-index="2">
+                        <img src="assets/images/gym-yoga.jpg" alt="Gym - Yoga" class="amenity-bg">
+                        <div class="amenity-overlay"><h4>Gym & Yoga Hiện đại</h4><p class="amenity-desc">Trang thiết bị cao cấp, nâng cao sức khỏe.</p></div>
+                    </a>
+                    <a href="javascript:void(0);" class="amenity-card large amenity-trigger" data-index="0">
+                        <img src="assets/images/hoboivocuc.jpg" alt="Hồ bơi vô cực" class="amenity-bg">
+                        <div class="amenity-overlay"><h4>Hồ Bơi Vô Cực</h4><p class="amenity-desc">Tầm nhìn panorama toàn cảnh thành phố.</p></div>
+                    </a>
+                    <a href="javascript:void(0);" class="amenity-card amenity-trigger" data-index="3">
+                        <img src="assets/images/anninh.jpg" alt="An ninh" class="amenity-bg">
+                        <div class="amenity-overlay"><h4>An ninh 24/7</h4><p class="amenity-desc">Hệ thống camera và bảo vệ chuyên nghiệp.</p></div>
+                    </a>
+                    <div class="amenity-card view-all-card amenity-trigger" data-index="0">
+                        <img src="assets/images/khuvuichoi.jpg" alt="Xem tất cả tiện ích" class="amenity-bg">
+                        <div class="view-all-overlay"><div class="view-all-content"><span>+3</span><p>Xem tất cả tiện ích</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="amenities-mobile-layout">
+                <a href="javascript:void(0);" class="mobile-main-amenity amenity-trigger" data-index="0">
+                    <img src="assets/images/hoboivocuc.jpg" alt="Hồ bơi vô cực" class="amenity-bg">
+                    <div class="amenity-overlay"><h4>Hồ Bơi Vô Cực</h4><p class="amenity-desc">Tầm nhìn panorama toàn cảnh thành phố.</p></div>
+                </a>
+                <div class="horizontal-scroll-wrapper">
+                    <div class="mobile-amenities-scroll">
+                        <a href="javascript:void(0);" class="amenity-card-mobile amenity-trigger" data-index="1"><img src="assets/images/congviencayxanh.jpg" alt="Công viên" class="amenity-bg"><div class="amenity-overlay"><h5>Công viên</h5><p class="amenity-desc">...</p></div></a>
+                        <a href="javascript:void(0);" class="amenity-card-mobile amenity-trigger" data-index="2"><img src="assets/images/gym-yoga.jpg" alt="Gym" class="amenity-bg"><div class="amenity-overlay"><h5>Gym & Yoga</h5><p class="amenity-desc">...</p></div></a>
+                        <a href="javascript:void(0);" class="amenity-card-mobile amenity-trigger" data-index="3"><img src="assets/images/anninh.jpg" alt="An ninh" class="amenity-bg"><div class="amenity-overlay"><h5>An ninh 24/7</h5><p class="amenity-desc">...</p></div></a>
+                        <a href="javascript:void(0);" class="amenity-card-mobile amenity-trigger" data-index="4"><img src="assets/images/bbq.jpg" alt="BBQ" class="amenity-bg"><div class="amenity-overlay"><h5>Vườn BBQ</h5><p class="amenity-desc">...</p></div></a>
+                        <a href="javascript:void(0);" class="amenity-card-mobile amenity-trigger" data-index="5"><img src="assets/images/khuvuichoi.jpg" alt="Khu vui chơi" class="amenity-bg"><div class="amenity-overlay"><h5>Khu vui chơi</h5><p class="amenity-desc">...</p></div></a>
+                        <a href="javascript:void(0);" class="amenity-card-mobile amenity-trigger" data-index="6"><img src="assets/images/sieuthi.jpg" alt="Siêu thị" class="amenity-bg"><div class="amenity-overlay"><h5>Siêu thị</h5><p class="amenity-desc">...</p></div></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+         <section class="pricing-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2>Giá bán & Cho thuê</h2>
+                    <p>Bảng giá tham khảo cho các loại hình sản phẩm chính của dự án.</p>
+                </div>
+
+                <div class="pricing-cards-container">
+                    <div class="pricing-card popular">
+                        <div class="pricing-card-header">
+                            <div>
+                                <h3 class="product-name">Căn hộ 2 Phòng Ngủ</h3>
+                                <p class="product-area">Diện tích: 75m² - 85m²</p>
+                            </div>
+                            <span class="badge">Phổ biến</span>
+                        </div>
+                        <div class="pricing-card-body">
+                            <a href="#" class="price-box">
+                                <span class="price-label">Giá bán</span>
+                                <div class="price-main">4.5 - 5.2 tỷ</div>
+                                <div class="price-sub">~ 60 triệu/m²</div>
+                                <span class="price-cta">Xem chi tiết →</span>
+                            </a>
+                            <a href="#" class="price-box">
+                                <span class="price-label">Giá cho thuê</span>
+                                <div class="price-main">18 - 22 triệu/tháng</div>
+                                <div class="price-sub">Nội thất cơ bản</div>
+                                <span class="price-cta">Xem chi tiết →</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pricing-card">
+                        <div class="pricing-card-header">
+                            <div>
+                                <h3 class="product-name">Shophouse Khối Đế</h3>
+                                <p class="product-area">Diện tích: 120m² - 150m² (1 trệt, 1 lầu)</p>
+                            </div>
+                        </div>
+                        <div class="pricing-card-body">
+                            <a href="#" class="price-box">
+                                <span class="price-label">Giá bán</span>
+                                <div class="price-main">10 - 15 tỷ</div>
+                                <div class="price-sub">~ 90 triệu/m²</div>
+                                <span class="price-cta">Xem chi tiết →</span>
+                            </a>
+                            <a href="#" class="price-box">
+                                <span class="price-label">Giá cho thuê</span>
+                                <div class="price-main">50 - 70 triệu/tháng</div>
+                                <div class="price-sub">Hoàn thiện thô</div>
+                                <span class="price-cta">Xem chi tiết →</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pricing-card">
+                        <div class="pricing-card-header">
+                            <div>
+                                <h3 class="product-name">Biệt Thự Song Lập</h3>
+                                <p class="product-area">Diện tích đất: 200m² - 250m²</p>
+                            </div>
+                        </div>
+                        <div class="pricing-card-body">
+                            <a href="#" class="price-box">
+                                <span class="price-label">Giá bán</span>
+                                <div class="price-main">25 - 30 tỷ</div>
+                                <div class="price-sub">~ 125 triệu/m²</div>
+                                <span class="price-cta">Xem chi tiết →</span>
+                            </a>
+                            <div class="price-box disabled">
+                                <span class="price-label">Giá cho thuê</span>
+                                <div class="price-main">Chưa mở bán cho thuê</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+         <section class="payment-schedule-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2>Phương thức thanh toán</h2>
+                    <p>Lịch biểu thanh toán linh hoạt và các chính sách hỗ trợ tài chính hấp dẫn.</p>
+                </div>
+
+                <div class="table-scroll-wrapper">
+                    <table class="payment-schedule-table">
+                        <thead>
+                            <tr>
+                                <th>Đợt</th>
+                                <th>Thời gian</th>
+                                <th>Tỷ lệ TT</th>
+                                <th>Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Đặt cọc</td>
+                                <td>Ngay khi ký thỏa thuận</td>
+                                <td>100.000.000 VNĐ</td>
+                                <td>Ký Thỏa thuận đặt cọc</td>
+                            </tr>
+                            <tr>
+                                <td>Đợt 1</td>
+                                <td>Trong vòng 7 ngày từ ngày đặt cọc</td>
+                                <td>15%</td>
+                                <td>Bao gồm tiền cọc, ký HĐMB</td>
+                            </tr>
+                            <tr>
+                                <td>Đợt 2</td>
+                                <td>30/09/2025</td>
+                                <td>15%</td>
+                                <td>Xây dựng đến tầng 10</td>
+                            </tr>
+                            <tr>
+                                <td>Đợt 3</td>
+                                <td>31/12/2025</td>
+                                <td>20%</td>
+                                <td>Cất nóc dự án</td>
+                            </tr>
+                            <tr>
+                                <td>Đợt 4</td>
+                                <td>30/03/2026</td>
+                                <td>20%</td>
+                                <td>Hoàn thiện nội thất</td>
+                            </tr>
+                             <tr>
+                                <td>Bàn giao</td>
+                                <td>Dự kiến 30/06/2026</td>
+                                <td>25%</td>
+                                <td>Nhận bàn giao căn hộ</td>
+                            </tr>
+                            <tr>
+                                <td>Sổ hồng</td>
+                                <td>Khi có thông báo</td>
+                                <td>5%</td>
+                                <td>Nhận Giấy chứng nhận</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <hr class="section-divider">
+
+                <div class="additional-info">
+                    <p><strong>Phí bảo trì:</strong> 18.000 VNĐ/m² (chưa bao gồm VAT), dự kiến thanh toán một lần khi nhận bàn giao căn hộ để sử dụng cho công tác quản lý vận hành trong dài hạn.</p>
+                    <p><strong>Hỗ trợ ngân hàng:</strong> Ngân hàng <strong>Techcombank</strong> và <strong>MB Bank</strong> hỗ trợ vay vốn lên đến <strong>70%</strong> giá trị căn hộ với các gói lãi suất ưu đãi, thời hạn vay tối đa 35 năm.</p>
+                    <p><strong>Chiết khấu thanh toán sớm:</strong> Khách hàng có nhu cầu thanh toán sớm <strong>95%</strong> giá trị căn hộ bằng vốn tự có sẽ được hưởng mức chiết khấu <strong>8%</strong> trên giá bán (chưa bao gồm VAT).</p>
+                </div>
+            </div>
+        </section>
+        <section class="handover-standards-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2>Tiêu chuẩn bàn giao</h2>
+                    <p>Trải nghiệm không gian sống đẳng cấp với các vật liệu và thiết bị hoàn thiện từ những thương hiệu hàng đầu thế giới.</p>
+                </div>
+                <div class="standards-carousel-container">
+                <div class="carousel-wrapper">
+                    <div class="carousel-track">
+                        <a href="assets/images/tieuchuanbangiao1.jpg" class="carousel-slide lightbox-trigger" data-src="assets/images/tieuchuanbangiao1.jpg">
+                            <img src="assets/images/tieuchuanbangiao1.jpg" alt="Sàn gỗ">
+                            <div class="slide-caption">Sàn gỗ cao cấp</div>
+                        </a>
+                        <a href="assets/images/tieuchuanbangiao2.jpg" class="carousel-slide lightbox-trigger" data-src="assets/images/tieuchuanbangiao2.jpg">
+                            <img src="assets/images/tieuchuanbangiao2.jpg" alt="Cửa khóa Hafele">
+                            <div class="slide-caption">Cửa gỗ & Khóa từ Hafele</div>
+                        </a>
+                        <a href="assets/images/tieuchuanbangiao3.jpg" class="carousel-slide lightbox-trigger" data-src="assets/images/tieuchuanbangiao3.jpg">
+                            <img src="assets/images/tieuchuanbangiao3.jpg" alt="Thiết bị vệ sinh Kohler">
+                            <div class="slide-caption">Thiết bị vệ sinh Kohler</div>
+                        </a>
+                        <a href="assets/images/tieuchuanbangiao4.jpg" class="carousel-slide lightbox-trigger" data-src="assets/images/tieuchuanbangiao4.jpg">
+                            <img src="assets/images/tieuchuanbangiao4.jpg" alt="Bếp từ Bosch">
+                            <div class="slide-caption">Bếp điện từ Bosch</div>
+                        </a>
+                        <a href="assets/images/tieuchuanbangiao5.jpg" class="carousel-slide lightbox-trigger" data-src="assets/images/tieuchuanbangiao5.jpg">
+                             <img src="assets/images/tieuchuanbangiao5.jpg" alt="Tủ bếp An Cường">
+                            <div class="slide-caption">Tủ bếp An Cường</div>
+                        </a>
+                        <a href="assets/images/tieuchuanbangiao6.jpg" class="carousel-slide lightbox-trigger" data-src="assets/images/tieuchuanbangiao6.jpg">
+                            <img src="assets/images/tieuchuanbangiao6.jpg" alt="Máy lạnh Daikin">
+                            <div class="slide-caption">Máy lạnh âm trần Daikin</div>
+                        </a>
+                    </div>
+                </div>
+
+                 <div class="carousel-arrows">
+                    <button class="arrow-btn arrow-prev" title="Trước">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                    </button>
+                    <button class="arrow-btn arrow-next" title="Sau">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+                    </button>
+                </div>
+            </div>
+            </div>
+
+            
+        </section>
+          <section class="subdivision-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2>Các phân khu chính</h2>
+                    <p>Mỗi phân khu mang một phong cách thiết kế và hệ tiện ích riêng biệt, kiến tạo nên những cộng đồng dân cư độc đáo.</p>
+                </div>
+                <div class="subdivision-carousel-container">
+                <div class="subdivision-carousel-wrapper">
+                    <div class="subdivision-carousel-track">
+                        <a href="#" class="subdivision-card">
+                            <img src="assets/images/phankhu1.jpg" alt="Phân khu The Oasis" class="card-bg">
+                            <div class="subdivision-card-info">
+                                <h4>The Oasis</h4>
+                                <div class="subdivision-card-price">
+                                    <span>Giá bán: <strong>Từ 4 tỷ</strong></span>
+                                    <span>Giá thuê: <strong>Từ 15tr/tháng</strong></span>
+                                </div>
+                            </div>
+                            <div class="subdivision-card-hover-overlay">
+                                <span class="btn-secondary">Xem chi tiết</span>
+                            </div>
+                        </a>
+                        <a href="#" class="subdivision-card">
+                            <img src="assets/images/phankhu2.jpg" alt="Phân khu The Tropical" class="card-bg">
+                            <div class="subdivision-card-info">
+                                <h4>The Tropical</h4>
+                                <div class="subdivision-card-price">
+                                    <span>Giá bán: <strong>Từ 4.2 tỷ</strong></span>
+                                    <span>Giá thuê: <strong>Từ 16tr/tháng</strong></span>
+                                </div>
+                            </div>
+                             <div class="subdivision-card-hover-overlay">
+                                <span class="btn-secondary">Xem chi tiết</span>
+                            </div>
+                        </a>
+                        <a href="#" class="subdivision-card">
+                            <img src="assets/images/phankhu3.jpg" alt="Phân khu The Beverly" class="card-bg">
+                            <div class="subdivision-card-info">
+                                <h4>The Beverly</h4>
+                                <div class="subdivision-card-price">
+                                    <span>Giá bán: <strong>Từ 5 tỷ</strong></span>
+                                    <span>Giá thuê: <strong>Chưa mở</strong></span>
+                                </div>
+                            </div>
+                             <div class="subdivision-card-hover-overlay">
+                                <span class="btn-secondary">Xem chi tiết</span>
+                            </div>
+                        </a>
+                        </div>
+                </div>
+
+                <div class="carousel-arrows">
+                    <button class="arrow-btn arrow-prev" title="Trước">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                    </button>
+                    <button class="arrow-btn arrow-next" title="Sau">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+                    </button>
+                </div>
+            </div>
+            </div>
+        </section>
+        <section class="actual-photos-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2>Hình ảnh thực tế</h2>
+                    <p>Cập nhật tiến độ và hình ảnh mới nhất trực tiếp từ công trường dự án.</p>
+                </div>
+
+                <div class="photo-year-group">
+                    <h3 class="year-title">Cập nhật 2024</h3>
+                    <div class="photo-grid"></div>
+                    <div class="photo-data" style="display: none;">
+                        <a href="assets/images/tieuchuanbangiao1.jpg" data-caption="Toàn cảnh dự án tháng 06/2024"></a>
+                        <a href="assets/images/tieuchuanbangiao2.jpg" data-caption="Hoàn thiện mặt ngoài tòa A"></a>
+                        <a href="assets/images/tieuchuanbangiao3.jpg" data-caption="Lắp đặt hệ thống cửa kính"></a>
+                        <a href="assets/images/tieuchuanbangiao4.jpg" data-caption="Khu vực cảnh quan nội khu"></a>
+                        <a href="assets/images/tieuchuanbangiao5.jpg" data-caption="Sảnh đón tiếp cư dân"></a>
+                    </div>
+                </div>
+
+                <div class="photo-year-group">
+                    <h3 class="year-title">Cập nhật 2023</h3>
+                    <div class="photo-grid"></div>
+                    <div class="photo-data" style="display: none;">
+                        <a href="assets/images/phankhu1.jpg" data-caption="Lễ cất nóc dự án"></a>
+                        <a href="assets/images/phankhu2.jpg" data-caption="Xây dựng phần thô"></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="related-news-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2>Tin tức liên quan</h2>
+                    <p>Cập nhật các thông tin và bài viết phân tích mới nhất về dự án và thị trường.</p>
+                </div>
+
+                <div class="news-scroll-wrapper">
+                    <div class="news-grid">
+                        <a href="bai-viet-chi-tiet.html" class="news-card">
+                            <div class="news-card-image">
+                                <img src="assets/images/tintuc1.png" alt="Thị trường BĐS">
+                            </div>
+                            <div class="news-card-content">
+                                <h4 class="news-title">Bất động sản sôi động vào dịp tết Nguyên Đán, Vì sao lại như vậy?</h4>
+                                <span class="news-readmore">Đọc thêm →</span>
+                            </div>
+                        </a>
+                        <a href="bai-viet-chi-tiet.html" class="news-card">
+                            <div class="news-card-image">
+                                <img src="assets/images/tintuc2.png" alt="Tạp chí sáng tạo">
+                            </div>
+                            <div class="news-card-content">
+                                <h4 class="news-title">Tạp chí ONCREATIVE Tết 2025: Toàn cảnh truyền thông sáng tạo trong thời đại số</h4>
+                                <span class="news-readmore">Đọc thêm →</span>
+                            </div>
+                        </a>
+                        <a href="bai-viet-chi-tiet.html" class="news-card">
+                            <div class="news-card-image">
+                                <img src="assets/images/tintuc3.png" alt="Chiến dịch marketing">
+                            </div>
+                            <div class="news-card-content">
+                                <h4 class="news-title">Chiến dịch marketing đón Tết đủ đầy với bộ 3 xu hướng truyền thông triển vọng</h4>
+                                <span class="news-readmore">Đọc thêm →</span>
+                            </div>
+                        </a>
+                        </div>
+                </div>
+            </div>
+        </section>
+         <section class="nearby-projects-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2>Dự án lân cận</h2>
+                    <p>Khám phá các dự án nổi bật khác trong cùng khu vực.</p>
+                </div>
+
+                <div class="projects-scroll-wrapper">
+                    <div class="nearby-projects-grid">
+                        <a href="du-an-chi-tiet.html" class="nearby-project-card">
+                            <img src="assets/images/phankhu1.jpg" alt="Dự án The Pavilion" class="card-background-image">
+                            <div class="card-text-overlay">
+                                <h4 class="project-name">The Pavilion</h4>
+                                <p class="project-address">Quận 1, TP. Hồ Chí Minh</p>
+                                <div class="project-price-info">
+                                    <span>Từ 5 tỷ/căn</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="du-an-chi-tiet.html" class="nearby-project-card">
+                            <img src="assets/images/phankhu2.jpg" alt="Dự án Sunwah Pearl" class="card-background-image">
+                            <div class="card-text-overlay">
+                                <h4 class="project-name">Sunwah Pearl</h4>
+                                <p class="project-address">Quận Bình Thạnh, TP. Hồ Chí Minh</p>
+                                <div class="project-price-info">
+                                    <span>Từ 4.5 tỷ/căn</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="du-an-chi-tiet.html" class="nearby-project-card">
+                            <img src="assets/images/phankhu3.jpg" alt="Dự án The Metropole" class="card-background-image">
+                            <div class="card-text-overlay">
+                                <h4 class="project-name">The Metropole</h4>
+                                <p class="project-address">TP. Thủ Đức, TP. Hồ Chí Minh</p>
+                                <div class="project-price-info">
+                                    <span>Từ 8 tỷ/căn</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        </main>
+        </main>
+
+        <section class="page-bottom-contact-section">
+            <div class="content-limiter">
+                <div class="section-header">
+                    <h2 class="section-title">Để lại thông tin</h2>
+                    <p>Chuyên gia của chúng tôi sẽ liên hệ tư vấn miễn phí cho bạn trong thời gian sớm nhất.</p>
+                </div>
+                <form id="page-bottom-contact-form" class="page-bottom-form">
+                    <input type="text" name="name" placeholder="Họ và tên của bạn" required>
+                    <input type="tel" name="phone" placeholder="Số điện thoại" required>
+                    <textarea name="message" rows="4" placeholder="Nhu cầu của bạn... (Ví dụ: Tôi quan tâm đến căn 2PN, vui lòng tư vấn)"></textarea>
+                    <button type="submit" class="btn-primary">Gửi thông tin</button>
+                </form>
+            </div>
+        </section>
+    <div id="favorites-drawer-container">
+        <div class="favorites-drawer-overlay"></div>
+        <div class="favorites-drawer">
+            <div class="drawer-header">
+                <h3>Danh sách yêu thích</h3>
+                <button class="drawer-close-btn" title="Đóng">&times;</button>
+            </div>
+            <div class="drawer-content">
+                </div>
+            
+        </div>
+    </div>
+       
+    <footer class="footer-wrapper">
+        <div class="header-footer-limiter">
+            <div class="site-footer">
+                <div class="footer-widget footer-col-1">
+                     <a href="index.html">
+                        <img src="assets/images/logo-footer.png" alt="Logo Footer" class="footer-logo">
+                    </a>
+                    <p><b>Chung cư tốt / Tên Công ty</b></p>
+                    <p>Số điện thoại: <a href="tel:0123456789">0123 456 789</a></p>
+                    <p>Mail: <a href="mailto:info@chungcutot.vn">info@chungcutot.vn</a></p>
+                    
+                </div>
+
+                <div class="footer-widget">
+                    <h4 class="widget-title accordion-toggle">VỀ CHÚNG TÔI</h4>
+                    <ul class="widget-links">
+                        <li><a href="gioi-thieu.html">Giới thiệu</a></li>
+                        <li><a href="doi-ngu.html">Đội ngũ</a></li>
+                        <li><a href="lien-he.html">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-widget">
+                    <h4 class="widget-title accordion-toggle">ĐIỀU KHOẢN</h4>
+                    <ul class="widget-links">
+                        <li><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a></li>
+                        <li><a href="dieu-khoan-su-dung.html">Điều khoản sử dụng</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-widget footer-col-4">
+                    <h4 class="widget-title">KẾT NỐI VỚI CHÚNG TÔI</h4>
+
+                    <div class="footer-socials">
+                        <a href="#" class="social-icon" aria-label="Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m13 2h-2.5a3.5 3.5 0 0 0-3.5 3.5V11h-2v3h2v7h3v-7h3v-3h-3V8.5A.5.5 0 0 1 15 8h3V5z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="YouTube">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24">
+                                <path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33.22 2.65.28 1.3.07 2.49.1 3.59.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="LinkedIn">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="white">
+                                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4s1.39.63 1.39 1.4v4.93h2.8zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69s-1.68.76-1.68 1.69c0 .92.75 1.68 1.68 1.68zm-1.39 1.3h2.79v8.37H5.5V9.86z"/>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <a href="#" target="_blank" rel="noopener noreferrer" style="margin-top: 20px; display: inline-block;">
+                        <img src="assets/images/bo-cong-thuong.png" alt="Logo Bộ Công Thương" class="bct-logo">
+                    </a>
+                </div>
+            </div>
+             <div class="copyright-text">
+                <p>Copyright 2025 - Bản quyền của Chung cư Tốt</p>
+            </div>
+        </div>
+    </footer>
+
+        <div id="image-gallery-popup" class="image-gallery-popup">
+            <div class="gallery-backdrop"></div>
+            <button class="gallery-close-btn" title="Đóng">×</button>
+            <div class="gallery-container">
+                <div class="gallery-main-view">
+                    <img id="gallery-main-image" src="" alt="Ảnh chính của dự án">
+                    <button class="gallery-nav-btn prev" title="Ảnh trước">❮</button>
+                    <button class="gallery-nav-btn next" title="Ảnh kế tiếp">❯</button>
+                    <div id="gallery-caption" class="gallery-caption"></div>
+                </div>
+                <div class="gallery-thumbnail-strip">
+                    </div>
+            </div>
+        </div>
+         
+        
+        <div id="contact-modal" class="modal-container">
+            <div class="modal-content">
+                <button id="modal-close-btn" class="modal-close-btn" title="Đóng">&times;</button>
+                <h3>Để lại thông tin</h3>
+                <p>Chuyên gia của chúng tôi sẽ liên hệ tư vấn miễn phí cho bạn trong thời gian sớm nhất.</p>
+                
+                <a href="tel:0909123456" class="modal-phone-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 16.5V20C21 20.5523 20.5523 21 20 21C10.6112 21 3 13.3888 3 4C3 3.44772 3.44772 3 4 3H7.5C7.76522 3 8.01957 3.10536 8.20711 3.29289L10.7071 5.79289C11.0976 6.18342 11.0976 6.81658 10.7071 7.20711L9.12132 8.79289C10.3484 11.1403 12.8597 13.6516 15.2071 14.8787L16.7929 13.2929C17.1834 12.9024 17.8166 12.9024 18.2071 13.2929L20.7071 15.7929C20.8946 15.9804 21 16.2348 21 16.5Z" fill="#FFFFFF"/>
+                        </svg>
+
+                    <span>Gọi ngay: 0909 123 456</span>
+                </a>
+
+                <div class="modal-separator"><span>Hoặc điền form bên dưới</span></div>
+                
+                <form class="contact-form">
+                    <input type="text" name="name" placeholder="Họ và tên của bạn" required>
+                    <input type="tel" name="phone" placeholder="Số điện thoại" required>
+                    <textarea name="message" rows="3" placeholder="Nhu cầu của bạn..."></textarea>
+                    <button type="submit" class="btn-primary">Gửi thông tin</button>
+                </form>
+            </div>
+        </div>
+
+    <div class="fixed-action-buttons">
+        <div class="desktop-actions">
+            <button id="uptop-btn" class="action-btn uptop-btn" title="Lên đầu trang">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 11h3v10h2V11h3l-4-4-4 4zM4 3v2h16V3H4z"></path>
+                </svg>
+            </button>
+            <button id="floating-contact-btn" class="action-btn contact-float-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"></path>
+</svg>
+
+            </button>
+        </div>
+        <div class="mobile-bottom-bar">
+            <a href="tel:0909123456" class="mobile-action-btn" id="mobile-call-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"></path>
+                </svg>
+                <span>Gọi điện</span>
+            </a>
+            <a href="https://zalo.me/0909123456" target="_blank" class="mobile-action-btn zalo-btn">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 50 50" fill="none">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M22.782 0.166016H27.199C33.2653 0.166016 36.8103 1.05701 39.9572 2.74421C43.1041 4.4314 45.5875 6.89585 47.2557 10.0428C48.9429 13.1897 49.8339 16.7347 49.8339 22.801V27.1991C49.8339 33.2654 48.9429 36.8104 47.2557 39.9573C45.5685 43.1042 43.1041 45.5877 39.9572 47.2559C36.8103 48.9431 33.2653 49.8341 27.199 49.8341H22.8009C16.7346 49.8341 13.1896 48.9431 10.0427 47.2559C6.89583 45.5687 4.41243 43.1042 2.7442 39.9573C1.057 36.8104 0.166016 33.2654 0.166016 27.1991V22.801C0.166016 16.7347 1.057 13.1897 2.7442 10.0428C4.43139 6.89585 6.89583 4.41245 10.0427 2.74421C13.1707 1.05701 16.7346 0.166016 22.782 0.166016Z" fill="#0068FF"/>
+                                    <path opacity="0.12" fill-rule="evenodd" clip-rule="evenodd" d="M49.8336 26.4736V27.1994C49.8336 33.2657 48.9427 36.8107 47.2555 39.9576C45.5683 43.1045 43.1038 45.5879 39.9569 47.2562C36.81 48.9434 33.265 49.8344 27.1987 49.8344H22.8007C17.8369 49.8344 14.5612 49.2378 11.8104 48.0966L7.27539 43.4267L49.8336 26.4736Z" fill="#001A33"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.779 43.5892C10.1019 43.846 13.0061 43.1836 15.0682 42.1825C24.0225 47.1318 38.0197 46.8954 46.4923 41.4732C46.8209 40.9803 47.1279 40.4677 47.4128 39.9363C49.1062 36.7779 50.0004 33.22 50.0004 27.1316V22.7175C50.0004 16.629 49.1062 13.0711 47.4128 9.91273C45.7385 6.75436 43.2461 4.28093 40.0877 2.58758C36.9293 0.894239 33.3714 0 27.283 0H22.8499C17.6644 0 14.2982 0.652754 11.4699 1.89893C11.3153 2.03737 11.1636 2.17818 11.0151 2.32135C2.71734 10.3203 2.08658 27.6593 9.12279 37.0782C9.13064 37.0921 9.13933 37.1061 9.14889 37.1203C10.2334 38.7185 9.18694 41.5154 7.55068 43.1516C7.28431 43.399 7.37944 43.5512 7.779 43.5892Z" fill="white"/>
+                                    <path d="M20.5632 17H10.8382V19.0853H17.5869L10.9329 27.3317C10.7244 27.635 10.5728 27.9194 10.5728 28.5639V29.0947H19.748C20.203 29.0947 20.5822 28.7156 20.5822 28.2606V27.1421H13.4922L19.748 19.2938C19.8428 19.1801 20.0134 18.9716 20.0893 18.8768L20.1272 18.8199C20.4874 18.2891 20.5632 17.8341 20.5632 17.2844V17Z" fill="#0068FF"/>
+                                    <path d="M32.9416 29.0947H34.3255V17H32.2402V28.3933C32.2402 28.7725 32.5435 29.0947 32.9416 29.0947Z" fill="#0068FF"/>
+                                    <path d="M25.814 19.6924C23.1979 19.6924 21.0747 21.8156 21.0747 24.4317C21.0747 27.0478 23.1979 29.171 25.814 29.171C28.4301 29.171 30.5533 27.0478 30.5533 24.4317C30.5723 21.8156 28.4491 19.6924 25.814 19.6924ZM25.814 27.2184C24.2785 27.2184 23.0273 25.9672 23.0273 24.4317C23.0273 22.8962 24.2785 21.645 25.814 21.645C27.3495 21.645 28.6007 22.8962 28.6007 24.4317C28.6007 25.9672 27.3685 27.2184 25.814 27.2184Z" fill="#0068FF"/>
+                                    <path d="M40.4867 19.6162C37.8516 19.6162 35.7095 21.7584 35.7095 24.3934C35.7095 27.0285 37.8516 29.1707 40.4867 29.1707C43.1217 29.1707 45.2639 27.0285 45.2639 24.3934C45.2639 21.7584 43.1217 19.6162 40.4867 19.6162ZM40.4867 27.2181C38.9322 27.2181 37.681 25.9669 37.681 24.4124C37.681 22.8579 38.9322 21.6067 40.4867 21.6067C42.0412 21.6067 43.2924 22.8579 43.2924 24.4124C43.2924 25.9669 42.0412 27.2181 40.4867 27.2181Z" fill="#0068FF"/>
+                                    <path d="M29.4562 29.0944H30.5747V19.957H28.6221V28.2793C28.6221 28.7153 29.0012 29.0944 29.4562 29.0944Z" fill="#0068FF"/>
+                                </svg>
+                <span>Chat Zalo</span>
+            </a>
+        </div>
+
+       
+    </div>
+    
+    <script src="assets/js/template.js"></script>
+
+    <script type="module" src="assets/js/data-menu.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/listing.js"></script> 
+    <script type="module">
+    // =====================================================================
+    // == SCRIPT TỔNG HỢP CUỐI CÙNG (DESKTOP & MOBILE & STICKY HEADER) ==
+    // =====================================================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- PHẦN 1: DỮ LIỆU & BIẾN TOÀN CỤC ---
+        const initialMenuData = {
+           "Dự án": [ { "Loại hình": "Chung cư", "Khu vực": ["TP. Hồ Chí Minh", "Bình Dương", "Đồng Nai"] }, { "Loại hình": "Khu đô thị", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Long An"] } ],
+           "Mua bán": [ { "Loại hình": "Căn hộ", "Khu vực": ["TP. Hồ Chí Minh", "Lâm Đồng", "Bà Rịa - Vũng Tàu"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng"] } ],
+           "Cho thuê": [ { "Loại hình": "Căn hộ", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Vĩnh Long"] } ],
+           "Wiki": [ { "Danh mục": "Pháp lý", "slug": "phap-ly" }, { "Danh mục": "Kinh nghiệm", "slug": "kinh-nghiem" }, { "Danh mục": "Phong thuỷ", "slug": "phong-thuy" } ],
+           "Tin tức": [ { "Danh mục": "Dự án", "slug": "du-an" }, { "Danh mục": "Thị trường", "slug": "thi-truong" } ],
+           "Doanh nghiệp": [ { "Danh mục": "Chủ đầu tư", "slug": "chu-dau-tu" }, { "Danh mục": "Nhà thầu thi công", "slug": "nha-thau-thi-cong" } ]
+        };
+        
+        const featuredProjectsData = [
+            {
+                name: 'The Global City',
+                description: 'Khu đô thị phức hợp chuẩn quốc tế tại TP. Thủ Đức.',
+                image: 'assets/images/project-gallery-1.jpg',
+                link: '#'
+            }
+        ];
+
+        const header = document.querySelector('.header-wrapper');
+        const mainMenuContainer = document.getElementById('main-nav');
+        const mainMenuUl = document.getElementById('main-menu-list');
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const megaMenuContainer = document.getElementById('cct-mega-menu');
+        
+        let activeMenuItem = null;
+        let menuTimeout;
+
+        // --- PHẦN 2: CÁC HÀM TIỆN ÍCH ---
+        const toSlug = (str) => {
+            if (!str) return '';
+            let s = str.toLowerCase();
+            if (s === 'hồ chí minh') return 'tp-ho-chi-minh';
+            if (s === 'hà nội') return 'tp-ha-noi';
+            if (s === 'đà nẵng') return 'tp-da-nang';
+            if (s === 'cần thơ') return 'tp-can-tho';
+            if (s === 'hải phòng') return 'tp-hai-phong';
+            s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            s = s.replace(/[đĐ]/g, 'd');
+            s = s.replace(/([^0-9a-z-\s])/g, '');
+            s = s.replace(/(\s+)/g, '-');
+            s = s.replace(/-+/g, '-');
+            s = s.replace(/^-+|-+$/g, '');
+            return s;
+        };
+        
+        function getLink(menuKey, catKey, subItem) {
+            let baseUrl = '';
+            let params = [];
+            const lowerMenuKey = menuKey.toLowerCase();
+            const categorySlug = toSlug(catKey);
+            if (lowerMenuKey.includes('dự án'))
+            baseUrl = 'list-du-an.html'; // Đổi thành URL cho trang dự án
+            else if (lowerMenuKey.includes('bán')) baseUrl = 'listing-ban.html';
+            else if (lowerMenuKey.includes('thuê')) baseUrl = 'listing-thue.html';
+            else if (lowerMenuKey.includes('wiki')) baseUrl = 'wiki.html';
+            else if (lowerMenuKey.includes('tin tức')) baseUrl = 'news.html';
+            else if (lowerMenuKey.includes('doanh nghiệp')) baseUrl = 'business.html';
+            else baseUrl = 'listing.html';
+            if (catKey) {
+                let paramKey = ['Dự án', 'Mua bán', 'Cho thuê'].includes(menuKey) ? 'loaihinh' : 'danh-muc';
+                params.push(`${paramKey}=${categorySlug}`);
+            }
+            if (subItem) {
+                params.push(`thanhpho=${toSlug(subItem)}`);
+            }
+            return `${baseUrl}${params.length > 0 ? '?' : ''}${params.join('&')}`;
+        }
+
+        function debounce(func, delay = 250) {
+            let timeout;
+            return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); };
+        }
+
+        // --- PHẦN 3: LOGIC MENU ---
+
+        function initMenu() {
+            if (window.innerWidth > 1024) {
+                handleDesktopMenu();
+            } else {
+                handleMobileMenu();
+            }
+        }
+        
+        function handleDesktopMenu() {
+            const nav = document.getElementById('main-nav');
+            const mainMenu = document.getElementById('main-menu-list');
+            if (!nav || !mainMenu || !megaMenuContainer) return;
+            mainMenu.innerHTML = ''; 
+            for (const menuKey in initialMenuData) {
+                const li = document.createElement('li');
+                li.className = 'has-dropdown';
+                const a = document.createElement('a');
+                a.href = '#'; 
+                a.textContent = menuKey;
+                li.appendChild(a);
+                mainMenu.appendChild(li);
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (activeMenuItem === e.target.parentElement) {
+                        closeDesktopPanel();
+                    } else {
+                        if (activeMenuItem) activeMenuItem.classList.remove('active');
+                        activeMenuItem = e.target.parentElement;
+                        activeMenuItem.classList.add('active');
+                        populateDesktopPanel(menuKey);
+                        setTimeout(() => megaMenuContainer.classList.add('is-open'), 10);
+                    }
+                });
+            }
+            megaMenuContainer.querySelector('.menu-panel-overlay')?.addEventListener('click', closeDesktopPanel);
+            nav.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 300); });
+            nav.addEventListener('mouseenter', () => clearTimeout(menuTimeout));
+            megaMenuContainer.addEventListener('mouseenter', () => clearTimeout(menuTimeout));
+            megaMenuContainer.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 300); });
+        }
+
+        function populateDesktopPanel(menuKey) {
+            const menuItems = initialMenuData[menuKey];
+            const col1List = document.getElementById('mega-menu-col-1-list');
+            const col2List = document.getElementById('mega-menu-col-2-list');
+            const col3Content = document.getElementById('mega-menu-col-3-content');
+            if (!col1List || !col2List || !col3Content) return;
+            col1List.innerHTML = '';
+            col2List.innerHTML = '';
+            col3Content.innerHTML = '';
+            const firstItem = menuItems[0];
+            const isMega = firstItem.hasOwnProperty('Khu vực');
+            megaMenuContainer.querySelector('.menu-panel-columns').classList.toggle('is-single-col-data', !isMega);
+            menuItems.forEach((item, index) => {
+                const categoryName = item["Loại hình"] || item["Danh mục"];
+                const li = document.createElement('li');
+                li.dataset.category = categoryName;
+                if (isMega) {
+                    li.textContent = categoryName;
+                } else {
+                    const link = document.createElement('a');
+                    link.href = getLink(menuKey, categoryName);
+                    link.textContent = categoryName;
+                    link.className = 'direct-link';
+                    li.appendChild(link);
+                }
+                if (index === 0) li.classList.add('active');
+                col1List.appendChild(li);
+            });
+            if (isMega) {
+                updateDesktopSubMenu(menuItems[0]["Loại hình"], menuKey);
+                col1List.addEventListener('mouseover', e => {
+                    const targetLi = e.target.closest('li');
+                    if (targetLi && targetLi.dataset.category) {
+                        col1List.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+                        targetLi.classList.add('active');
+                        updateDesktopSubMenu(targetLi.dataset.category, menuKey);
+                    }
+                });
+            }
+            featuredProjectsData.forEach(project => {
+                const card = document.createElement('a');
+                card.href = project.link;
+                card.className = 'featured-project-card';
+                card.innerHTML = `<img src="${project.image}" alt="${project.name}"><div class="featured-project-info"><h5>${project.name}</h5><p>${project.description}</p></div>`;
+                col3Content.appendChild(card);
+            });
+        }
+        
+        function updateDesktopSubMenu(categoryKey, menuKey) {
+            const subMenuContainer = document.getElementById('mega-menu-col-2-list');
+            const menuItems = initialMenuData[menuKey];
+            const targetItem = menuItems.find(item => item["Loại hình"] === categoryKey);
+            const subItems = targetItem ? targetItem["Khu vực"] : [];
+            subMenuContainer.innerHTML = subItems.map(item => `<li><a href="${getLink(menuKey, categoryKey, item)}">${item}</a></li>`).join('');
+        }
+
+        function closeDesktopPanel() {
+            if (megaMenuContainer) megaMenuContainer.classList.remove('is-open');
+            if (activeMenuItem) {
+                activeMenuItem.classList.remove('active');
+                activeMenuItem = null;
+            }
+        }
+
+        function handleMobileMenu() {
+          
+            const nav = document.getElementById('main-nav');
+            const overlay = document.getElementById('menu-overlay');
+            const hamburger = document.getElementById('hamburger-button');
+            if (!nav || !overlay || !hamburger) return;
+            nav.innerHTML = '<div class="menu-slider"></div>';
+            const slider = nav.querySelector('.menu-slider');
+            const createPanel = (level, title, content) => {
+                const panel = document.createElement('div');
+                panel.className = 'menu-panel';
+                panel.dataset.level = level;
+                let headerHTML = `<h4 class="panel-title">${title}</h4>`;
+                if (level > 0) {
+                    headerHTML = `<a href="#" class="panel-back-button"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg></a>` + headerHTML;
+                } else {
+                    headerHTML += `<button class="mobile-menu-close">&times;</button>`;
+                }
+                panel.innerHTML = `<div class="panel-header">${headerHTML}</div><ul class="panel-list">${content}</ul>`;
+                return panel;
+            };
+            const openMenu = () => {
+                if (!slider.querySelector('[data-level="0"]')) {
+                    const level1Content = Object.keys(initialMenuData).map(key => `<li class="has-submenu" data-level="0" data-key="${key}"><a href="#">${key}</a></li>`).join('');
+                    const panel1 = createPanel(0, 'Menu', level1Content);
+                    slider.appendChild(panel1);
+                    panel1.querySelector('.mobile-menu-close').addEventListener('click', closeMenu);
+                }
+                nav.classList.add('is-open');
+                overlay.classList.add('is-visible');
+                document.body.style.overflow = 'hidden';
+            };
+            const closeMenu = () => {
+                nav.classList.remove('is-open');
+                overlay.classList.remove('is-visible');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    slider.style.transform = 'translateX(0%)';
+                    slider.querySelectorAll('.menu-panel').forEach(p => { if (p.dataset.level > 0) p.remove(); });
+                }, 350);
+            };
+            hamburger.onclick = openMenu;
+            overlay.onclick = closeMenu;
+            slider.addEventListener('click', (e) => {
+                const linkTarget = e.target.closest('a');
+                if (linkTarget && linkTarget.getAttribute('href') !== '#') {
+                    closeMenu();
+                    return;
+                }
+                e.preventDefault();
+                const target = e.target;
+                const currentPanel = target.closest('.menu-panel');
+                if (!currentPanel) return;
+                if (target.closest('.panel-back-button')) {
+                    const currentLevel = parseInt(currentPanel.dataset.level, 10);
+                    slider.style.transform = `translateX(-${(currentLevel - 1) * 100}%)`;
+                    setTimeout(() => currentPanel.remove(), 350);
+                    return;
+                }
+                const targetLi = target.closest('li[data-key]');
+                const backButton = e.target.closest('.panel-back-button');
+                if (backButton) {
+                    e.preventDefault(); // Ngăn hành vi mặc định của thẻ <a>
+                    const currentPanel = backButton.closest('.menu-panel');
+                    if (currentPanel) {
+                        const currentLevel = parseInt(currentPanel.dataset.level, 10);
+                        // Lùi slider về panel trước đó
+                        slider.style.transform = `translateX(-${(currentLevel - 1) * 100}%)`;
+                        // Xóa panel hiện tại sau khi hiệu ứng kết thúc
+                        setTimeout(() => currentPanel.remove(), 350);
+                    }
+                    return; // Dừng xử lý tại đây
+                }
+                if (targetLi) {
+            // Ngăn chuyển trang nếu là link '#'
+            if(e.target.closest('a')?.getAttribute('href') === '#') {
+                 e.preventDefault();
+            }
+
+            const level = parseInt(targetLi.dataset.level, 10);
+            const menuKey = targetLi.dataset.key;
+            const category = targetLi.dataset.category;
+            let nextLevelContent = '', nextLevelTitle = '';
+
+            // Từ Cấp 1 -> Cấp 2
+            if (level === 0) {
+                nextLevelTitle = menuKey;
+                const items = initialMenuData[menuKey];
+                nextLevelContent = items.map(item => {
+                    const name = item["Loại hình"] || item["Danh mục"];
+                    const hasSubmenu = item.hasOwnProperty('Khu vực');
+                    const link = hasSubmenu ? '#' : getLink(menuKey, name, null);
+                    return `<li class="${hasSubmenu ? 'has-submenu' : ''}" data-level="1" data-key="${menuKey}" data-category="${name}"><a href="${link}">${name}</a></li>`;
+                }).join('');
+            }
+            // Từ Cấp 2 -> Cấp 3
+            else if (level === 1) {
+                const parentItem = initialMenuData[menuKey].find(item => (item["Loại hình"] || item["Danh mục"]) === category);
+                if (!parentItem || !parentItem["Khu vực"]) return;
+                
+                nextLevelTitle = category;
+                const khuVucItems = parentItem["Khu vực"];
+                nextLevelContent = khuVucItems.map(kv => `<li><a href="${getLink(menuKey, category, kv)}">${kv}</a></li>`).join('');
+            }
+
+            // Tạo và trượt đến panel tiếp theo
+            if (nextLevelContent) {
+                const newPanel = createPanel(level + 1, nextLevelTitle, nextLevelContent);
+                slider.appendChild(newPanel);
+                slider.style.transform = `translateX(-${(level+1) * 100}%)`;
+            }
+        }
+            });
+        }
+        
+        // --- PHẦN 4: CÁC SỰ KIỆN TOÀN CỤC ---
+        
+        // Sự kiện cuộn trang (cho Sticky Header và Đóng Menu)
+        if (header) {
+            let lastScrollTop = 0;
+            const sidebar = document.querySelector('.listing-filter-sidebar, .contact-sidebar, .sidebar-column'); 
+            window.addEventListener('scroll', () => {
+                // Sticky header
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                    header.classList.add('header--hidden');
+                    if (sidebar) sidebar.classList.add('sidebar--header-hidden');
+                } else {
+                    header.classList.remove('header--hidden');
+                    if (sidebar) sidebar.classList.remove('sidebar--header-hidden');
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+                // [THÊM MỚI] Tự động đóng menu desktop khi cuộn
+                if (megaMenuContainer && megaMenuContainer.classList.contains('is-open')) {
+                    closeDesktopPanel();
+                }
+            });
+        }
+
+        // Sự kiện click bên ngoài để đóng Desktop Menu
+        document.addEventListener('click', (event) => {
+            if (megaMenuContainer && mainMenuContainer && megaMenuContainer.classList.contains('is-open')) {
+                // Nếu click ra ngoài cả thanh nav và cả panel menu
+                if (!mainMenuContainer.contains(event.target) && !megaMenuContainer.contains(event.target)) {
+                    closeDesktopPanel();
+                }
+            }
+        });
+
+        // Sự kiện thay đổi kích thước cửa sổ
+        window.addEventListener('resize', debounce(initMenu, 250));
+        
+
+        // --- PHẦN 5: KHỞI CHẠY LẦN ĐẦU ---
+        initMenu();
+    });
+    </script>
+
+</body>
+</html>

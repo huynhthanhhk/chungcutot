@@ -1,0 +1,625 @@
+/* =================================== */
+/* ==   DESKTOP MENU PANEL STYLES   == */
+/* =================================== */
+
+.main-nav .has-dropdown > a.active {
+    color: var(--primary-color);
+    padding: 0px;
+}
+.logo-link {
+        margin-right: auto;
+    }
+#cct-mega-menu {
+    position: fixed; top: 81px; left: 0; width: 100%; height: 100%;
+    z-index: 999; opacity: 0; transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    visibility: hidden;
+}
+
+#cct-mega-menu.is-open {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+.menu-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease;
+}
+.menu-overlay.is-visible {
+    opacity: 1; visibility: visible;
+}
+
+
+/* 1. Lớp phủ (overlay) sẽ phủ toàn bộ màn hình */
+#cct-mega-menu .menu-panel-overlay {
+    position: fixed;
+    top: 0; /* Bắt đầu từ đỉnh viewport */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+/* 2. Đưa panel lên sát header và bỏ bo góc trên */
+#cct-mega-menu .menu-panel-columns {
+    max-width: 1100px;
+    margin: 0 auto; /* Bỏ margin-top để panel sát header */
+    padding: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    background-color: var(--white-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 12px 12px; /* Bỏ bo góc ở 2 cạnh trên */
+}
+
+/* 3. Đảm bảo các item trong cột canh trái */
+#cct-mega-menu .menu-panel-col {
+    min-width: 0;
+    text-align: left;
+}
+
+#cct-mega-menu .menu-panel-col h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-light);
+    margin: 0 0 15px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    text-transform: uppercase;
+}
+
+#cct-mega-menu .menu-panel-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    align-items: flex-start;
+}
+
+/* Cột 1 */
+#cct-mega-menu .menu-panel-col.col-1 ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+#cct-mega-menu .menu-panel-col.col-1 li {
+    width: 100%;
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng width */
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px 15px; /* Thêm padding trực tiếp */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    color: var(--text-dark);
+    margin: 0px;
+}
+#cct-mega-menu .menu-panel-col.col-1 li:hover {
+    background-color: #f4f7f6;
+    color: var(--primary-color);
+}
+#cct-mega-menu .menu-panel-col.col-1 li.active {
+    background-color: #f4f7f6;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+#cct-mega-menu .menu-panel-col.col-1 a.direct-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    margin: -12px -15px; /* Bù lại padding để link chiếm hết vùng chọn */
+    padding: 12px 15px;
+}
+
+/* Cột 2 */
+#cct-mega-menu .menu-panel-col.col-2 ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px; /* Giảm gap để các mục sát nhau hơn */
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+#cct-mega-menu .menu-panel-col.col-2 li {
+    width: 100%;
+    margin: 0px;
+}
+
+#cct-mega-menu .menu-panel-col.col-2 a {
+    display: block;
+    width: 100%;
+    box-sizing: border-box; /* Đảm bảo padding không làm vỡ layout */
+    text-decoration: none;
+    color: var(--text-dark);
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px 15px; /* Thêm padding để tạo không gian cho nền */
+    border-radius: 8px; /* Bo góc giống cột 1 */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+#cct-mega-menu .menu-panel-col.col-2 a:hover {
+    background-color: #f4f7f6; /* Thêm màu nền khi hover */
+    color: var(--primary-color);
+}
+
+/* Cột 3 */
+#cct-mega-menu .featured-project-card {
+    display: block;
+    text-decoration: none;
+    color: var(--text-dark);
+    border-radius: 0px;
+    overflow: hidden;
+    background-color: var(--body-bg);
+    transition: box-shadow 0.3s ease;
+}
+#cct-mega-menu .featured-project-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+#cct-mega-menu .featured-project-card img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+#cct-mega-menu .featured-project-info {
+    padding: 15px;
+}
+#cct-mega-menu .featured-project-info h5 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+#cct-mega-menu .featured-project-info p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.5;
+}
+
+/* =================================== */
+/* ==    MOBILE MENU PANEL STYLES   == */
+/* =================================== */
+/* (Phần CSS cho mobile giữ nguyên, không thay đổi) */
+body.menu-open-mobile {
+    overflow: hidden;
+}
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 10001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+.mobile-menu-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+#cct-mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 85%;
+    max-width: 320px;
+    height: 100%;
+    background-color: var(--white-color);
+    z-index: 10002;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+#cct-mobile-menu.is-open {
+    transform: translateX(0);
+}
+#cct-mobile-menu .mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    height: 80px;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+#cct-mobile-menu .mobile-menu-header .logo {
+    height: 35px;
+}
+#cct-mobile-menu .mobile-menu-close {
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: var(--text-light);
+}
+#cct-mobile-menu .mobile-menu-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px 0;
+}
+#cct-mobile-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+#cct-mobile-menu > .mobile-menu-body > ul > li > a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+    border-bottom: 1px solid var(--border-color);
+}
+#cct-mobile-menu .sub-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+    background-color: var(--body-bg);
+}
+#cct-mobile-menu li.open > .sub-menu {
+    max-height: 1000px;
+}
+#cct-mobile-menu .sub-menu a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px 12px 30px;
+    font-size: 15px;
+    color: var(--text-light);
+    border-bottom: 1px solid var(--border-color);
+}
+#cct-mobile-menu .sub-menu .sub-menu a {
+     padding-left: 45px;
+}
+#cct-mobile-menu .sub-menu a:hover {
+    color: var(--primary-color);
+}
+#cct-mobile-menu .arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #aaa;
+    transition: transform 0.3s ease;
+}
+#cct-mobile-menu li.open > .parent-link > .arrow {
+    transform: rotate(-180deg);
+}
+/* === BỐ CỤC ĐẶC BIỆT CHO MENU CHỈ CÓ 1 CỘT DỮ LIỆU === */
+
+/* Khi có class is-single-col-data, cho cột 1 chiếm không gian của 2 cột đầu */
+#cct-mega-menu .menu-panel-columns.is-single-col-data .col-1 {
+    grid-column: 1 / 3; /* Cột 1 sẽ kéo dài từ đường kẻ 1 đến đường kẻ 3 của lưới */
+}
+
+/* Đồng thời ẩn cột 2 đi */
+#cct-mega-menu .menu-panel-columns.is-single-col-data .col-2 {
+    display: none;
+}
+@media (min-width: 1025px) {
+  .hamburger-button {
+    display: none !important; /* Quy tắc này đúng */
+  }
+}
+/* ======================= Header ======================= */
+.header-wrapper {
+    /* Các thuộc tính hiện có của bạn: background-color, box-shadow... */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+     background-color: #fff !important; /* hoặc var(--white-color) !important */
+    /* Thêm dòng này để tạo hiệu ứng trượt mượt mà */
+    transition: transform 0.3s ease-in-out; 
+}
+
+/* Đây là class sẽ được thêm bằng JavaScript để ẩn header đi */
+.header-wrapper.header--hidden {
+    transform: translateY(-100%);
+}
+
+
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+}
+.logo-link {
+    flex-shrink: 0;
+    margin-right: auto;
+}
+
+.logo {
+    height: 40px; 
+    width: auto;
+}
+
+.header-right-block {
+    display: flex;
+    align-items: center;
+    gap: 100px;
+}
+
+.main-nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+.main-nav li {
+    margin: 0 15px;
+    position: relative;
+}
+.main-nav a {
+    color: var(--text-dark);
+    font-weight: 500;
+    font-size: 16px;
+    padding: 0px 0;
+    white-space: nowrap;
+}
+.main-nav li a:hover {
+    color: var(--primary-color);
+}
+
+.has-dropdown > a::after {
+    content: '▾';
+    font-size: 12px;
+    margin-left: 6px;
+    display: inline-block;
+    color: var(--text-dark);
+}
+
+.search-button-new {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+}
+.search-button-new:hover {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-color: var(--primary-color);
+}
+.logo-link {
+    margin-right: auto; /* Đẩy menu và search về bên phải */
+}
+.main-nav {
+    margin-right: 40px; /* Khoảng cách giữa menu và search */
+}
+
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+}
+.menu-toggle .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--secondary-color);
+    margin: 5px auto;
+    transition: all 0.3s ease-in-out;
+}
+body.menu-open-mobile {
+    overflow: hidden;
+}
+@media (max-width: 1024px) {
+    /* ======================================================= */
+/* == CSS CHO MENU (DESKTOP & MOBILE PANEL TRƯỢT) == */
+/* ======================================================= */
+
+/* --- 1. DESKTOP MEGA MENU (Không thay đổi) --- */
+#cct-mega-menu {
+    position: fixed; top: 81px; left: 0; width: 100%; height: 100%;
+    z-index: 999; opacity: 0; transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    visibility: hidden;
+}
+#cct-mega-menu.is-open {
+    opacity: 1; transform: translateY(0); visibility: visible;
+}
+/* ... Các style khác cho mega menu desktop giữ nguyên ... */
+
+
+/* ======================================================= */
+/* ==   CSS CHO MENU TRÊN MOBILE (Màn hình <= 1024px)   == */
+/* ======================================================= */
+@media (max-width: 1024px) {
+
+    /* Lớp phủ nền */
+    .menu-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.35s ease;
+    }
+    .menu-overlay.is-visible {
+        opacity: 1; visibility: visible;
+    }
+
+    /* Khung nav chính trên mobile */
+    #main-nav {
+        display: block; position: fixed;
+        top: 0; left: 0;
+        width: 320px;
+        max-width: 85vw;
+        height: 100%;
+        background-color: var(--white-color);
+        z-index: 1001;
+        transform: translateX(-100%);
+        transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+        overflow: hidden;
+    }
+    #main-nav.is-open {
+        transform: translateX(0);
+    }
+
+    /* Container chứa các panel, có thể trượt */
+    .menu-slider {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* Style cho mỗi panel con */
+    .menu-panel {
+        width: 100%;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        background-color: var(--white-color);
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        height: 80px;
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+    }
+
+    .panel-back-button {
+        color: var(--text-light);
+        background: none; border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        margin-left: -0.5rem;
+        margin-right: 0.5rem;
+    }
+    .panel-back-button svg { width: 24px; height: 24px; }
+
+    .panel-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .panel-list {
+        list-style: none;
+        padding: 0; margin: 0;
+        overflow-y: auto;
+        flex-grow: 1;
+    }
+
+    .panel-list li a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        text-decoration: none;
+        color: var(--text-dark);
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 500;
+    }
+
+    .panel-list li.has-submenu > a::after {
+        content: '›';
+        font-size: 1.5rem;
+        color: #ccc;
+    }
+
+    .panel-list .list-group-title {
+        padding: 15px 20px 10px 20px;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-light);
+        background-color: var(--body-bg);
+        text-transform: uppercase;
+    }
+}
+.panel-header .mobile-menu-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: auto; /* Quan trọng: Đẩy nút về phía bên phải */
+    line-height: 1;
+    font-weight: 300;
+}
+.panel-header .mobile-menu-close:hover {
+    color: var(--text-dark);
+}
+}
+/* ======================================================= */
+/* ==   ĐẢM BẢO MENU MOBILE CẤP 1 LUÔN THEO CHIỀU DỌC   == */
+/* ======================================================= */
+@media (max-width: 1024px) {
+
+    /* Thiết lập cho danh sách menu (ul) */
+    .menu-panel .panel-list {
+        display: flex;
+        flex-direction: column; /* Quan trọng: Luôn xếp các mục con theo chiều dọc */
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Thiết lập cho từng mục menu (li) */
+    .menu-panel .panel-list > li {
+        display: block; /* Đảm bảo mỗi mục chiếm trọn một hàng */
+        width: 100%;
+        border-bottom: 1px solid #f0f0f0; /* Thêm đường kẻ mảnh để phân tách */
+    }
+    
+    .menu-panel .panel-list > li:last-child {
+        border-bottom: none; /* Bỏ đường kẻ ở mục cuối cùng */
+    }
+
+    /* Thiết lập cho liên kết bên trong (a) */
+    .menu-panel .panel-list > li > a {
+        display: flex; /* Căn chỉnh nội dung bên trong thẻ a */
+        justify-content: space-between; /* Đẩy chữ và mũi tên ra 2 bên */
+        align-items: center;
+        padding: 16px 20px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        text-decoration: none;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Style cho mũi tên > */
+    .menu-panel .panel-list > li.has-submenu > a::after {
+        content: '›';
+        font-size: 24px;
+        color: #ccc;
+    }
+}

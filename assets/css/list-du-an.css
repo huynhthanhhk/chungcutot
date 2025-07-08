@@ -1,0 +1,233 @@
+/* assets/css/list-du-an.css */
+/* CSS DÀNH RIÊNG CHO TRANG DANH SÁCH DỰ ÁN */
+
+.project-list-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Mỗi dự án một hàng */
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.project-summary-card {
+    display: flex;
+    gap: 25px;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.project-summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+}
+
+.project-card-image-large {
+    width: 300px;
+    height: 200px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.project-card-image-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-card-info {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-dark);
+    flex-grow: 1;
+}
+
+.project-card-status {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    align-self: flex-start;
+    margin-bottom: 10px;
+}
+.project-card-status.sap-mo-ban {
+     background-color: #f39c12; /* Màu cam */
+}
+ .project-card-status.da-ban-giao {
+     background-color: #3498db; /* Màu xanh dương */
+}
+
+.project-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin: 0 0 8px 0;
+}
+
+.project-card-developer,
+.project-card-address {
+    font-size: 15px;
+    color: var(--text-light);
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.project-card-price {
+    margin-top: auto;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Style cho khoảng giá trong bộ lọc */
+.range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.range-inputs input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+    .project-summary-card {
+        flex-direction: column;
+    }
+    .project-card-image-large {
+        width: 100%;
+        height: 180px;
+    }
+}
+/* assets/css/list-du-an.css */
+/* CSS DÀNH RIÊNG CHO TRANG DANH SÁCH DỰ ÁN */
+
+.project-list-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin-bottom: 40px;
+}
+.project-summary-card {
+    display: flex;
+    gap: 25px;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+.project-summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+}
+.project-card-image-large {
+    width: 300px;
+    height: 200px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.project-card-image-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.project-card-info {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-dark);
+    flex-grow: 1;
+}
+.project-card-status {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    align-self: flex-start;
+    margin-bottom: 10px;
+}
+.project-card-status.sap-mo-ban { background-color: #f39c12; }
+.project-card-status.da-ban-giao { background-color: #3498db; }
+.project-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin: 0 0 8px 0;
+}
+.project-card-developer,
+.project-card-address {
+    font-size: 15px;
+    color: var(--text-light);
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.project-card-price {
+    margin-top: auto;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+.range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+.range-inputs input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+@media (max-width: 767px) {
+    .project-summary-card { flex-direction: column; }
+    .project-card-image-large { width: 100%; height: 180px; }
+}
+
+/* --- TỐI ƯU HIỂN THỊ TRẠNG THÁI TRÊN DI ĐỘNG (Bản sửa lỗi) --- */
+
+/* Đặt toàn bộ thẻ dự án làm gốc cho việc định vị */
+.project-summary-card {
+    position: relative;
+}
+
+/* Giữ lại màu nền cho khối ảnh để đề phòng ảnh lỗi */
+.project-card-image-large {
+    background-color: #f0f2f5;
+}
+
+/* Chỉ áp dụng cho màn hình nhỏ (mobile) */
+@media (max-width: 767px) {
+    .project-card-status {
+        /* Đưa nhãn trạng thái lên trên ảnh bằng cách định vị tuyệt đối */
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 2; /* Đảm bảo nhãn luôn nằm trên ảnh */
+
+        /* Bỏ margin cũ và thêm hiệu ứng để nổi bật hơn */
+        margin-bottom: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+}

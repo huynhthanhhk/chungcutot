@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Căn hộ cho thuê - Chung Cư Tốt</title>
+    
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/listing.css"> 
+    <link rel="stylesheet" href="assets/css/menu.css">
+</head>
+<body>
+
+   
+
+    <div id="menu-overlay" class="menu-overlay"></div>
+    <header class="header-wrapper">
+        <div class="header-footer-limiter">
+            <div class="site-header">
+                <button class="hamburger-button" id="hamburger-button" aria-label="Mở menu">
+                    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </button>
+                <a href="index.html" class="logo-link"><img src="assets/images/logo.png" alt="Logo Chung Cư Tốt" class="logo"></a>
+                <nav class="main-nav" id="main-nav">
+                    <ul id="main-menu-list"></ul>
+                </nav>
+                <div class="header-actions">
+                    <a href="favorites.html" class="header-favorite-btn" aria-label="Danh sách yêu thích">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                        <span class="favorite-counter">0</span>
+                    </a>
+                    <a href="#" class="search-button-new" aria-label="Tìm kiếm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div id="cct-mega-menu">
+    <div class="menu-panel-overlay"></div>
+    <div class="menu-panel-columns">
+        <div class="menu-panel-col col-1">
+            <h4>Loại hình</h4>
+            <ul id="mega-menu-col-1-list"></ul>
+        </div>
+        <div class="menu-panel-col col-2">
+            <h4>Khu vực</h4>
+            <ul id="mega-menu-col-2-list"></ul>
+        </div>
+        <div class="menu-panel-col col-3">
+            <h4>Dự án nổi bật</h4>
+            <div id="mega-menu-col-3-content"></div>
+        </div>
+    </div>
+    </div>
+    <div class="main-container">
+        <div class="content-limiter">
+            <div class="listing-page-wrapper">
+
+                <aside class="listing-filter-sidebar" id="listing-filter-sidebar">
+                    <div class="filter-sidebar-header">
+                        <h3>Bộ lọc</h3>
+                        <button id="close-filter-btn" class="filter-close-btn">×</button>
+                    </div>
+
+                    <div class="filter-block-header">
+                        <h3 class="filter-main-title">Bộ lọc</h3>
+                        <button class="filter-reset-btn">Đặt lại</button>
+                    </div>
+
+                    <div class="filter-groups-container">
+                        <div class="filter-tag-area">
+                            <strong>Đang lọc theo:</strong>
+                        </div>
+
+                        <div class="filter-group filter-accordion active" data-filter-name="price">
+                            <h4 class="filter-title accordion-trigger">Mức giá</h4>
+                            <div class="accordion-content" style="max-height: initial;">
+                                <div class="price-input-tabs">
+                                    <button class="price-tab-btn active" data-target="price-quick-select">Gợi ý</button>
+                                    <button class="price-tab-btn" data-target="price-custom-range">Tuỳ chọn</button>
+                                </div>
+                                <div id="price-quick-select" class="price-tab-content active">
+                                    <div class="btn-group">
+                                        <button class="active">Tất cả</button>
+                                        <button>Dưới 10 triệu</button>
+                                        <button>10 - 15 triệu</button>
+                                        <button>15 - 25 triệu</button>
+                                        <button>Trên 25 triệu</button>
+                                    </div>
+                                </div>
+                                <div id="price-custom-range" class="price-tab-content">
+                                    <div class="custom-range-input">
+                                        <input type="text" placeholder="Từ" class="filter-input-min"><span class="unit-label">triệu</span>
+                                    </div>
+                                    <div class="custom-range-input">
+                                        <input type="text" placeholder="Đến" class="filter-input-max"><span class="unit-label">triệu</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group filter-accordion" data-filter-name="area">
+                            <h4 class="filter-title accordion-trigger">Diện tích</h4>
+                            <div class="accordion-content">
+                                <div class="price-input-tabs">
+                                    <button class="price-tab-btn active" data-target="area-quick-select">Gợi ý</button>
+                                    <button class="price-tab-btn" data-target="area-custom-range">Tuỳ chọn</button>
+                                </div>
+                                <div id="area-quick-select" class="price-tab-content active">
+                                    <div class="btn-group">
+                                        <button class="active">Tất cả</button>
+                                        <button>Dưới 50m²</button>
+                                        <button>50 - 80m²</button>
+                                        <button>80 - 120m²</button>
+                                        <button>Trên 120m²</button>
+                                    </div>
+                                </div>
+                                <div id="area-custom-range" class="price-tab-content">
+                                    <div class="custom-range-input"><input type="text" placeholder="Từ" class="filter-input-min"><span class="unit-label">m²</span></div>
+                                    <div class="custom-range-input"><input type="text" placeholder="Đến" class="filter-input-max"><span class="unit-label">m²</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="filter-group filter-accordion" data-filter-name="bedrooms">
+                            <h4 class="filter-title accordion-trigger">Số phòng ngủ</h4>
+                            <div class="accordion-content">
+                                <div class="btn-group three-cols">
+                                    <button class="active">Tất cả</button><button>1</button><button>2</button>
+                                    <button>3</button><button>4</button><button>5+</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group filter-accordion" data-filter-name="wc">
+                            <h4 class="filter-title accordion-trigger">Số toilet</h4>
+                            <div class="accordion-content">
+                                <div class="btn-group three-cols">
+                                    <button class="active">Tất cả</button><button>1</button><button>2</button>
+                                    <button>3</button><button>4+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="filter-group filter-accordion" data-filter-name="leaseTerm">
+                            <h4 class="filter-title accordion-trigger">Thời hạn thuê</h4>
+                            <div class="accordion-content">
+                                <div class="checkbox-group">
+                                    <div><input type="checkbox" id="lt-long" data-value="Dài hạn"><label for="lt-long">Dài hạn</label></div>
+                                    <div><input type="checkbox" id="lt-short" data-value="Ngắn hạn"><label for="lt-short">Ngắn hạn</label></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-group filter-accordion" data-filter-name="furniture">
+                            <h4 class="filter-title accordion-trigger">Nội thất</h4>
+                            <div class="accordion-content">
+                                <div class="checkbox-group">
+                                    <div><input type="checkbox" id="nt-cb" data-value="Nội thất cơ bản"><label for="nt-cb">Nội thất cơ bản</label></div>
+                                    <div><input type="checkbox" id="nt-full" data-value="Đầy đủ nội thất"><label for="nt-full">Đầy đủ nội thất</label></div>
+                                    <div><input type="checkbox" id="nt-khong" data-value="Không nội thất"><label for="nt-khong">Không nội thất</label></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group filter-accordion" data-filter-name="direction">
+                            <h4 class="filter-title accordion-trigger">Hướng cửa chính</h4>
+                            <div class="accordion-content">
+                                <div class="checkbox-group two-columns">
+                                    <div><input type="checkbox" id="d-dong" data-value="Đông"><label for="d-dong">Đông</label></div>
+                                    <div><input type="checkbox" id="d-tay" data-value="Tây"><label for="d-tay">Tây</label></div>
+                                    <div><input type="checkbox" id="d-nam" data-value="Nam"><label for="d-nam">Nam</label></div>
+                                    <div><input type="checkbox" id="d-bac" data-value="Bắc"><label for="d-bac">Bắc</label></div>
+                                    <div><input type="checkbox" id="d-db" data-value="Đông-Bắc"><label for="d-db">Đông-Bắc</label></div>
+                                    <div><input type="checkbox" id="d-tb" data-value="Tây-Bắc"><label for="d-tb">Tây-Bắc</label></div>
+                                    <div><input type="checkbox" id="d-dn" data-value="Đông-Nam"><label for="d-dn">Đông-Nam</label></div>
+                                    <div><input type="checkbox" id="d-tn" data-value="Tây-Nam"><label for="d-tn">Tây-Nam</label></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="filter-apply-btn-wrapper">
+                        <button class="btn-primary filter-apply-btn">Xem kết quả</button>
+                    </div>
+                </aside>
+                
+                <main class="listing-results-column">
+                    <div class="breadcrumb">
+              
+                    </div>
+                      <div class="category-header">
+                        <h1>Cho thuê Căn hộ TP. Hồ Chí Minh</h1>
+                        <p>Tìm kiếm căn hộ cho thuê phù hợp với nhu cầu và ngân sách của bạn.</p>
+                    </div>
+
+                    <section class="search-section">
+                        <form class="search-form">
+                            <input type="search" placeholder="Tìm kiếm theo địa điểm, tên dự án...">
+                            <div class="search-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                </svg>
+                            </div>
+                        </form>
+                    </section>
+
+                    <div class="results-summary">
+                        <h2 class="results-count">Tìm thấy 0 bất động sản</h2>
+                        <div class="sort-by-container">
+                            <label for="sort-select">Sắp xếp:</label>
+                            <select id="sort-select" class="sort-dropdown">
+                                <option value="newest">Mới nhất</option>
+                                <option value="oldest">Cũ nhất</option>
+                                <option value="price-asc">Giá thấp đến cao</option>
+                                <option value="price-desc">Giá cao đến thấp</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="product-listing-grid">
+                    </div>
+                    <nav class="pagination">
+                    </nav>
+                </main>
+
+            </div>
+            
+            <section class="explore-section">
+                <div class="explore-by-type">
+                    <h2 class="explore-title">Khám phá theo loại hình</h2>
+                    <p class="explore-description">Tìm kiếm các loại hình bất động sản phổ biến khác được nhiều người quan tâm.</p>
+                    <div class="type-tags-container">
+                        <a href="#" class="type-tag">Phòng trọ</a>
+                        <a href="#" class="type-tag">Văn phòng</a>
+                        <a href="#" class="type-tag">Mặt bằng kinh doanh</a>
+                        <a href="#" class="type-tag">Nhà nguyên căn</a>
+                        <a href="#" class="type-tag">Căn hộ dịch vụ</a>
+                        <a href="#" class="type-tag">Officetel</a>
+                    </div>
+                </div>
+                <div class="explore-cta-card">
+                <a href="listing-thue.html" class="cta-card-link">
+                    <div class="cta-card-image cta-image-overlay">
+                        <img src="assets/images/chungcutphcm.jpg" alt="Chung cư cho thuê TP. Hồ Chí Minh">
+                        <div class="cta-overlay-content">
+                            <h3 class="cta-card-title">Chung Cư Cho Thuê</h3>
+                            <p class="cta-card-description">Hàng ngàn lựa chọn căn hộ với mức giá tốt nhất</p>
+                            <span class="cta-card-button">
+                                Xem Danh Sách
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+                            </span>
+                        </div>
+                        <div class="cta-overlay"></div>
+                    </div>
+                    </a>
+                </div>
+            </section>
+            
+            <section class="price-history-section">
+                <div class="price-history-card">
+                    <h2 class="section-title" id="price-history-title">Lịch sử giá cho thuê căn hộ TP. Hồ Chí Minh</h2>
+                    <div class="price-history-content">
+                        <div class="price-summary-container">
+                            <div class="year-tabs" id="price-year-tabs"></div>
+                            <div class="summary-table" id="summary-table-container"></div>
+                        </div>
+                        <div class="price-chart-container">
+                            <div class="chart-header">
+                                <h3 id="chart-dynamic-title" class="chart-title">Biểu đồ biến động giá thuê</h3>
+                                <div class="chart-filters">
+                                    <div class="chart-filter-group">
+                                        <label>Năm:</label>
+                                        <div class="year-filter-buttons" id="chart-year-filters"></div>
+                                    </div>
+                                    <div class="chart-filter-group">
+                                        <label for="chart-bedroom-filter">Phòng ngủ:</label>
+                                        <select id="chart-bedroom-filter" class="chart-area-dropdown"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <div class="chart-container">
+                                    <canvas id="price-history-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="seo-faq-section">
+                <div class="faq-container">
+                    <h2 class="section-title">Câu hỏi thường gặp</h2>
+                    <div class="accordion-group" id="faq-accordion">
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Khi thuê chung cư cần lưu ý những giấy tờ gì?</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p>Quan trọng nhất là Hợp đồng thuê nhà. Bạn cần đọc kỹ các điều khoản về giá thuê, tiền cọc, thời hạn hợp đồng, các chi phí khác (điện, nước, quản lý, internet), và quy định về chấm dứt hợp đồng. Hãy đảm bảo người cho thuê là chủ sở hữu hợp pháp hoặc được ủy quyền.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Tiền cọc thuê nhà thường là bao nhiêu và khi nào được hoàn lại?</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p>Thông thường, tiền cọc sẽ từ 1 đến 2 tháng tiền thuê nhà. Tiền cọc sẽ được hoàn lại đầy đủ khi kết thúc hợp đồng, sau khi đã trừ các chi phí thiệt hại (nếu có) do người thuê gây ra. Điều này cần được quy định rõ trong hợp đồng.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Giá thuê nhà đã bao gồm phí quản lý và các chi phí khác chưa?</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p>Phần lớn giá thuê được đăng tải chưa bao gồm phí quản lý, phí gửi xe, tiền điện, nước, internet. Bạn cần hỏi rõ chủ nhà về các khoản phí này để tính toán tổng chi phí hàng tháng một cách chính xác.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Nên chọn thuê chung cư ở tầng cao hay tầng thấp?</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p>Tầng cao thường có view đẹp, thoáng đãng, và ít ồn ào. Tầng thấp tiện lợi cho việc đi lại, đặc biệt nếu bạn sợ độ cao hoặc gia đình có người lớn tuổi, trẻ nhỏ. Việc lựa chọn phụ thuộc vào sở thích và nhu cầu cá nhân của bạn.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="seo-content-container">
+                <div class="seo-text-content">
+                    <h2 class="section-title">Thị trường cho thuê căn hộ</h2>
+                    <div class="seo-image-wrapper">
+                        <img src="assets/images/seo.jpg" alt="Thị trường cho thuê căn hộ">
+                    </div>
+                    <h3>Xu hướng và Tiềm năng tại TP. Hồ Chí Minh</h3>
+                    <div class="text-content-wrapper" id="seo-text-wrapper">
+                        <p>Thị trường cho thuê căn hộ tại TP. Hồ Chí Minh luôn sôi động, đáp ứng nhu cầu đa dạng của nhiều đối tượng khách hàng từ sinh viên, nhân viên văn phòng, chuyên gia nước ngoài cho đến các gia đình trẻ. Sự phát triển của hạ tầng và sự hình thành các khu đô thị mới đã tạo ra nguồn cung dồi dào với nhiều phân khúc giá khác nhau.</p>
+                        <p>Các dự án chung cư hiện nay không chỉ chú trọng đến chất lượng căn hộ mà còn tích hợp nhiều tiện ích nội khu như hồ bơi, phòng gym, siêu thị mini, khu vui chơi, đảm bảo một cuộc sống tiện nghi cho cư dân. Những khu vực có kết nối giao thông thuận tiện và gần các trung tâm thương mại, văn phòng luôn có tỷ lệ lấp đầy cao.</p>
+                        <p>Đối với người đi thuê, việc lựa chọn một căn hộ phù hợp không chỉ dựa vào giá cả mà còn cần xem xét các yếu tố như an ninh, môi trường sống, chất lượng quản lý và cộng đồng dân cư. Một hợp đồng thuê rõ ràng và minh bạch là yếu tố quan trọng để đảm bảo quyền lợi trong suốt quá trình sinh sống.</p>
+                        <div class="text-fade-overlay"></div>
+                    </div>
+                    <button class="read-more-btn" id="seo-toggle-button">Xem thêm</button>
+                </div>
+            </div>
+            </section>
+        </div>
+    </div>
+    
+    <button id="floating-filter-trigger" class="floating-filter-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/></svg>
+        <span>Lọc</span>
+    </button>
+    <div id="filter-overlay-mobile" class="filter-overlay"></div>
+
+    <footer class="footer-wrapper">
+        <div class="header-footer-limiter">
+            <div class="site-footer">
+                <div class="footer-widget footer-col-1">
+                     <a href="index.html">
+                        <img src="assets/images/logo-footer.png" alt="Logo Footer" class="footer-logo">
+                    </a>
+                    <p><b>Chung cư tốt / Tên Công ty</b></p>
+                    <p>Số điện thoại: <a href="tel:0123456789">0123 456 789</a></p>
+                    <p>Mail: <a href="mailto:info@chungcutot.vn">info@chungcutot.vn</a></p>
+                    
+                </div>
+
+                <div class="footer-widget">
+                    <h4 class="widget-title accordion-toggle">VỀ CHÚNG TÔI</h4>
+                    <ul class="widget-links">
+                        <li><a href="gioi-thieu.html">Giới thiệu</a></li>
+                        <li><a href="doi-ngu.html">Đội ngũ</a></li>
+                        <li><a href="lien-he.html">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-widget">
+                    <h4 class="widget-title accordion-toggle">ĐIỀU KHOẢN</h4>
+                    <ul class="widget-links">
+                        <li><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a></li>
+                        <li><a href="dieu-khoan-su-dung.html">Điều khoản sử dụng</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-widget footer-col-4">
+                    <h4 class="widget-title">KẾT NỐI VỚI CHÚNG TÔI</h4>
+
+                    <div class="footer-socials">
+                        <a href="#" class="social-icon" aria-label="Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m13 2h-2.5a3.5 3.5 0 0 0-3.5 3.5V11h-2v3h2v7h3v-7h3v-3h-3V8.5A.5.5 0 0 1 15 8h3V5z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="YouTube">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24">
+                                <path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33.22 2.65.28 1.3.07 2.49.1 3.59.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="LinkedIn">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="white">
+                                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4s1.39.63 1.39 1.4v4.93h2.8zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69s-1.68.76-1.68 1.69c0 .92.75 1.68 1.68 1.68zm-1.39 1.3h2.79v8.37H5.5V9.86z"/>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <a href="#" target="_blank" rel="noopener noreferrer" style="margin-top: 20px; display: inline-block;">
+                        <img src="assets/images/bo-cong-thuong.png" alt="Logo Bộ Công Thương" class="bct-logo">
+                    </a>
+                </div>
+            </div>
+             <div class="copyright-text">
+                <p>Copyright 2025 - Bản quyền của Chung cư Tốt</p>
+            </div>
+        </div>
+    </footer>
+    <div id="favorites-drawer-container">
+        <div class="favorites-drawer-overlay"></div>
+        <div class="favorites-drawer">
+            <div class="drawer-header">
+                <h3>Danh sách yêu thích</h3>
+                <button class="drawer-close-btn" title="Đóng">×</button>
+            </div>
+            <div class="drawer-content">
+                </div>
+          
+        </div>
+    </div>
+    
+    <script src="assets/js/template.js"></script>
+    <script type="module" src="assets/js/data-menu.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/main.js"></script>
+
+
+    <script src="assets/js/product-details-data-thue.js"></script> 
+    <script src="assets/js/price-data-thue.js"></script> 
+    
+    <script src="assets/js/listing.js"></script>
+    <script type="module">
+    // =====================================================================
+    // == SCRIPT TỔNG HỢP CUỐI CÙNG (DESKTOP & MOBILE & STICKY HEADER) ==
+    // =====================================================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- PHẦN 1: DỮ LIỆU & BIẾN TOÀN CỤC ---
+        const initialMenuData = {
+           "Dự án": [ { "Loại hình": "Chung cư", "Khu vực": ["TP. Hồ Chí Minh", "Bình Dương", "Đồng Nai"] }, { "Loại hình": "Khu đô thị", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Long An"] } ],
+           "Mua bán": [ { "Loại hình": "Căn hộ", "Khu vực": ["TP. Hồ Chí Minh", "Lâm Đồng", "Bà Rịa - Vũng Tàu"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng"] } ],
+           "Cho thuê": [ { "Loại hình": "Căn hộ", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Vĩnh Long"] } ],
+           "Wiki": [ { "Danh mục": "Pháp lý", "slug": "phap-ly" }, { "Danh mục": "Kinh nghiệm", "slug": "kinh-nghiem" }, { "Danh mục": "Phong thuỷ", "slug": "phong-thuy" } ],
+           "Tin tức": [ { "Danh mục": "Dự án", "slug": "du-an" }, { "Danh mục": "Thị trường", "slug": "thi-truong" } ],
+           "Doanh nghiệp": [ { "Danh mục": "Chủ đầu tư", "slug": "chu-dau-tu" }, { "Danh mục": "Nhà thầu thi công", "slug": "nha-thau-thi-cong" } ]
+        };
+        
+        const featuredProjectsData = [
+            {
+                name: 'The Global City',
+                description: 'Khu đô thị phức hợp chuẩn quốc tế tại TP. Thủ Đức.',
+                image: 'assets/images/project-gallery-1.jpg',
+                link: '#'
+            }
+        ];
+
+        const header = document.querySelector('.header-wrapper');
+        const mainMenuContainer = document.getElementById('main-nav');
+        const mainMenuUl = document.getElementById('main-menu-list');
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const megaMenuContainer = document.getElementById('cct-mega-menu');
+        
+        let activeMenuItem = null;
+        let menuTimeout;
+
+        // --- PHẦN 2: CÁC HÀM TIỆN ÍCH ---
+        const toSlug = (str) => {
+            if (!str) return '';
+            let s = str.toLowerCase();
+            if (s === 'hồ chí minh') return 'tp-ho-chi-minh';
+            if (s === 'hà nội') return 'tp-ha-noi';
+            if (s === 'đà nẵng') return 'tp-da-nang';
+            if (s === 'cần thơ') return 'tp-can-tho';
+            if (s === 'hải phòng') return 'tp-hai-phong';
+            s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            s = s.replace(/[đĐ]/g, 'd');
+            s = s.replace(/([^0-9a-z-\s])/g, '');
+            s = s.replace(/(\s+)/g, '-');
+            s = s.replace(/-+/g, '-');
+            s = s.replace(/^-+|-+$/g, '');
+            return s;
+        };
+        
+        function getLink(menuKey, catKey, subItem) {
+            let baseUrl = '';
+            let params = [];
+            const lowerMenuKey = menuKey.toLowerCase();
+            const categorySlug = toSlug(catKey);
+            if (lowerMenuKey.includes('dự án'))
+            baseUrl = 'list-du-an.html'; // Đổi thành URL cho trang dự án
+            else if (lowerMenuKey.includes('bán')) baseUrl = 'listing-ban.html';
+            else if (lowerMenuKey.includes('thuê')) baseUrl = 'listing-thue.html';
+            else if (lowerMenuKey.includes('wiki')) baseUrl = 'wiki.html';
+            else if (lowerMenuKey.includes('tin tức')) baseUrl = 'news.html';
+            else if (lowerMenuKey.includes('doanh nghiệp')) baseUrl = 'business.html';
+            else baseUrl = 'listing.html';
+            if (catKey) {
+                let paramKey = ['Dự án', 'Mua bán', 'Cho thuê'].includes(menuKey) ? 'loaihinh' : 'danh-muc';
+                params.push(`${paramKey}=${categorySlug}`);
+            }
+            if (subItem) {
+                params.push(`thanhpho=${toSlug(subItem)}`);
+            }
+            return `${baseUrl}${params.length > 0 ? '?' : ''}${params.join('&')}`;
+        }
+
+        function debounce(func, delay = 250) {
+            let timeout;
+            return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); };
+        }
+
+        // --- PHẦN 3: LOGIC MENU ---
+
+        function initMenu() {
+            if (window.innerWidth > 1024) {
+                handleDesktopMenu();
+            } else {
+                handleMobileMenu();
+            }
+        }
+        
+        function handleDesktopMenu() {
+            const nav = document.getElementById('main-nav');
+            const mainMenu = document.getElementById('main-menu-list');
+            if (!nav || !mainMenu || !megaMenuContainer) return;
+            mainMenu.innerHTML = ''; 
+            for (const menuKey in initialMenuData) {
+                const li = document.createElement('li');
+                li.className = 'has-dropdown';
+                const a = document.createElement('a');
+                a.href = '#'; 
+                a.textContent = menuKey;
+                li.appendChild(a);
+                mainMenu.appendChild(li);
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (activeMenuItem === e.target.parentElement) {
+                        closeDesktopPanel();
+                    } else {
+                        if (activeMenuItem) activeMenuItem.classList.remove('active');
+                        activeMenuItem = e.target.parentElement;
+                        activeMenuItem.classList.add('active');
+                        populateDesktopPanel(menuKey);
+                        setTimeout(() => megaMenuContainer.classList.add('is-open'), 10);
+                    }
+                });
+            }
+            megaMenuContainer.querySelector('.menu-panel-overlay')?.addEventListener('click', closeDesktopPanel);
+            nav.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 300); });
+            nav.addEventListener('mouseenter', () => clearTimeout(menuTimeout));
+            megaMenuContainer.addEventListener('mouseenter', () => clearTimeout(menuTimeout));
+            megaMenuContainer.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 300); });
+        }
+
+        function populateDesktopPanel(menuKey) {
+            const menuItems = initialMenuData[menuKey];
+            const col1List = document.getElementById('mega-menu-col-1-list');
+            const col2List = document.getElementById('mega-menu-col-2-list');
+            const col3Content = document.getElementById('mega-menu-col-3-content');
+            if (!col1List || !col2List || !col3Content) return;
+            col1List.innerHTML = '';
+            col2List.innerHTML = '';
+            col3Content.innerHTML = '';
+            const firstItem = menuItems[0];
+            const isMega = firstItem.hasOwnProperty('Khu vực');
+            megaMenuContainer.querySelector('.menu-panel-columns').classList.toggle('is-single-col-data', !isMega);
+            menuItems.forEach((item, index) => {
+                const categoryName = item["Loại hình"] || item["Danh mục"];
+                const li = document.createElement('li');
+                li.dataset.category = categoryName;
+                if (isMega) {
+                    li.textContent = categoryName;
+                } else {
+                    const link = document.createElement('a');
+                    link.href = getLink(menuKey, categoryName);
+                    link.textContent = categoryName;
+                    link.className = 'direct-link';
+                    li.appendChild(link);
+                }
+                if (index === 0) li.classList.add('active');
+                col1List.appendChild(li);
+            });
+            if (isMega) {
+                updateDesktopSubMenu(menuItems[0]["Loại hình"], menuKey);
+                col1List.addEventListener('mouseover', e => {
+                    const targetLi = e.target.closest('li');
+                    if (targetLi && targetLi.dataset.category) {
+                        col1List.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+                        targetLi.classList.add('active');
+                        updateDesktopSubMenu(targetLi.dataset.category, menuKey);
+                    }
+                });
+            }
+            featuredProjectsData.forEach(project => {
+                const card = document.createElement('a');
+                card.href = project.link;
+                card.className = 'featured-project-card';
+                card.innerHTML = `<img src="${project.image}" alt="${project.name}"><div class="featured-project-info"><h5>${project.name}</h5><p>${project.description}</p></div>`;
+                col3Content.appendChild(card);
+            });
+        }
+        
+        function updateDesktopSubMenu(categoryKey, menuKey) {
+            const subMenuContainer = document.getElementById('mega-menu-col-2-list');
+            const menuItems = initialMenuData[menuKey];
+            const targetItem = menuItems.find(item => item["Loại hình"] === categoryKey);
+            const subItems = targetItem ? targetItem["Khu vực"] : [];
+            subMenuContainer.innerHTML = subItems.map(item => `<li><a href="${getLink(menuKey, categoryKey, item)}">${item}</a></li>`).join('');
+        }
+
+        function closeDesktopPanel() {
+            if (megaMenuContainer) megaMenuContainer.classList.remove('is-open');
+            if (activeMenuItem) {
+                activeMenuItem.classList.remove('active');
+                activeMenuItem = null;
+            }
+        }
+
+        function handleMobileMenu() {
+          
+            const nav = document.getElementById('main-nav');
+            const overlay = document.getElementById('menu-overlay');
+            const hamburger = document.getElementById('hamburger-button');
+            if (!nav || !overlay || !hamburger) return;
+            nav.innerHTML = '<div class="menu-slider"></div>';
+            const slider = nav.querySelector('.menu-slider');
+            const createPanel = (level, title, content) => {
+                const panel = document.createElement('div');
+                panel.className = 'menu-panel';
+                panel.dataset.level = level;
+                let headerHTML = `<h4 class="panel-title">${title}</h4>`;
+                if (level > 0) {
+                    headerHTML = `<a href="#" class="panel-back-button"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg></a>` + headerHTML;
+                } else {
+                    headerHTML += `<button class="mobile-menu-close">&times;</button>`;
+                }
+                panel.innerHTML = `<div class="panel-header">${headerHTML}</div><ul class="panel-list">${content}</ul>`;
+                return panel;
+            };
+            const openMenu = () => {
+                if (!slider.querySelector('[data-level="0"]')) {
+                    const level1Content = Object.keys(initialMenuData).map(key => `<li class="has-submenu" data-level="0" data-key="${key}"><a href="#">${key}</a></li>`).join('');
+                    const panel1 = createPanel(0, 'Menu', level1Content);
+                    slider.appendChild(panel1);
+                    panel1.querySelector('.mobile-menu-close').addEventListener('click', closeMenu);
+                }
+                nav.classList.add('is-open');
+                overlay.classList.add('is-visible');
+                document.body.style.overflow = 'hidden';
+            };
+            const closeMenu = () => {
+                nav.classList.remove('is-open');
+                overlay.classList.remove('is-visible');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    slider.style.transform = 'translateX(0%)';
+                    slider.querySelectorAll('.menu-panel').forEach(p => { if (p.dataset.level > 0) p.remove(); });
+                }, 350);
+            };
+            hamburger.onclick = openMenu;
+            overlay.onclick = closeMenu;
+            slider.addEventListener('click', (e) => {
+                const linkTarget = e.target.closest('a');
+                if (linkTarget && linkTarget.getAttribute('href') !== '#') {
+                    closeMenu();
+                    return;
+                }
+                e.preventDefault();
+                const target = e.target;
+                const currentPanel = target.closest('.menu-panel');
+                if (!currentPanel) return;
+                if (target.closest('.panel-back-button')) {
+                    const currentLevel = parseInt(currentPanel.dataset.level, 10);
+                    slider.style.transform = `translateX(-${(currentLevel - 1) * 100}%)`;
+                    setTimeout(() => currentPanel.remove(), 350);
+                    return;
+                }
+                const targetLi = target.closest('li[data-key]');
+                const backButton = e.target.closest('.panel-back-button');
+                if (backButton) {
+                    e.preventDefault(); // Ngăn hành vi mặc định của thẻ <a>
+                    const currentPanel = backButton.closest('.menu-panel');
+                    if (currentPanel) {
+                        const currentLevel = parseInt(currentPanel.dataset.level, 10);
+                        // Lùi slider về panel trước đó
+                        slider.style.transform = `translateX(-${(currentLevel - 1) * 100}%)`;
+                        // Xóa panel hiện tại sau khi hiệu ứng kết thúc
+                        setTimeout(() => currentPanel.remove(), 350);
+                    }
+                    return; // Dừng xử lý tại đây
+                }
+                if (targetLi) {
+            // Ngăn chuyển trang nếu là link '#'
+            if(e.target.closest('a')?.getAttribute('href') === '#') {
+                 e.preventDefault();
+            }
+
+            const level = parseInt(targetLi.dataset.level, 10);
+            const menuKey = targetLi.dataset.key;
+            const category = targetLi.dataset.category;
+            let nextLevelContent = '', nextLevelTitle = '';
+
+            // Từ Cấp 1 -> Cấp 2
+            if (level === 0) {
+                nextLevelTitle = menuKey;
+                const items = initialMenuData[menuKey];
+                nextLevelContent = items.map(item => {
+                    const name = item["Loại hình"] || item["Danh mục"];
+                    const hasSubmenu = item.hasOwnProperty('Khu vực');
+                    const link = hasSubmenu ? '#' : getLink(menuKey, name, null);
+                    return `<li class="${hasSubmenu ? 'has-submenu' : ''}" data-level="1" data-key="${menuKey}" data-category="${name}"><a href="${link}">${name}</a></li>`;
+                }).join('');
+            }
+            // Từ Cấp 2 -> Cấp 3
+            else if (level === 1) {
+                const parentItem = initialMenuData[menuKey].find(item => (item["Loại hình"] || item["Danh mục"]) === category);
+                if (!parentItem || !parentItem["Khu vực"]) return;
+                
+                nextLevelTitle = category;
+                const khuVucItems = parentItem["Khu vực"];
+                nextLevelContent = khuVucItems.map(kv => `<li><a href="${getLink(menuKey, category, kv)}">${kv}</a></li>`).join('');
+            }
+
+            // Tạo và trượt đến panel tiếp theo
+            if (nextLevelContent) {
+                const newPanel = createPanel(level + 1, nextLevelTitle, nextLevelContent);
+                slider.appendChild(newPanel);
+                slider.style.transform = `translateX(-${(level+1) * 100}%)`;
+            }
+        }
+            });
+        }
+        
+        // --- PHẦN 4: CÁC SỰ KIỆN TOÀN CỤC ---
+        
+        // Sự kiện cuộn trang (cho Sticky Header và Đóng Menu)
+        if (header) {
+            let lastScrollTop = 0;
+            const sidebar = document.querySelector('.listing-filter-sidebar, .contact-sidebar, .sidebar-column'); 
+            window.addEventListener('scroll', () => {
+                // Sticky header
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                    header.classList.add('header--hidden');
+                    if (sidebar) sidebar.classList.add('sidebar--header-hidden');
+                } else {
+                    header.classList.remove('header--hidden');
+                    if (sidebar) sidebar.classList.remove('sidebar--header-hidden');
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+                // [THÊM MỚI] Tự động đóng menu desktop khi cuộn
+                if (megaMenuContainer && megaMenuContainer.classList.contains('is-open')) {
+                    closeDesktopPanel();
+                }
+            });
+        }
+
+        // Sự kiện click bên ngoài để đóng Desktop Menu
+        document.addEventListener('click', (event) => {
+            if (megaMenuContainer && mainMenuContainer && megaMenuContainer.classList.contains('is-open')) {
+                // Nếu click ra ngoài cả thanh nav và cả panel menu
+                if (!mainMenuContainer.contains(event.target) && !megaMenuContainer.contains(event.target)) {
+                    closeDesktopPanel();
+                }
+            }
+        });
+
+        // Sự kiện thay đổi kích thước cửa sổ
+        window.addEventListener('resize', debounce(initMenu, 250));
+        
+
+        // --- PHẦN 5: KHỞI CHẠY LẦN ĐẦU ---
+        initMenu();
+    });
+    </script>
+</body>
+</html>
