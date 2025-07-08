@@ -347,31 +347,120 @@ function populatePageWithProductData(product, isRental) {
     }
     
     function initImageGallery(product) {
-        const viewAllImagesBtn = document.querySelector('.view-all-btn'), imageGalleryPopup = document.getElementById('image-gallery-popup');
-        if (!viewAllImagesBtn || !imageGalleryPopup || !product || !Array.isArray(product.images) || product.images.length === 0) { if(viewAllImagesBtn) viewAllImagesBtn.style.display = 'none'; return; }
+        const viewAllImagesBtn = document.querySelector('.view-all-btn');
+        const imageGalleryPopup = document.getElementById('image-gallery-popup');
+        if (!viewAllImagesBtn || !imageGalleryPopup || !product || !Array.isArray(product.images) || product.images.length === 0) {
+            if(viewAllImagesBtn) viewAllImagesBtn.style.display = 'none';
+            return;
+        }
+
         const numberOfImages = product.images.length;
-        const buttonTextSpan = viewAllImagesBtn.querySelector('span'); if (buttonTextSpan) { buttonTextSpan.textContent = `${numberOfImages} Ảnh`; }
-        const closeBtn = imageGalleryPopup.querySelector('.gallery-close-btn'), mainImage = document.getElementById('gallery-main-image'), imageCaption = document.getElementById('gallery-caption'), thumbnailList = imageGalleryPopup.querySelector('.gallery-thumbnail-strip'), prevBtn = imageGalleryPopup.querySelector('.gallery-nav-btn.prev'), nextBtn = imageGalleryPopup.querySelector('.gallery-nav-btn.next');
-        let currentImageIndex = 0, scale = 1, translateX = 0, translateY = 0, isDragging = false, startX = 0, startY = 0, isTicking = false;
-        const updateImageTransform = () => { mainImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`; }, resetTransform = () => { scale = 1; translateX = 0; translateY = 0; updateImageTransform(); mainImage.classList.remove('is-dragging'); }, animationUpdate = () => { updateImageTransform(); isTicking = false; };
-        const showSlide = (index) => { resetTransform(); currentImageIndex = (index + numberOfImages) % numberOfImages; mainImage.src = `assets/images/${product.images[currentImageIndex]}`; imageCaption.textContent = `${product.title} - ảnh ${currentImageIndex + 1}`; thumbnailList.querySelectorAll('img').forEach((thumb, idx) => { thumb.classList.toggle('active', idx === currentImageIndex); if (idx === currentImageIndex) { thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } }); };
-        const openPopup = () => { thumbnailList.innerHTML = product.images.map((imgSrc, index) => `<img src="assets/images/${imgSrc}" data-index="${index}" alt="Thumbnail ${index+1}">`).join(''); showSlide(0); imageGalleryPopup.style.display = 'flex'; document.body.style.overflow = 'hidden'; }, closePopup = () => { imageGalleryPopup.style.display = 'none'; document.body.style.overflow = 'auto'; };
+        const buttonTextSpan = viewAllImagesBtn.querySelector('span');
+        if (buttonTextSpan) buttonTextSpan.textContent = `${numberOfImages} Ảnh`;
+
+        const closeBtn = imageGalleryPopup.querySelector('.gallery-close-btn');
+        const mainImage = document.getElementById('gallery-main-image');
+        const imageCaption = document.getElementById('gallery-caption');
+        const thumbnailList = imageGalleryPopup.querySelector('.gallery-thumbnail-strip');
+        const prevBtn = imageGalleryPopup.querySelector('.gallery-nav-btn.prev');
+        const nextBtn = imageGalleryPopup.querySelector('.gallery-nav-btn.next');
+
+        let currentImageIndex = 0;
+        let scale = 1, lastScale = 1, initialPinchDistance = 0;
+        let translateX = 0, translateY = 0;
+        let isPanning = false, isPinching = false;
+        let startX = 0, startY = 0, lastX = 0;
+        const swipeThreshold = 50;
+
+        const updateImageTransform = () => { mainImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`; };
+        
+        const resetTransform = () => {
+            scale = 1; lastScale = 1;
+            translateX = 0; translateY = 0;
+            updateImageTransform();
+        };
+
+        const showSlide = (index) => {
+            resetTransform();
+            currentImageIndex = (index + numberOfImages) % numberOfImages;
+            mainImage.src = `assets/images/${product.images[currentImageIndex]}`;
+            imageCaption.textContent = `${product.title} - ảnh ${currentImageIndex + 1}`;
+            thumbnailList.querySelectorAll('img').forEach((thumb, idx) => {
+                thumb.classList.toggle('active', idx === currentImageIndex);
+                if (idx === currentImageIndex) {
+                    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            });
+        };
+
+        const openPopup = () => {
+            thumbnailList.innerHTML = product.images.map((imgSrc, index) => `<img src="assets/images/${imgSrc}" data-index="${index}" alt="Thumbnail ${index+1}">`).join('');
+            showSlide(0);
+            imageGalleryPopup.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closePopup = () => {
+            imageGalleryPopup.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        };
+        
+        const getPinchDistance = (e) => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+
+        mainImage.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) { // Bắt đầu zoom
+                isPinching = true;
+                isPanning = false;
+                initialPinchDistance = getPinchDistance(e);
+                lastScale = scale;
+            } else if (e.touches.length === 1) { // Bắt đầu vuốt/kéo
+                isPanning = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+                lastX = e.touches[0].clientX;
+            }
+        });
+
+        mainImage.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (isPinching && e.touches.length === 2) { // Đang zoom
+                const currentPinchDistance = getPinchDistance(e);
+                scale = lastScale * (currentPinchDistance / initialPinchDistance);
+                scale = Math.max(1, Math.min(3, scale)); // Giới hạn mức zoom
+                updateImageTransform();
+            } else if (isPanning && e.touches.length === 1) { // Đang kéo
+                if (scale > 1) { // Chỉ cho phép kéo khi đã zoom
+                    translateX = e.touches[0].clientX - startX;
+                    translateY = e.touches[0].clientY - startY;
+                    updateImageTransform();
+                }
+            }
+        });
+
+        mainImage.addEventListener('touchend', (e) => {
+            if (isPinching) { isPinching = false; lastScale = scale; }
+            if (isPanning) {
+                isPanning = false;
+                if (scale === 1) { // Nếu không zoom, kiểm tra xem có phải là vuốt chuyển ảnh không
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const swipeDistance = touchEndX - lastX;
+                    if (swipeDistance > swipeThreshold) showSlide(currentImageIndex - 1); // Vuốt phải
+                    else if (swipeDistance < -swipeThreshold) showSlide(currentImageIndex + 1); // Vuốt trái
+                }
+            }
+            if (e.touches.length === 1) { // Xử lý khi bỏ 1 ngón tay ra lúc đang zoom
+                isPanning = true; isPinching = false;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            }
+        });
+
         viewAllImagesBtn.addEventListener('click', openPopup);
         thumbnailList.addEventListener('click', (e) => { if(e.target.matches('img')) showSlide(parseInt(e.target.dataset.index)); });
         closeBtn.addEventListener('click', closePopup);
         prevBtn.addEventListener('click', () => showSlide(currentImageIndex - 1));
         nextBtn.addEventListener('click', () => showSlide(currentImageIndex + 1));
         imageGalleryPopup.addEventListener('click', (e) => { if (e.target === imageGalleryPopup) closePopup(); });
-        mainImage.addEventListener('mousedown', e => { if (e.button !== 0) return; e.preventDefault(); isDragging = true; mainImage.classList.add('is-dragging'); startX = e.clientX - translateX; startY = e.clientY - translateY; });
-        imageGalleryPopup.addEventListener('mousemove', e => { if (!isDragging) return; translateX = e.clientX - startX; translateY = e.clientY - startY; if (!isTicking) { window.requestAnimationFrame(animationUpdate); isTicking = true; } });
-        mainImage.addEventListener('touchstart', e => { if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].clientX - translateX; startY = e.touches[0].clientY - translateY; } });
-        imageGalleryPopup.addEventListener('touchmove', e => { if (!isDragging || e.touches.length !== 1) return; e.preventDefault(); translateX = e.touches[0].clientX - startX; translateY = e.touches[0].clientY - startY; if (!isTicking) { window.requestAnimationFrame(animationUpdate); isTicking = true; } });
-        const stopDragging = () => { if (isDragging) { isDragging = false; mainImage.classList.remove('is-dragging'); } };
-        imageGalleryPopup.addEventListener('mouseup', stopDragging);
-        imageGalleryPopup.addEventListener('mouseleave', stopDragging);
-        imageGalleryPopup.addEventListener('touchend', stopDragging);
-        imageGalleryPopup.addEventListener('touchcancel', stopDragging);
-        mainImage.addEventListener('wheel', e => { e.preventDefault(); scale += e.deltaY * -0.01; scale = Math.max(0.5, Math.min(3, scale)); updateImageTransform(); }, { passive: false });
     }
     
     function initLoanCalculator(product) {

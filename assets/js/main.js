@@ -4,10 +4,12 @@ document.addEventListener('DOMContentLoaded', function () {
     
 
 
-
-    function initializeAdvancedPopup() {
+function initializeAdvancedPopup() {
         const imageGalleryPopup = document.getElementById('image-gallery-popup');
-        if (!imageGalleryPopup) return () => console.error("Popup container not found");
+        if (!imageGalleryPopup) {
+            console.error("Lỗi: Không tìm thấy container của thư viện ảnh #image-gallery-popup");
+            return () => console.error("Thư viện ảnh chưa được khởi tạo.");
+        }
 
         const closeBtn = imageGalleryPopup.querySelector('.gallery-close-btn');
         const mainImage = document.getElementById('gallery-main-image');
@@ -18,21 +20,20 @@ document.addEventListener('DOMContentLoaded', function () {
         
         let currentGallery = [];
         let currentImageIndex = 0;
-        let scale = 1, translateX = 0, translateY = 0;
-        let isDragging = false, startX = 0, startY = 0;
-        let isTicking = false;
+        let scale = 1, lastScale = 1, initialPinchDistance = 0;
+        let translateX = 0, translateY = 0;
+        let isPanning = false, isPinching = false;
+        let startX = 0, startY = 0, lastX = 0;
+        const swipeThreshold = 50;
 
-        const updateImageTransform = () => { mainImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`; };
-        const resetTransform = () => {
-            scale = 1; translateX = 0; translateY = 0;
-            updateImageTransform();
-            mainImage.classList.remove('is-dragging');
-        };
-        const animationUpdate = () => {
-            updateImageTransform();
-            isTicking = false;
-        };
+        const updateImageTransform = () => { if(mainImage) mainImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`; };
         
+        const resetTransform = () => {
+            scale = 1; lastScale = 1;
+            translateX = 0; translateY = 0;
+            updateImageTransform();
+        };
+
         const showSlide = (index) => {
             if (!currentGallery || currentGallery.length === 0) return;
             resetTransform();
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
             thumbnailList.querySelectorAll('img').forEach((thumb, idx) => {
                 thumb.classList.toggle('active', idx === currentImageIndex);
                 if (idx === currentImageIndex) {
-                    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }
             });
         };
@@ -56,71 +57,80 @@ document.addEventListener('DOMContentLoaded', function () {
         const openPopup = (galleryData, startIndex = 0) => {
             currentGallery = galleryData;
             thumbnailList.innerHTML = galleryData.map((item, index) => 
-                `<img src="${item.src}" data-index="${index}" alt="${item.caption}">`
+                `<img src="${item.src}" data-index="${index}" alt="${item.caption || ''}">`
             ).join('');
             showSlide(startIndex);
-            imageGalleryPopup.style.display = 'flex';
+            imageGalleryPopup.classList.add('open');
             document.body.style.overflow = 'hidden';
         };
+
         const closePopup = () => { 
-            imageGalleryPopup.style.display = 'none'; 
+            imageGalleryPopup.classList.remove('open');
             document.body.style.overflow = 'auto';
         };
 
-        thumbnailList.addEventListener('click', (e) => {
-            if(e.target.matches('img')) showSlide(parseInt(e.target.dataset.index));
-        });
-        closeBtn.addEventListener('click', closePopup);
-        prevBtn.addEventListener('click', () => showSlide(currentImageIndex - 1));
-        nextBtn.addEventListener('click', () => showSlide(currentImageIndex + 1));
-        imageGalleryPopup.addEventListener('click', (e) => { if (e.target === imageGalleryPopup) closePopup(); });
+        const getPinchDistance = (e) => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
 
-        mainImage.addEventListener('mousedown', e => {
-            if (e.button !== 0) return;
+        mainImage.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                isPinching = true;
+                isPanning = false;
+                initialPinchDistance = getPinchDistance(e);
+                lastScale = scale;
+            } else if (e.touches.length === 1) {
+                isPanning = true;
+                isPinching = false;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+                lastX = e.touches[0].clientX;
+            }
+        });
+
+        mainImage.addEventListener('touchmove', (e) => {
             e.preventDefault();
-            isDragging = true;
-            mainImage.classList.add('is-dragging');
-            startX = e.clientX - translateX;
-            startY = e.clientY - translateY;
-        });
-        imageGalleryPopup.addEventListener('mousemove', e => {
-            if (!isDragging) return;
-            translateX = e.clientX - startX;
-            translateY = e.clientY - startY;
-            if (!isTicking) { window.requestAnimationFrame(animationUpdate); isTicking = true; }
-        });
-        mainImage.addEventListener('touchstart', e => {
+            if (isPinching && e.touches.length === 2) {
+                const currentPinchDistance = getPinchDistance(e);
+                scale = lastScale * (currentPinchDistance / initialPinchDistance);
+                scale = Math.max(1, Math.min(3, scale));
+                updateImageTransform();
+            } else if (isPanning && e.touches.length === 1) {
+                if (scale > 1) {
+                    translateX = e.touches[0].clientX - startX;
+                    translateY = e.touches[0].clientY - startY;
+                    updateImageTransform();
+                }
+            }
+        }, { passive: false });
+
+        mainImage.addEventListener('touchend', (e) => {
+            if (isPinching) { isPinching = false; lastScale = scale; }
+            if (isPanning) {
+                isPanning = false;
+                if (scale <= 1) { // Nếu không zoom, kiểm tra vuốt
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const swipeDistance = touchEndX - lastX;
+                    if (swipeDistance > swipeThreshold) showSlide(currentImageIndex - 1);
+                    else if (swipeDistance < -swipeThreshold) showSlide(currentImageIndex + 1);
+                }
+            }
+             if (scale < 1) { resetTransform(); }
             if (e.touches.length === 1) {
-                e.preventDefault();
-                isDragging = true;
+                isPanning = true; isPinching = false;
                 startX = e.touches[0].clientX - translateX;
                 startY = e.touches[0].clientY - translateY;
             }
         });
-        imageGalleryPopup.addEventListener('touchmove', e => {
-            if (!isDragging || e.touches.length !== 1) return;
-            e.preventDefault();
-            translateX = e.touches[0].clientX - startX;
-            translateY = e.touches[0].clientY - startY;
-            if (!isTicking) { window.requestAnimationFrame(animationUpdate); isTicking = true; }
-        });
-        const stopDragging = () => {
-            if (isDragging) { isDragging = false; mainImage.classList.remove('is-dragging'); }
-        };
-        imageGalleryPopup.addEventListener('mouseup', stopDragging);
-        imageGalleryPopup.addEventListener('mouseleave', stopDragging);
-        imageGalleryPopup.addEventListener('touchend', stopDragging);
-        imageGalleryPopup.addEventListener('touchcancel', stopDragging);
-        mainImage.addEventListener('wheel', e => {
-            e.preventDefault();
-            scale += e.deltaY * -0.01;
-            scale = Math.max(0.5, Math.min(3, scale));
-            updateImageTransform();
-        }, { passive: false });
+
+        thumbnailList.addEventListener('click', (e) => { if(e.target.matches('img')) showSlide(parseInt(e.target.dataset.index)); });
+        closeBtn.addEventListener('click', closePopup);
+        prevBtn.addEventListener('click', () => showSlide(currentImageIndex - 1));
+        nextBtn.addEventListener('click', () => showSlide(currentImageIndex + 1));
+        imageGalleryPopup.addEventListener('click', (e) => { if (e.target.id === 'image-gallery-popup') closePopup(); });
         
         return openPopup;
     }
 
+    window.openCustomLightbox = initializeAdvancedPopup();
     const openAdvancedGallery = initializeAdvancedPopup();
 
     /**
