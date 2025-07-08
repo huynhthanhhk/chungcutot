@@ -8,7 +8,7 @@ function initializeAdvancedPopup() {
         const imageGalleryPopup = document.getElementById('image-gallery-popup');
         if (!imageGalleryPopup) {
             console.error("Lỗi: Không tìm thấy container của thư viện ảnh #image-gallery-popup");
-            return () => console.error("Thư viện ảnh chưa được khởi tạo.");
+            return () => {};
         }
 
         const closeBtn = imageGalleryPopup.querySelector('.gallery-close-btn');
@@ -91,7 +91,7 @@ function initializeAdvancedPopup() {
             if (isPinching && e.touches.length === 2) {
                 const currentPinchDistance = getPinchDistance(e);
                 scale = lastScale * (currentPinchDistance / initialPinchDistance);
-                scale = Math.max(1, Math.min(3, scale));
+                scale = Math.max(1, Math.min(3, scale)); // Giới hạn mức zoom, không cho phép nhỏ hơn 1
                 updateImageTransform();
             } else if (isPanning && e.touches.length === 1) {
                 if (scale > 1) {
@@ -106,14 +106,16 @@ function initializeAdvancedPopup() {
             if (isPinching) { isPinching = false; lastScale = scale; }
             if (isPanning) {
                 isPanning = false;
-                if (scale <= 1) { // Nếu không zoom, kiểm tra vuốt
+                if (scale <= 1) { // Sửa thành <= 1 để chắc chắn
                     const touchEndX = e.changedTouches[0].clientX;
                     const swipeDistance = touchEndX - lastX;
                     if (swipeDistance > swipeThreshold) showSlide(currentImageIndex - 1);
                     else if (swipeDistance < -swipeThreshold) showSlide(currentImageIndex + 1);
                 }
             }
-             if (scale < 1) { resetTransform(); }
+            if (scale < 1) { // Chốt an toàn cuối cùng
+                resetTransform();
+            }
             if (e.touches.length === 1) {
                 isPanning = true; isPinching = false;
                 startX = e.touches[0].clientX - translateX;
@@ -131,6 +133,8 @@ function initializeAdvancedPopup() {
     }
 
     window.openCustomLightbox = initializeAdvancedPopup();
+
+
     const openAdvancedGallery = initializeAdvancedPopup();
 
     /**
