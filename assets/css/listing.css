@@ -1437,3 +1437,87 @@ body.drawer-open {
     outline: none;
     box-shadow: 0 0 0 2px rgba(83, 185, 102, 0.3); /* Thêm một vòng sáng nhẹ khi dùng bàn phím */
 }
+/* Thêm vào cuối tệp product-detail.css */
+
+.lightbox-control-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    transform: scale(1) !important; /* Ngăn hiệu ứng hover khi nút bị vô hiệu hóa */
+}
+/* ===================================================== */
+/* == CSS CHO GỢI Ý TÌM KIẾM (SEARCH SUGGESTIONS) == */
+/* ===================================================== */
+
+.search-form {
+    position: relative;
+}
+
+.search-suggestions-container {
+    display: none; /* Mặc định ẩn */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.search-suggestions-container.visible {
+    display: block;
+}
+
+.suggestions-group {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.suggestions-group:last-child {
+    border-bottom: none;
+}
+
+.suggestions-group-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-light);
+    padding: 5px 20px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.suggestions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.suggestions-list li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-size: 15px;
+    transition: background-color 0.2s ease;
+}
+
+.suggestions-list li a:hover {
+    background-color: var(--body-bg);
+}
+
+.suggestions-list li a span {
+    color: var(--text-light);
+    font-size: 13px;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.suggestion-icon {
+    font-size: 20px;
+    line-height: 1;
+}

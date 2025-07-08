@@ -17,6 +17,8 @@ function initializeAdvancedPopup() {
         const thumbnailList = imageGalleryPopup.querySelector('.gallery-thumbnail-strip');
         const prevBtn = imageGalleryPopup.querySelector('.gallery-nav-btn.prev');
         const nextBtn = imageGalleryPopup.querySelector('.gallery-nav-btn.next');
+        const zoomInBtn = document.getElementById('lightbox-zoom-in');
+        const zoomOutBtn = document.getElementById('lightbox-zoom-out');
         
         let currentGallery = [];
         let currentImageIndex = 0;
@@ -26,12 +28,24 @@ function initializeAdvancedPopup() {
         let startX = 0, startY = 0, lastX = 0;
         const swipeThreshold = 50;
 
+        const updateZoomButtons = () => {
+            if (!zoomInBtn || !zoomOutBtn) return;
+            zoomOutBtn.disabled = scale <= 1;
+            zoomInBtn.disabled = scale >= 3;
+        };
         const updateImageTransform = () => { if(mainImage) mainImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`; };
-        
         const resetTransform = () => {
             scale = 1; lastScale = 1;
             translateX = 0; translateY = 0;
             updateImageTransform();
+            updateZoomButtons();
+        };
+
+        const adjustZoom = (amount) => {
+            scale += amount;
+            scale = Math.max(1, Math.min(3, scale));
+            updateImageTransform();
+            updateZoomButtons();
         };
 
         const showSlide = (index) => {
@@ -41,11 +55,9 @@ function initializeAdvancedPopup() {
             const item = currentGallery[currentImageIndex];
             mainImage.src = item.src;
             imageCaption.textContent = item.caption;
-            
             const isSingleImage = currentGallery.length <= 1;
             prevBtn.style.display = isSingleImage ? 'none' : 'flex';
             nextBtn.style.display = isSingleImage ? 'none' : 'flex';
-
             thumbnailList.querySelectorAll('img').forEach((thumb, idx) => {
                 thumb.classList.toggle('active', idx === currentImageIndex);
                 if (idx === currentImageIndex) {
@@ -73,13 +85,11 @@ function initializeAdvancedPopup() {
 
         mainImage.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                isPinching = true;
-                isPanning = false;
+                isPinching = true; isPanning = false;
                 initialPinchDistance = getPinchDistance(e);
                 lastScale = scale;
             } else if (e.touches.length === 1) {
-                isPanning = true;
-                isPinching = false;
+                isPanning = true; isPinching = false;
                 startX = e.touches[0].clientX - translateX;
                 startY = e.touches[0].clientY - translateY;
                 lastX = e.touches[0].clientX;
@@ -91,8 +101,9 @@ function initializeAdvancedPopup() {
             if (isPinching && e.touches.length === 2) {
                 const currentPinchDistance = getPinchDistance(e);
                 scale = lastScale * (currentPinchDistance / initialPinchDistance);
-                scale = Math.max(1, Math.min(3, scale)); // Giới hạn mức zoom, không cho phép nhỏ hơn 1
+                scale = Math.max(1, Math.min(3, scale));
                 updateImageTransform();
+                updateZoomButtons();
             } else if (isPanning && e.touches.length === 1) {
                 if (scale > 1) {
                     translateX = e.touches[0].clientX - startX;
@@ -106,16 +117,14 @@ function initializeAdvancedPopup() {
             if (isPinching) { isPinching = false; lastScale = scale; }
             if (isPanning) {
                 isPanning = false;
-                if (scale <= 1) { // Sửa thành <= 1 để chắc chắn
+                if (scale <= 1) {
                     const touchEndX = e.changedTouches[0].clientX;
                     const swipeDistance = touchEndX - lastX;
                     if (swipeDistance > swipeThreshold) showSlide(currentImageIndex - 1);
                     else if (swipeDistance < -swipeThreshold) showSlide(currentImageIndex + 1);
                 }
             }
-            if (scale < 1) { // Chốt an toàn cuối cùng
-                resetTransform();
-            }
+            if (scale < 1) { resetTransform(); }
             if (e.touches.length === 1) {
                 isPanning = true; isPinching = false;
                 startX = e.touches[0].clientX - translateX;
@@ -123,11 +132,19 @@ function initializeAdvancedPopup() {
             }
         });
 
+        mainImage.addEventListener('wheel', e => {
+            e.preventDefault();
+            adjustZoom(e.deltaY * -0.005);
+        }, { passive: false });
+
         thumbnailList.addEventListener('click', (e) => { if(e.target.matches('img')) showSlide(parseInt(e.target.dataset.index)); });
         closeBtn.addEventListener('click', closePopup);
         prevBtn.addEventListener('click', () => showSlide(currentImageIndex - 1));
         nextBtn.addEventListener('click', () => showSlide(currentImageIndex + 1));
         imageGalleryPopup.addEventListener('click', (e) => { if (e.target.id === 'image-gallery-popup') closePopup(); });
+        
+        if (zoomInBtn) zoomInBtn.addEventListener('click', () => adjustZoom(0.25));
+        if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => adjustZoom(-0.25));
         
         return openPopup;
     }

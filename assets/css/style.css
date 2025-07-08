@@ -5008,3 +5008,10 @@ h1, h2, h3, h4, h5, h6, p, a, li, span {
         order: 2;
     }
 }
+/* Thêm vào cuối tệp product-detail.css */
+
+.lightbox-control-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    transform: scale(1) !important; /* Ngăn hiệu ứng hover khi nút bị vô hiệu hóa */
+}

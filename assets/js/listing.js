@@ -198,49 +198,62 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    // Thay thế đoạn mã tạo allItems cũ bằng đoạn mã này
-const allItems = Object.values(dataSource).map(p => {
-    // [LOGIC MỚI] Tạo ra một chuỗi tìm kiếm "được làm giàu"
-    const addressParts = [];
-    if (p.street) {
-        addressParts.push(p.street.toLowerCase());
-        addressParts.push(`đường ${p.street.toLowerCase()}`);
-        addressParts.push(`phố ${p.street.toLowerCase()}`);
-    }
-    if (p.ward) {
-        addressParts.push(p.ward.toLowerCase());
-        addressParts.push(`phường ${p.ward.toLowerCase()}`);
-        addressParts.push(`xã ${p.ward.toLowerCase()}`);
-    }
-    if (p.city) {
-        addressParts.push(p.city.toLowerCase());
-        addressParts.push(`quận ${p.city.toLowerCase()}`);
-        addressParts.push(`huyện ${p.city.toLowerCase()}`);
-        addressParts.push(`thành phố ${p.city.toLowerCase()}`);
-        addressParts.push(`tỉnh ${p.city.toLowerCase()}`);
-    }
-
-    // Kết hợp tất cả thông tin vào một chuỗi duy nhất để tìm kiếm
-    const searchableString = `${p.title.toLowerCase()} ${p.project ? p.project.toLowerCase() : ''} ${addressParts.join(' ')}`;
-
-    return {
-        ...p,
-        date: new Date(p.publishedAt),
-        // Gán chuỗi đã làm giàu vào mỗi sản phẩm
-        searchableString: searchableString,
-        // Giữ lại các thuộc tính cũ để không ảnh hưởng đến các chức năng khác
-        title_lower: p.title.toLowerCase(),
-        address_lower: `${p.street}, ${p.ward}, ${p.city}`.toLowerCase(),
-        project_lower: (p.project || '').toLowerCase()
+    // Helper function to remove Vietnamese diacritics
+    const removeDiacritics = (str) => {
+        if (!str) return '';
+        return str
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[đĐ]/g, 'd');
     };
-});
+
+    const allItems = Object.values(dataSource).map(p => {
+        // 1. Tập hợp tất cả các thông tin văn bản có thể tìm kiếm vào một mảng
+        const textParts = [];
+        if (p.title) textParts.push(p.title);
+        if (p.project) textParts.push(p.project);
+
+        // 2. Thêm địa chỉ và các biến thể có tiền tố (ví dụ: "đường abc", "phường xyz")
+        if (p.street) {
+            textParts.push(p.street);
+            textParts.push(`đường ${p.street}`);
+            textParts.push(`phố ${p.street}`);
+        }
+        if (p.ward) {
+            textParts.push(p.ward);
+            textParts.push(`phường ${p.ward}`);
+            textParts.push(`xã ${p.ward}`);
+        }
+        if (p.city) {
+            textParts.push(p.city);
+            textParts.push(`quận ${p.city}`);
+            textParts.push(`huyện ${p.city}`);
+            textParts.push(`thành phố ${p.city}`);
+            textParts.push(`tỉnh ${p.city}`);
+        }
+
+        // 3. Nối tất cả lại, chuyển thành chữ thường và loại bỏ toàn bộ dấu
+        // Thao tác này tạo ra một chuỗi tìm kiếm duy nhất, đã được chuẩn hóa hoàn toàn.
+        const searchableString = removeDiacritics(textParts.join(' '));
+
+        return {
+            ...p,
+            date: new Date(p.publishedAt),
+            searchableString: searchableString
+        };
+    });
     
     // Tạo các bảng tra cứu để chuyển slug -> tên có dấu
+    // Tạo các bảng tra cứu để chuyển slug -> tên có dấu và dữ liệu gợi ý
     const cityLookup = {};
     const wardLookup = {};
     const categoryLookup = {};
+    const streetLookup = {}; // <-- THÊM MỚI
+    const locations = { streets: {}, wards: {} }; // Đã khai báo `locations`
 
     allItems.forEach(item => {
+        // Dữ liệu cho breadcrumb và lọc URL
         if (item.city) {
             cityLookup[toSlug(item.city)] = item.city;
         }
@@ -250,12 +263,135 @@ const allItems = Object.values(dataSource).map(p => {
         if (item.productCategory) {
             categoryLookup[toSlug(item.productCategory)] = item.productCategory;
         }
+
+        // Dữ liệu cho tính năng gợi ý tìm kiếm (đã sửa lỗi)
+        if (item.street && !locations.streets[item.street]) {
+            locations.streets[item.street] = item.ward;
+        }
+        if (item.ward && !locations.wards[item.ward]) {
+            locations.wards[item.ward] = item.city;
+        }
+        if (item.street) {
+        streetLookup[toSlug(item.street)] = item.street;
+    }
     });
 
     let visibleItems = [...allItems];
     let currentPage = 1;
     const itemsPerPage = 10;
+    const suggestionsContainer = document.getElementById('search-suggestions');
+    
+    function renderSuggestions(query = '') {
+        if (!suggestionsContainer) return;
 
+        // Chuẩn hóa truy vấn của người dùng (xóa dấu, chuyển thành chữ thường)
+        const removeDiacritics = (str) => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd');
+        const normalizedQuery = removeDiacritics(query.trim());
+
+        let matchingStreets = [];
+        let matchingWards = [];
+
+        // Chỉ tìm kiếm nếu người dùng đã gõ gì đó
+        if (normalizedQuery.length > 0) {
+            
+            // Tìm các đường phố khớp với truy vấn
+            matchingStreets = Object.keys(locations.streets).filter(street => {
+                const unaccentedStreet = removeDiacritics(street);
+                // Kiểm tra xem truy vấn có khớp với tên đường, hoặc tên đường có tiền tố "đường/phố" hay không
+                return unaccentedStreet.includes(normalizedQuery) || 
+                       `duong ${unaccentedStreet}`.includes(normalizedQuery) || 
+                       `pho ${unaccentedStreet}`.includes(normalizedQuery);
+            });
+
+            // Tìm các phường/xã khớp với truy vấn
+            matchingWards = Object.keys(locations.wards).filter(ward => {
+                const unaccentedWard = removeDiacritics(ward);
+                // Kiểm tra xem truy vấn có khớp với tên phường/xã, hoặc có tiền tố "phường/xã" hay không
+                return unaccentedWard.includes(normalizedQuery) || 
+                       `phuong ${unaccentedWard}`.includes(normalizedQuery) || 
+                       `xa ${unaccentedWard}`.includes(normalizedQuery);
+            });
+
+        } else { 
+            // Nếu ô tìm kiếm trống, hiển thị gợi ý mặc định
+            matchingWards = Object.keys(locations.wards).slice(0, 5);
+        }
+
+        // --- Phần hiển thị HTML giữ nguyên ---
+        let html = '';
+        if (matchingStreets.length > 0) {
+            html += '<div class="suggestions-group"><h5 class="suggestions-group-title">-- Đường Phố --</h5><ul class="suggestions-list">';
+            matchingStreets.slice(0, 5).forEach(street => {
+                const parentWard = locations.streets[street];
+                html += `<li><a href="#" data-type="street" data-street="${street}" data-ward="${parentWard}">
+                    <span class="suggestion-icon">🛣️</span> ${street} <span>(P. ${parentWard})</span>
+                </a></li>`;
+            });
+            html += '</ul></div>';
+        }
+        if (matchingWards.length > 0) {
+            html += '<div class="suggestions-group"><h5 class="suggestions-group-title">-- Phường / Quận --</h5><ul class="suggestions-list">';
+            matchingWards.slice(0, 5).forEach(ward => {
+                const parentCity = locations.wards[ward];
+                html += `<li><a href="#" data-type="ward" data-ward="${ward}" data-city="${parentCity}">
+                    <span class="suggestion-icon">📍</span> Phường ${ward} <span>(thuộc ${parentCity})</span>
+                </a></li>`;
+            });
+            html += '</ul></div>';
+        }
+
+        suggestionsContainer.innerHTML = html;
+        suggestionsContainer.classList.toggle('visible', html !== '');
+    }
+function handleSuggestionClick(e) {
+    if (e.target.tagName === 'A' || e.target.closest('a')) {
+        e.preventDefault();
+        const link = e.target.closest('a');
+        const type = link.dataset.type;
+        const urlParams = new URLSearchParams();
+        const page = isRentalPage ? 'listing-thue.html' : 'listing-ban.html';
+        const categorySlug = Object.keys(categoryLookup).find(key => categoryLookup[key] === 'Căn hộ');
+
+        // Logic được cập nhật cho cả cấp Đường và cấp Phường
+        if (type === 'street') {
+            const street = link.dataset.street;
+            const ward = link.dataset.ward;
+            const city = locations.wards[ward]; // Lấy thành phố từ phường cha
+
+            // Xây dựng URL đầy đủ
+            if (categorySlug) urlParams.set('loaihinh', categorySlug);
+            if (city) urlParams.set('thanhpho', toSlug(city));
+            if (ward) urlParams.set('phuong', toSlug(ward));
+            if (street) urlParams.set('duong', toSlug(street)); // Thêm tham số 'duong'
+
+            // Chuyển hướng đến URL mới
+            window.location.href = `${page}?${urlParams.toString()}`;
+
+        } else if (type === 'ward') {
+            const ward = link.dataset.ward;
+            const city = link.dataset.city;
+
+            // Xây dựng URL
+            if (categorySlug) urlParams.set('loaihinh', categorySlug);
+            if (city) urlParams.set('thanhpho', toSlug(city));
+            if (ward) urlParams.set('phuong', toSlug(ward));
+            
+            // Chuyển hướng đến URL mới
+            window.location.href = `${page}?${urlParams.toString()}`;
+        }
+        
+        suggestionsContainer.classList.remove('visible');
+    }
+}
+
+    searchInput.addEventListener('focus', () => renderSuggestions(searchInput.value));
+    searchInput.addEventListener('input', () => renderSuggestions(searchInput.value));
+    document.addEventListener('click', (e) => {
+        if (!searchInput.parentElement.contains(e.target)) {
+            suggestionsContainer.classList.remove('visible');
+        }
+    });
+    suggestionsContainer.addEventListener('mousedown', handleSuggestionClick);
     function createProductCardHTML(item) {
         const address = `${item.street}, ${item.ward}, ${item.city}`;
         let labelHTML = '';
@@ -354,6 +490,7 @@ function applyAllFilters() {
     const loaiHinhSlugFromUrl = urlParams.get('loaihinh');
     const citySlugFromUrl = urlParams.get('thanhpho');
     const wardSlugFromUrl = urlParams.get('phuong');
+    const duongSlugFromUrl = urlParams.get('duong'); // <-- THÊM MỚI: Đọc tham số đường
 
     const priceFilter = getRangeFilter('[data-filter-name="price"]'); 
     const areaFilter = getRangeFilter('[data-filter-name="area"]'); 
@@ -364,12 +501,12 @@ function applyAllFilters() {
     const legalFilter = getCheckboxFilterValues('[data-filter-name="legal"]');
     const leaseTermFilter = getCheckboxFilterValues('[data-filter-name="leaseTerm"]');
     
-    // Lấy và tách từ khóa người dùng nhập (không loại bỏ bất kỳ từ nào)
-    const searchTerm = searchInput.value.toLowerCase().trim();
+    const removeDiacritics = (str) => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd');
+    const searchTerm = removeDiacritics(searchInput.value.trim());
     const searchTokens = searchTerm.split(/\s+/).filter(token => token.length > 0);
 
     visibleItems = allItems.filter(item => { 
-        // Các bộ lọc từ sidebar (giữ nguyên)
+        // Các bộ lọc từ sidebar và tìm kiếm (giữ nguyên)
         if (priceFilter.min != null && item.price < priceFilter.min) return false; 
         if (priceFilter.max != null && item.price > priceFilter.max) return false; 
         if (areaFilter.min != null && item.area < areaFilter.min) return false; 
@@ -381,18 +518,17 @@ function applyAllFilters() {
         if (legalFilter.length > 0 && item.hasOwnProperty('legal') && !legalFilter.includes(item.legal)) { return false; }
         if (leaseTermFilter.length > 0 && item.hasOwnProperty('leaseTerm') && !leaseTermFilter.includes(item.leaseTerm)) { return false; }
         
-        // [LOGIC TÌM KIẾM MỚI]
-        // Áp dụng logic "VÀ" (.every) trên chuỗi dữ liệu đã được làm giàu
         if (searchTokens.length > 0) {
-            // Dùng thuộc tính .searchableString mới để tìm kiếm
             const isMatch = searchTokens.every(token => item.searchableString.includes(token));
             if (!isMatch) return false;
         }
         
-        // Các bộ lọc từ URL (giữ nguyên)
+        // Các bộ lọc từ URL
         if (loaiHinhSlugFromUrl && toSlug(item.productCategory) !== loaiHinhSlugFromUrl) return false;
         if (citySlugFromUrl && toSlug(item.city) !== citySlugFromUrl) return false;
         if (wardSlugFromUrl && toSlug(item.ward) !== wardSlugFromUrl) return false;
+        // THÊM MỚI ĐIỀU KIỆN LỌC THEO ĐƯỜNG
+        if (duongSlugFromUrl && toSlug(item.street) !== duongSlugFromUrl) return false;
 
         return true; 
     }); 
@@ -1090,9 +1226,12 @@ function updateBreadcrumb() {
     const loaiHinhSlug = params.get('loaihinh');
     const citySlug = params.get('thanhpho');
     const wardSlug = params.get('phuong');
+    const duongSlug = params.get('duong'); // <-- THÊM MỚI: Đọc tham số đường
 
+    // Lấy tên có dấu từ slug
     const cityText = cityLookup[citySlug] || citySlug;
     const wardText = wardLookup[wardSlug] || wardSlug;
+    const streetText = streetLookup[duongSlug] || duongSlug; // <-- THÊM MỚI
     const productCategoryText = categoryLookup[loaiHinhSlug] || 'Bất động sản';
 
     const isRentalPage = window.location.pathname.includes('listing-thue.html');
@@ -1100,10 +1239,13 @@ function updateBreadcrumb() {
     const listingPage = isRentalPage ? 'listing-thue.html' : 'listing-ban.html';
     
     let mainTitle = `${propertyType} ${productCategoryText}`;
-    // [CẬP NHẬT] Xây dựng tiêu đề cho cả trang bán và thuê
     let historyTitleText = `Lịch sử giá ${propertyType.toLowerCase()} ${productCategoryText.toLowerCase()}`;
     
-    if (wardText && cityText) {
+    // Cập nhật logic xây dựng tiêu đề
+    if (streetText && wardText && cityText) {
+        mainTitle = `${propertyType} ${productCategoryText} tại đường ${streetText}, Phường ${wardText}, ${cityText}`;
+        historyTitleText += ` tại đường ${streetText}, Phường ${wardText}, ${cityText}`;
+    } else if (wardText && cityText) {
         mainTitle = `${propertyType} ${productCategoryText} tại Phường ${wardText}, ${cityText}`;
         historyTitleText += ` tại Phường ${wardText}, ${cityText}`;
     } else if (cityText) {
@@ -1112,25 +1254,27 @@ function updateBreadcrumb() {
     }
     
     categoryHeader.textContent = mainTitle;
-    
     if (priceHistoryTitle) {
         priceHistoryTitle.textContent = historyTitleText;
     }
-
     if (categoryDescription) {
-        categoryDescription.textContent = `Danh sách ${productCategoryText.toLowerCase()} ${propertyType.toLowerCase()} được tìm thấy.`;
+        categoryDescription.textContent = `Danh sách ${mainTitle.toLowerCase()} được tìm thấy.`;
     }
 
+    // Cập nhật logic xây dựng breadcrumb
     const breadcrumbParts = [];
     breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${propertyType}</span>`);
     if (productCategoryText !== 'Bất động sản') {
-         breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${productCategoryText}</span>`);
+        breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}">${productCategoryText}</a>`);
     }
     if (cityText && citySlug) {
         breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}&thanhpho=${citySlug}">${cityText}</a>`);
     }
     if (wardText && wardSlug) {
-         breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${wardText}</span>`);
+        breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}&thanhpho=${citySlug}&phuong=${wardSlug}">Phường ${wardText}</a>`);
+    }
+    if (streetText && duongSlug) { // <-- THÊM MỚI
+        breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${streetText}</span>`);
     }
     
     breadcrumbContainer.innerHTML = breadcrumbParts.join(' &gt; ');

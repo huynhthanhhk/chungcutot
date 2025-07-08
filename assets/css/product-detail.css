@@ -344,7 +344,11 @@
     }
 }
 
-
+.lightbox-control-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    transform: scale(1) !important; /* Ngăn hiệu ứng hover khi nút bị vô hiệu hóa */
+}
 
 
 
