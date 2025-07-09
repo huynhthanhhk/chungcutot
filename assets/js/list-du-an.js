@@ -1,14 +1,16 @@
 // assets/js/list-du-an.js (Hoàn thiện - Đã thêm tính năng Sắp xếp)
 
 document.addEventListener('DOMContentLoaded', function() {
+    
+    
     if (typeof allProjectsData === 'undefined') {
         console.error("Lỗi: Không tìm thấy dữ liệu dự án (allProjectsData).");
         const grid = document.querySelector('.project-list-grid');
-        if(grid) grid.innerHTML = '<p class="no-results-message" style="grid-column: 1 / -1; text-align: center; padding: 20px;">Lỗi: Không thể tải dữ liệu dự án.</p>';
+        if (grid) grid.innerHTML = '<p class="no-results-message" style="grid-column: 1 / -1; text-align: center; padding: 20px;">Lỗi: Không thể tải dữ liệu dự án.</p>';
         return;
     }
 
-    // --- TIỆN ÍCH, BIẾN VÀ KHỞI TẠO DỮ LIỆU ---
+    // --- CÁC HÀM TIỆN ÍCH ---
     const toSlug = (str) => {
         if (!str) return '';
         let s = str.toLowerCase();
@@ -16,45 +18,52 @@ document.addEventListener('DOMContentLoaded', function() {
         if (s === 'hà nội') return 'tp-ha-noi';
         s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         s = s.replace(/[đĐ]/g, 'd');
-        s = s.replace(/([^0-9a-z-\s])/g, '');
-        s = s.replace(/(\s+)/g, '-');
-        s = s.replace(/-+/g, '-');
-        s = s.replace(/^-+|-+$/g, '');
+        s = s.replace(/([^0-9a-z-\s])/g, '').replace(/(\s+)/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '');
         return s;
     };
-    
+    const removeDiacritics = (str) => {
+        if (!str) return '';
+        return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd');
+    };
+
+    // --- CHUẨN BỊ DỮ LIỆU ---
     const allProjects = allProjectsData.map(project => {
-        const searchableString = [
-            project.projectName, project.developer, project.address, project.status,
-            project.legal, project.segment, ...(project.features || [])
-        ].join(' ').toLowerCase();
-        
-        return {
-            ...project,
-            priceSale: project.salePrice ? project.salePrice.min : null,
-            priceRent: project.rentPrice ? project.rentPrice.min : null,
-            searchableString
-        };
+        const textParts = [project.projectName, project.developer, project.address, project.status, project.legal, project.segment, ...(project.features || [])];
+        const searchableString = removeDiacritics(textParts.join(' '));
+        return { ...project, priceSale: project.salePrice?.min, priceRent: project.rentPrice?.min, searchableString };
     });
 
-    const cityLookup = {}, wardLookup = {}, projectTypeLookup = {};
+    const cityLookup = {}, projectTypeLookup = {}, streetLookup = {}, wardLookup = {};
+    const locations = { streets: {}, wards: {} };
+
+    if (typeof initialMenuData !== 'undefined' && initialMenuData['Dự án']) {
+        initialMenuData['Dự án'].forEach(category => {
+            if (category['Loại hình']) projectTypeLookup[toSlug(category['Loại hình'])] = category['Loại hình'];
+            if (category['Khu vực']) category['Khu vực'].forEach(cityName => { if (cityName) cityLookup[toSlug(cityName)] = cityName; });
+        });
+    }
+
     allProjects.forEach(item => {
-        if (item.city) cityLookup[toSlug(item.city)] = item.city;
+        if (item.city && !cityLookup[toSlug(item.city)]) cityLookup[toSlug(item.city)] = item.city;
+        if (item.ProjectType && !projectTypeLookup[toSlug(item.ProjectType)]) projectTypeLookup[toSlug(item.ProjectType)] = item.ProjectType;
         if (item.ward) wardLookup[toSlug(item.ward)] = item.ward;
-        if (item.ProjectType) projectTypeLookup[toSlug(item.ProjectType)] = item.ProjectType;
+        if (item.street) streetLookup[toSlug(item.street)] = item.street;
+        if (item.street && !locations.streets[item.street]) locations.streets[item.street] = item.ward;
+        if (item.ward && !locations.wards[item.ward]) locations.wards[item.ward] = item.city;
     });
 
-    const projectGrid = document.querySelector('.project-list-grid');
-    const resultsCountEl = document.querySelector('.results-count');
-    const sidebar = document.getElementById('listing-filter-sidebar');
-    const searchInput = document.querySelector('.search-form input[type="search"]');
-    const filterTagArea = sidebar ? sidebar.querySelector('.filter-tag-area') : null;
-    const paginationContainer = document.querySelector('.pagination');
-    const sortSelect = document.getElementById('sort-select'); // Thêm biến cho sort
+   
 
-    let visibleProjects = [];
-    let currentPage = 1;
-    const itemsPerPage = 10;
+    const projectGrid = document.querySelector('.project-list-grid'),
+          resultsCountEl = document.querySelector('.results-count'),
+          sidebar = document.getElementById('listing-filter-sidebar'),
+          searchInput = document.querySelector('.search-form input[type="search"]'),
+          suggestionsContainer = document.getElementById('search-suggestions'),
+          paginationContainer = document.querySelector('.pagination'),
+          sortSelect = document.getElementById('sort-select'),
+          filterTagArea = sidebar ? sidebar.querySelector('.filter-tag-area') : null;
+
+    let visibleProjects = [], currentPage = 1, itemsPerPage = 10;
 
     // --- CÁC HÀM HIỂN THỊ, LỌC, SẮP XẾP VÀ CẬP NHẬT GIAO DIỆN ---
 
@@ -190,30 +199,175 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateBreadcrumb() {
         const breadcrumbContainer = document.querySelector('.breadcrumb');
         const categoryHeader = document.querySelector('.category-header h1');
-        const categoryDescription = document.querySelector('.category-header p');
         if (!breadcrumbContainer || !categoryHeader) return;
+    
         const params = new URLSearchParams(window.location.search);
-        const loaiHinhSlug = params.get('loaihinh'), citySlug = params.get('thanhpho'), wardSlug = params.get('phuong');
-        const cityText = cityLookup[citySlug] || '', wardText = wardLookup[wardSlug] || '', projectTypeText = projectTypeLookup[loaiHinhSlug] || 'Dự án';
+        // [SỬA ĐỔI] Lấy loại hình từ URL, nếu không có thì mặc định là "Chung cư"
+        const loaiHinhSlug = params.get('loaihinh') || toSlug('Chung cư'); 
+        const citySlug = params.get('thanhpho');
+        const wardSlug = params.get('phuong');
+        const duongSlug = params.get('duong');
+    
+        // Lấy tên hiển thị từ các bảng tra cứu
+        const cityText = cityLookup[citySlug] || citySlug;
+        const wardText = wardLookup[wardSlug] || wardSlug;
+        const streetText = streetLookup[duongSlug] || duongSlug;
+        // Lấy đúng tên ProjectType từ slug
+        const projectTypeText = projectTypeLookup[loaiHinhSlug] || 'Dự án'; 
+        
+        // Cập nhật Tiêu đề chính (H1) - Logic này giữ nguyên
         let mainTitle = `Dự án ${projectTypeText}`;
-        if (wardText && cityText) mainTitle = `Dự án ${projectTypeText} tại Phường ${wardText}, ${cityText}`;
-        else if (cityText) mainTitle = `Dự án ${projectTypeText} tại ${cityText}`;
+        if (duongSlug && wardSlug && citySlug) mainTitle = `Dự án ${projectTypeText} tại đường ${streetText}, Phường ${wardText}, ${cityText}`;
+        else if (wardSlug && citySlug) mainTitle = `Dự án ${projectTypeText} tại Phường ${wardText}, ${cityText}`;
+        else if (citySlug) mainTitle = `Dự án ${projectTypeText} tại ${cityText}`;
         categoryHeader.textContent = mainTitle;
-        if(categoryDescription) categoryDescription.textContent = `Danh sách các dự án ${projectTypeText.toLowerCase()} được tìm thấy.`;
-        let breadcrumbParts = [];
+    
+        // ===== BẮT ĐẦU LOGIC BREADCRUMB MỚI =====
+        const breadcrumbParts = [];
+        const page = 'list-du-an.html';
+        
+        // Cấp 1: "Dự án" - Luôn là text, không link
         breadcrumbParts.push(`<span>Dự án</span>`);
-        if (loaiHinhSlug && projectTypeText !== 'Dự án') {
-            const link = citySlug ? `<a href="list-du-an.html?loaihinh=${loaiHinhSlug}">${projectTypeText}</a>` : `<span>${projectTypeText}</span>`;
-            breadcrumbParts.push(link);
+        
+        // Cấp 2: Loại hình dự án - Luôn là text, không link (theo yêu cầu "khóa")
+        if (projectTypeText) {
+            breadcrumbParts.push(`<span>${projectTypeText}</span>`);
         }
+        
+        // Cấp 3: Tỉnh/Thành phố (nếu có) - Sẽ là link
         if (citySlug && cityText) {
-            const link = wardSlug ? `<a href="list-du-an.html?loaihinh=${loaiHinhSlug}&thanhpho=${citySlug}">${cityText}</a>` : `<span>${cityText}</span>`;
-            breadcrumbParts.push(link);
+            // Link này không cần chứa loaihinh nữa vì nó đã bị "khóa"
+            breadcrumbParts.push(`<a href="${page}?thanhpho=${citySlug}">${cityText}</a>`);
         }
+        
+        // Cấp 4: Phường/Xã (nếu có) - Sẽ là link
         if (wardSlug && wardText) {
-            breadcrumbParts.push(`<span>${wardText}</span>`);
+            breadcrumbParts.push(`<a href="${page}?thanhpho=${citySlug}&phuong=${wardSlug}">Phường ${wardText}</a>`);
         }
+
+        // Cấp 5: Đường (nếu có) - Sẽ là link
+        if (duongSlug && streetText) {
+            breadcrumbParts.push(`<a href="${page}?thanhpho=${citySlug}&phuong=${wardSlug}&duong=${duongSlug}">${streetText}</a>`);
+        }
+    
+        // Chuyển phần tử cuối cùng trong breadcrumb từ link <a> thành <span>
+        // Logic này đảm bảo cấp sâu nhất sẽ không click được
+        if (breadcrumbParts.length > 2) { // Áp dụng từ cấp thành phố trở đi
+            const lastPart = breadcrumbParts[breadcrumbParts.length - 1];
+            // Thay thế thẻ <a>...</a> bằng <span>...</span>
+            const lastPartAsSpan = lastPart.replace(/<a\b[^>]*>/, '<span>').replace(/<\/a>/, '</span>');
+            breadcrumbParts[breadcrumbParts.length - 1] = lastPartAsSpan;
+        }
+        
+        // Hiển thị ra giao diện
         breadcrumbContainer.innerHTML = breadcrumbParts.join(' &gt; ');
+    }
+    function renderSuggestions(query) {
+        if (!suggestionsContainer) return;
+        const normalizedQuery = removeDiacritics(query.trim());
+        
+        let html = '';
+        const matchingProjects = new Set(), matchingDevelopers = new Set();
+        const matchingStreets = new Set(), matchingWards = new Set();
+
+        if (normalizedQuery.length > 0) {
+            // Tìm gợi ý cho Dự án và Chủ đầu tư
+            allProjects.forEach(project => {
+                if (removeDiacritics(project.projectName).includes(normalizedQuery)) matchingProjects.add(project.projectName);
+                if (project.developer && removeDiacritics(project.developer).includes(normalizedQuery)) matchingDevelopers.add(project.developer);
+            });
+
+            // Tìm gợi ý cho Đường và Phường
+            Object.keys(locations.streets).forEach(street => {
+                const unaccented = removeDiacritics(street);
+                if (unaccented.includes(normalizedQuery) || `duong ${unaccented}`.includes(normalizedQuery)) matchingStreets.add(street);
+            });
+            Object.keys(locations.wards).forEach(ward => {
+                const unaccented = removeDiacritics(ward);
+                if (unaccented.includes(normalizedQuery) || `phuong ${unaccented}`.includes(normalizedQuery)) matchingWards.add(ward);
+            });
+        } else {
+            // [SỬA LỖI] Nếu không có truy vấn (khi focus), hiển thị một vài dự án làm gợi ý mặc định
+            allProjects.slice(0, 5).forEach(p => matchingProjects.add(p.projectName));
+        }
+
+        // Hiển thị HTML (giữ nguyên logic)
+        if (matchingProjects.size > 0) {
+            html += '<div class="suggestions-group"><h5 class="suggestions-group-title">-- Dự án --</h5><ul class="suggestions-list">';
+            Array.from(matchingProjects).slice(0, 5).forEach(name => { html += `<li><a href="#" data-type="project" data-value="${name}"><span class="suggestion-icon">🏙️</span> ${name}</a></li>`; });
+            html += '</ul></div>';
+        }
+        if (matchingDevelopers.size > 0) {
+            html += '<div class="suggestions-group"><h5 class="suggestions-group-title">-- Chủ đầu tư --</h5><ul class="suggestions-list">';
+            Array.from(matchingDevelopers).slice(0, 3).forEach(name => { html += `<li><a href="#" data-type="developer" data-value="${name}"><span class="suggestion-icon">🏢</span> ${name}</a></li>`; });
+            html += '</ul></div>';
+        }
+        if (matchingStreets.size > 0) {
+            html += '<div class="suggestions-group"><h5 class="suggestions-group-title">-- Đường Phố --</h5><ul class="suggestions-list">';
+            Array.from(matchingStreets).slice(0, 3).forEach(street => { const ward = locations.streets[street]; html += `<li><a href="#" data-type="street" data-street="${street}" data-ward="${ward}"><span class="suggestion-icon">🛣️</span> ${street} <span>(P. ${ward})</span></a></li>`; });
+            html += '</ul></div>';
+        }
+        if (matchingWards.size > 0) {
+            html += '<div class="suggestions-group"><h5 class="suggestions-group-title">-- Phường / Quận --</h5><ul class="suggestions-list">';
+            Array.from(matchingWards).slice(0, 3).forEach(ward => { const city = locations.wards[ward]; html += `<li><a href="#" data-type="ward" data-ward="${ward}" data-city="${city}"><span class="suggestion-icon">📍</span> Phường ${ward} <span>(${city})</span></a></li>`; });
+            html += '</ul></div>';
+        }
+
+        suggestionsContainer.innerHTML = html;
+        suggestionsContainer.classList.toggle('visible', html !== '');
+    }
+
+    function handleSuggestionClick(e) {
+        if (!e.target.closest('a')) return;
+        e.preventDefault();
+        const link = e.target.closest('a');
+        const type = link.dataset.type;
+        const page = 'list-du-an.html';
+
+        switch (type) {
+            // YÊU CẦU 1: Click vào dự án -> đi đến trang chi tiết
+            case 'project': {
+                const projectName = link.dataset.value;
+                const project = allProjects.find(p => p.projectName === projectName);
+                // Tạm thời trỏ về URL tĩnh theo yêu cầu, sau này có thể thay bằng project.projectId
+                const detailUrl = `du-an-chi-tiet.html?id=PROJ-010`; 
+                window.location.href = detailUrl;
+                break;
+            }
+
+            // Click vào chủ đầu tư -> Điền vào ô tìm kiếm và lọc tại chỗ
+            case 'developer': {
+                searchInput.value = link.dataset.value;
+                updateDisplay();
+                break;
+            }
+
+            // YÊU CẦU 2 & 3: Click vào Phường/Đường -> Đi đến trang danh sách đã lọc
+            case 'ward':
+            case 'street': {
+                const urlParams = new URLSearchParams();
+                const defaultProjectType = toSlug('Chung cư'); // Mặc định là Chung cư
+                if (defaultProjectType) urlParams.set('loaihinh', defaultProjectType);
+
+                const city = locations.wards[link.dataset.ward] || link.dataset.city;
+                if (city) urlParams.set('thanhpho', toSlug(city));
+
+                const ward = link.dataset.ward;
+                if (ward) urlParams.set('phuong', toSlug(ward));
+
+                if (type === 'street') {
+                    const street = link.dataset.street;
+                    if (street) urlParams.set('duong', toSlug(street));
+                }
+                
+                window.location.href = `${page}?${urlParams.toString()}`;
+                break;
+            }
+        }
+        
+        if (suggestionsContainer) {
+            suggestionsContainer.classList.remove('visible');
+        }
     }
     
     function updateDisplay() {
@@ -227,14 +381,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function applyProjectFilters() {
+        // ... (Nội dung hàm này đã đúng, chỉ cần đảm bảo nó được sao chép đầy đủ)
         const params = new URLSearchParams(window.location.search);
-        const loaiHinhSlug = params.get('loaihinh'), citySlug = params.get('thanhpho'), wardSlug = params.get('phuong');
-        const getCheckedValues = (name) => Array.from(document.querySelectorAll(`[data-filter-name="${name}"] input:checked`)).map(cb => cb.nextElementSibling.textContent.trim());
+        const loaiHinhSlug = params.get('loaihinh'), citySlug = params.get('thanhpho');
+        
+        // [SỬA LỖI] Sử dụng cb.labels[0] để đảm bảo luôn lấy đúng label
+        const getCheckedValues = (name) => Array.from(document.querySelectorAll(`[data-filter-name="${name}"] input:checked`)).map(cb => cb.labels[0] ? cb.labels[0].textContent.trim() : '');
+        
         const parseTextToRange = (text) => { const nums = text.match(/\d+/g)?.map(Number) || []; if (text.includes('Dưới')) return {min: 0, max: nums[0] || null}; if (text.includes('Trên')) return {min: nums[0] || null, max: Infinity}; if (nums.length === 2) return {min: nums[0], max: nums[1]}; return {min: null, max: null}; };
         const getPriceFilter = (selector) => { const g = sidebar.querySelector(selector); if (!g) return {min: null, max: null}; const tab = g.querySelector('.price-tab-btn.active'), tabId = tab ? tab.dataset.target : null; if (tabId && document.getElementById(tabId)?.classList.contains('active')) { const content = document.getElementById(tabId); if (tabId.includes('quick')) { const btn = content.querySelector('button.active'); if (btn && btn.textContent.toLowerCase() !== 'tất cả') return parseTextToRange(btn.textContent); } else if (tabId.includes('custom')) { const min = parseFloat(content.querySelector('.filter-input-min').value), max = parseFloat(content.querySelector('.filter-input-max').value); return {min: isNaN(min) ? null : min, max: isNaN(max) ? null : max}; } } return {min: null, max: null}; };
+        
         const selectedStatuses = getCheckedValues('status'), selectedLegals = getCheckedValues('legal'), selectedSegments = getCheckedValues('segment');
         const priceSaleRange = getPriceFilter('[data-filter-name="price-sale"]'), priceRentRange = getPriceFilter('[data-filter-name="price-rent"]');
-        const searchTerm = searchInput.value.toLowerCase().trim(), searchTokens = searchTerm.split(/\s+/).filter(token => token.length > 0);
+        const searchTerm = removeDiacritics(searchInput.value.trim()); 
+        const searchTokens = searchTerm.split(/\s+/).filter(token => token.length > 0);
 
         visibleProjects = allProjects.filter(project => {
             const legalMatch = selectedLegals.length === 0 || selectedLegals.includes(project.legal);
@@ -246,48 +406,74 @@ document.addEventListener('DOMContentLoaded', function() {
             const searchMatch = searchTokens.length === 0 || searchTokens.every(token => project.searchableString.includes(token));
             let statusMatch = true;
             if (selectedStatuses.length > 0) {
-                statusMatch = false; const currentYear = 2025, handoverYear = parseInt(project.handoverYear, 10);
+                statusMatch = false; const currentYear = new Date().getFullYear(), handoverYear = parseInt(project.handoverYear, 10);
                 for (const status of selectedStatuses) {
-                    if (status === 'Bàn giao <= 5 năm') { if (!isNaN(handoverYear) && (currentYear - handoverYear <= 5)) { statusMatch = true; break; } } 
-                    else { if (project.status === status) { statusMatch = true; break; } }
+                    if (status === 'Bàn giao <= 5 năm') { if (!isNaN(handoverYear) && (currentYear - handoverYear <= 5) && project.status.toLowerCase().includes('bàn giao')) { statusMatch = true; break; } } 
+                    else if (project.status === status) { statusMatch = true; break; }
                 }
             }
             const projectTypeMatch = !loaiHinhSlug || toSlug(project.ProjectType) === loaiHinhSlug;
             const cityMatch = !citySlug || toSlug(project.city) === citySlug;
-            const wardMatch = !wardSlug || toSlug(project.ward) === wardSlug;
-            return statusMatch && legalMatch && segmentMatch && salePricePass && rentPricePass && searchMatch && projectTypeMatch && cityMatch && wardMatch;
+            return statusMatch && legalMatch && segmentMatch && salePricePass && rentPricePass && searchMatch && projectTypeMatch && cityMatch;
         });
         
-        // Chỉ cập nhật text, không gọi hàm hiển thị từ đây nữa
         if(resultsCountEl) resultsCountEl.textContent = `Tìm thấy ${visibleProjects.length} dự án`;
         updateFilterTagsUI();
     }
     
     function initFilterInteractions() {
-        if (!sidebar) return;
-        const openBtn = document.getElementById('floating-filter-trigger'), closeBtn = document.getElementById('close-filter-btn'), overlay = document.getElementById('filter-overlay-mobile'), applyBtn = sidebar.querySelector('.filter-apply-btn'), resetBtn = sidebar.querySelector('.filter-reset-btn');
-        const openSidebar = () => { sidebar.classList.add('is-open'); overlay.classList.add('is-active'); }, closeSidebar = () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-active'); };
-        if (openBtn && closeBtn && overlay) { openBtn.addEventListener('click', openSidebar); closeBtn.addEventListener('click', closeSidebar); overlay.addEventListener('click', closeSidebar); }
-        sidebar.querySelectorAll('.filter-accordion .accordion-trigger').forEach(trigger => { trigger.addEventListener('click', function() { this.parentElement.classList.toggle('active'); const content = this.nextElementSibling; content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px"; }); });
-        sidebar.querySelectorAll('.price-input-tabs').forEach(tabGroup => { tabGroup.addEventListener('click', function(e) { if (!e.target.matches('.price-tab-btn')) return; const tabBtn = e.target, targetId = tabBtn.dataset.target, targetContent = document.getElementById(targetId), accordionContent = this.closest('.accordion-content'); tabGroup.querySelectorAll('.price-tab-btn').forEach(btn => btn.classList.remove('active')); accordionContent.querySelectorAll('.price-tab-content').forEach(content => content.classList.remove('active')); tabBtn.classList.add('active'); if (targetContent) targetContent.classList.add('active'); if (accordionContent.style.maxHeight) accordionContent.style.maxHeight = accordionContent.scrollHeight + "px"; updateFilterTagsUI(); }); });
-        sidebar.querySelectorAll('.checkbox-group input').forEach(el => { el.addEventListener('change', updateFilterTagsUI); });
-        sidebar.querySelectorAll('.btn-group').forEach(group => { group.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { group.querySelectorAll('button').forEach(btn => btn.classList.remove('active')); e.target.classList.add('active'); const filterGroup = e.target.closest('.filter-group'); if (filterGroup) filterGroup.querySelectorAll('.custom-range-input input').forEach(input => input.value = ''); updateFilterTagsUI(); } }); });
-        sidebar.querySelectorAll('.custom-range-input input').forEach(input => {
-            input.addEventListener('input', (e) => { const filterGroup = e.target.closest('.filter-group'); if (filterGroup) { filterGroup.querySelectorAll('.btn-group button').forEach(btn => btn.classList.remove('active')); filterGroup.querySelector('.btn-group button:first-child').classList.add('active'); } });
-            input.addEventListener('change', (e) => { const rangeContent = e.target.closest('.price-tab-content'); if (rangeContent) { const minInput = rangeContent.querySelector('.filter-input-min'), maxInput = rangeContent.querySelector('.filter-input-max'); if (minInput && maxInput) { const minVal = parseFloat(minInput.value), maxVal = parseFloat(maxInput.value); if (!isNaN(minVal) && !isNaN(maxVal) && maxVal < minVal) { alert('Giá trị "Đến" phải lớn hơn hoặc bằng giá trị "Từ".'); e.target.value = ''; } } } updateFilterTagsUI(); });
-        });
-        if (applyBtn) { applyBtn.addEventListener('click', () => { updateDisplay(); closeSidebar(); const resultsSummary = document.querySelector('.results-summary'); if(resultsSummary) resultsSummary.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); }
-        if (searchInput) { let debounceTimeout; searchInput.addEventListener('input', () => { clearTimeout(debounceTimeout); debounceTimeout = setTimeout(updateDisplay, 350); }); searchInput.closest('form').addEventListener('submit', (e) => { e.preventDefault(); updateDisplay(); }); }
-        if (resetBtn) { resetBtn.addEventListener('click', () => { sidebar.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false); sidebar.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => input.value = ''); sidebar.querySelectorAll('.btn-group').forEach(group => { group.querySelectorAll('button').forEach(btn => btn.classList.remove('active')); group.querySelector('button:first-child')?.classList.add('active'); }); sidebar.querySelectorAll('.price-input-tabs').forEach(tabGroup => { const parentContent = tabGroup.closest('.accordion-content'); tabGroup.querySelectorAll('.price-tab-btn').forEach(btn => btn.classList.remove('active')); tabGroup.children[0].classList.add('active'); if(parentContent) { parentContent.querySelectorAll('.price-tab-content').forEach(content => content.classList.remove('active')); const firstPane = parentContent.querySelector('.price-tab-content:first-of-type'); if (firstPane) firstPane.classList.add('active'); } }); if (searchInput) searchInput.value = ''; updateDisplay(); }); }
+        if (!sidebar) return;
+        const openBtn = document.getElementById('floating-filter-trigger'), 
+              closeBtn = document.getElementById('close-filter-btn'), 
+              overlay = document.getElementById('filter-overlay-mobile'), 
+              applyBtn = sidebar.querySelector('.filter-apply-btn'), 
+              resetBtn = sidebar.querySelector('.filter-reset-btn');
+
+        const openSidebar = () => { sidebar.classList.add('is-open'); overlay.classList.add('is-active'); }, 
+              closeSidebar = () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-active'); };
         
-        // Gắn sự kiện cho dropdown sắp xếp
-        if(sortSelect) {
-            sortSelect.addEventListener('change', () => {
-                sortProjects();
-                showPage(1); // Hiển thị lại trang đầu tiên với thứ tự mới
-            });
+        if (openBtn && closeBtn && overlay) { 
+            openBtn.addEventListener('click', openSidebar); 
+            closeBtn.addEventListener('click', closeSidebar); 
+            overlay.addEventListener('click', closeSidebar); 
         }
-    }
+
+        // Các sự kiện cho bộ lọc ở sidebar (giữ nguyên)
+        sidebar.querySelectorAll('.filter-accordion .accordion-trigger').forEach(trigger => { trigger.addEventListener('click', function() { this.parentElement.classList.toggle('active'); const content = this.nextElementSibling; content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px"; }); });
+        sidebar.querySelectorAll('.price-input-tabs').forEach(tabGroup => { tabGroup.addEventListener('click', function(e) { if (!e.target.matches('.price-tab-btn')) return; const tabBtn = e.target, targetId = tabBtn.dataset.target, targetContent = document.getElementById(targetId), accordionContent = this.closest('.accordion-content'); tabGroup.querySelectorAll('.price-tab-btn').forEach(btn => btn.classList.remove('active')); accordionContent.querySelectorAll('.price-tab-content').forEach(content => content.classList.remove('active')); tabBtn.classList.add('active'); if (targetContent) targetContent.classList.add('active'); if (accordionContent.style.maxHeight) accordionContent.style.maxHeight = accordionContent.scrollHeight + "px"; updateFilterTagsUI(); }); });
+        sidebar.querySelectorAll('.checkbox-group input').forEach(el => { el.addEventListener('change', updateFilterTagsUI); });
+        sidebar.querySelectorAll('.btn-group').forEach(group => { group.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { group.querySelectorAll('button').forEach(btn => btn.classList.remove('active')); e.target.classList.add('active'); const filterGroup = e.target.closest('.filter-group'); if (filterGroup) filterGroup.querySelectorAll('.custom-range-input input').forEach(input => input.value = ''); updateFilterTagsUI(); } }); });
+        sidebar.querySelectorAll('.custom-range-input input').forEach(input => {
+            input.addEventListener('input', (e) => { const filterGroup = e.target.closest('.filter-group'); if (filterGroup) { filterGroup.querySelectorAll('.btn-group button').forEach(btn => btn.classList.remove('active')); filterGroup.querySelector('.btn-group button:first-child').classList.add('active'); } });
+            input.addEventListener('change', (e) => { const rangeContent = e.target.closest('.price-tab-content'); if (rangeContent) { const minInput = rangeContent.querySelector('.filter-input-min'), maxInput = rangeContent.querySelector('.filter-input-max'); if (minInput && maxInput) { const minVal = parseFloat(minInput.value), maxVal = parseFloat(maxInput.value); if (!isNaN(minVal) && !isNaN(maxVal) && maxVal < minVal) { alert('Giá trị "Đến" phải lớn hơn hoặc bằng giá trị "Từ".'); e.target.value = ''; } } } updateFilterTagsUI(); });
+        });
+        
+        if (applyBtn) { applyBtn.addEventListener('click', () => { updateDisplay(); closeSidebar(); const resultsSummary = document.querySelector('.results-summary'); if(resultsSummary) resultsSummary.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); }
+        if (resetBtn) { resetBtn.addEventListener('click', () => { sidebar.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false); sidebar.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => input.value = ''); sidebar.querySelectorAll('.btn-group').forEach(group => { group.querySelectorAll('button').forEach(btn => btn.classList.remove('active')); group.querySelector('button:first-child')?.classList.add('active'); }); sidebar.querySelectorAll('.price-input-tabs').forEach(tabGroup => { const parentContent = tabGroup.closest('.accordion-content'); tabGroup.querySelectorAll('.price-tab-btn').forEach(btn => btn.classList.remove('active')); tabGroup.children[0].classList.add('active'); if(parentContent) { parentContent.querySelectorAll('.price-tab-content').forEach(content => content.classList.remove('active')); const firstPane = parentContent.querySelector('.price-tab-content:first-of-type'); if (firstPane) firstPane.classList.add('active'); } }); if (searchInput) searchInput.value = ''; updateDisplay(); }); }
+        
+        // ===== BẮT ĐẦU KHỐI LẮNG NGHE SỰ KIỆN CHO TÌM KIẾM (ĐÃ HOÀN CHỈNH) =====
+        if (searchInput) {
+            let debounceTimeout;
+            searchInput.addEventListener('input', () => {
+                renderSuggestions(searchInput.value);
+                clearTimeout(debounceTimeout);
+                debounceTimeout = setTimeout(updateDisplay, 350);
+            });
+            searchInput.addEventListener('focus', () => renderSuggestions(searchInput.value));
+            searchInput.closest('form')?.addEventListener('submit', (e) => { e.preventDefault(); updateDisplay(); });
+        }
+        if (suggestionsContainer) {
+            suggestionsContainer.addEventListener('mousedown', handleSuggestionClick);
+        }
+        document.addEventListener('click', (e) => {
+            if (suggestionsContainer && searchInput && !searchInput.parentElement.contains(e.target)) {
+                suggestionsContainer.classList.remove('visible');
+            }
+        });
+        if (sortSelect) {
+            sortSelect.addEventListener('change', updateDisplay);
+        }
+    }
     
     function initFaqAndSeoSection() {
         const accordionGroup = document.getElementById('faq-accordion');
