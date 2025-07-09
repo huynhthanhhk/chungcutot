@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
             html += '</ul></div>';
         }
         if (matchingWards.size > 0) {
-            html += '<div class="suggestions-group"><h5 class="suggestions-group-title">-- Phường / Quận --</h5><ul class="suggestions-list">';
+            html += '<div class="suggestions-group"><h5 class="suggestions-group-title">-- Phường / Xã --</h5><ul class="suggestions-list">';
             Array.from(matchingWards).slice(0, 3).forEach(ward => { const city = locations.wards[ward]; html += `<li><a href="#" data-type="ward" data-ward="${ward}" data-city="${city}"><span class="suggestion-icon">📍</span> Phường ${ward} <span>(${city})</span></a></li>`; });
             html += '</ul></div>';
         }
