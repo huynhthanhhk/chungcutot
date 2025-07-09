@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     
         const mapFrame = document.querySelector('.map-container iframe');
-        if (mapFrame) mapFrame.src = `http://googleusercontent.com/maps/google.com/4{encodeURIComponent(address)}&output=embed`;
+        if (mapFrame) mapFrame.src = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
     
         if (!isRental) { const propertyValueInput = document.getElementById('lc-property-value'); if (propertyValueInput) { propertyValueInput.value = product.price; propertyValueInput.dispatchEvent(new Event('input', { bubbles: true })); } }
     
