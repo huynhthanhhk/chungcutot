@@ -1521,3 +1521,22 @@ body.drawer-open {
     font-size: 20px;
     line-height: 1;
 }
+/* Canh chỉnh lại nội dung cho các mục trong danh sách gợi ý */
+.suggestions-list li {
+    display: flex;           /* Sử dụng Flexbox để dễ dàng căn chỉnh */
+    justify-content: flex-start; /* Canh các phần tử bên trong (icon, text) về phía bên trái */
+    text-align: left;        /* Đảm bảo nội dung văn bản luôn được canh trái */
+    align-items: center;     /* Căn giữa các phần tử theo chiều dọc cho đẹp mắt */
+}
+
+/* Điều chỉnh khoảng cách cho icon và text phụ (nếu có) */
+.suggestions-list li a .suggestion-icon {
+    margin-right: 8px; /* Tạo khoảng cách giữa icon và text */
+}
+
+.suggestions-list li a span:last-child {
+    margin-left: auto;   /* Đẩy text phụ (tên phường/quận) về phía bên phải */
+    padding-left: 10px;  /* Tạo một chút khoảng cách */
+    opacity: 0.7;        /* Làm mờ text phụ một chút */
+    font-size: 0.9em;    /* Cho chữ nhỏ hơn một chút */
+}
