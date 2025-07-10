@@ -318,6 +318,7 @@ body.menu-open-mobile {
   .hamburger-button {
     display: none !important; /* Quy tắc này đúng */
   }
+  
 }
 /* ======================= Header ======================= */
 .header-wrapper {
@@ -351,7 +352,7 @@ body.menu-open-mobile {
 }
 
 .logo {
-    height: 40px; 
+    height: 50px; 
     width: auto;
 }
 
@@ -561,21 +562,25 @@ body.menu-open-mobile {
         background-color: var(--body-bg);
         text-transform: uppercase;
     }
-}
-.panel-header .mobile-menu-close {
-    background: none;
-    border: none;
-    font-size: 32px;
-    color: var(--text-light);
-    cursor: pointer;
-    padding: 0.5rem;
-    margin-left: auto; /* Quan trọng: Đẩy nút về phía bên phải */
-    line-height: 1;
-    font-weight: 300;
-}
-.panel-header .mobile-menu-close:hover {
-    color: var(--text-dark);
-}
+    }
+    .panel-header .mobile-menu-close {
+        background: none;
+        border: none;
+        font-size: 32px;
+        color: var(--text-light);
+        cursor: pointer;
+        padding: 0.5rem;
+        margin-left: auto; /* Quan trọng: Đẩy nút về phía bên phải */
+        line-height: 1;
+        font-weight: 300;
+    }
+    .panel-header .mobile-menu-close:hover {
+        color: var(--text-dark);
+    }
+    .logo {
+        height: 40px; 
+        width: auto;
+    }
 }
 /* ======================================================= */
 /* ==   ĐẢM BẢO MENU MOBILE CẤP 1 LUÔN THEO CHIỀU DỌC   == */
