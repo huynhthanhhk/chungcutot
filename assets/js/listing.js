@@ -1288,8 +1288,9 @@ function updateBreadcrumb() {
     const breadcrumbParts = [];
     breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${propertyType}</span>`);
     if (productCategoryText !== 'Bất động sản') {
-        breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}">${productCategoryText}</a>`);
-    }
+    // Thay thẻ <a> bằng thẻ <span> để không thể nhấp vào
+    breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${productCategoryText}</span>`);
+}
     if (cityText && citySlug) {
         breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}&thanhpho=${citySlug}">${cityText}</a>`);
     }
