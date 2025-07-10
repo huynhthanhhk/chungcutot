@@ -96,9 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         }
-        mainMenuContainer.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 200); });
+        mainMenuContainer.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 400); });
         megaMenuContainer.addEventListener('mouseenter', () => clearTimeout(menuTimeout));
-        megaMenuContainer.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 200); });
+        megaMenuContainer.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 400); });
     }
 
     function populateDesktopPanel(menuKey) {
