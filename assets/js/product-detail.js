@@ -60,21 +60,43 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function populatePageWithProductData(product, isRental) {
+        function populatePageWithProductData(product, isRental) {
         document.title = `${product.title} - Chung Cư Tốt`;
+
+        // --- CẬP NHẬT BREADCRUMB ---
         const breadcrumbContainer = document.querySelector('.breadcrumb');
         if (breadcrumbContainer) {
             const propertyTypeText = isRental ? 'Cho thuê' : 'Mua bán';
             const listingPage = isRental ? 'listing-thue.html' : 'listing-ban.html';
-            const categorySlug = toSlug(product.productCategory), citySlug = toSlug(product.city), wardSlug = toSlug(product.ward);
-            const breadcrumbParts = [`<span class="breadcrumb-item-no-link">${propertyTypeText}</span>`];
-            if (product.productCategory) breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${product.productCategory}</span>`);
-            if (product.city && citySlug && categorySlug) breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${categorySlug}&thanhpho=${citySlug}">${product.city}</a>`);
-            if (product.ward && wardSlug && citySlug && categorySlug) breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${categorySlug}&thanhpho=${citySlug}&phuong=${wardSlug}">${product.ward}</a>`);
-            if (product.street) breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${product.street}</span>`);
-            breadcrumbContainer.innerHTML = breadcrumbParts.join(' > ');
+            const categorySlug = toSlug(product.productCategory);
+            const citySlug = toSlug(product.city);
+            const wardSlug = toSlug(product.ward);
+            const streetSlug = toSlug(product.street);
+
+            const breadcrumbParts = [];
+
+            // 1. Gộp Tên menu và Loại hình thành một mục không link
+            let firstCrumbText = propertyTypeText;
+            if (product.productCategory) {
+                firstCrumbText += ` ${product.productCategory}`;
+            }
+            breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${firstCrumbText}</span>`);
+
+            // 2. Tạo các cấp tiếp theo là link
+            if (product.city && citySlug) {
+                breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${categorySlug}&thanhpho=${citySlug}">${product.city}</a>`);
+            }
+            if (product.ward && wardSlug) {
+                breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${categorySlug}&thanhpho=${citySlug}&phuong=${wardSlug}">${product.ward}</a>`);
+            }
+            
+            // Cấp cuối cùng là Tên sản phẩm, luôn là text tĩnh
+            breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${product.title}</span>`);
+            
+            breadcrumbContainer.innerHTML = breadcrumbParts.join(' &gt; ');
         }
        
+        // --- CÁC PHẦN CẬP NHẬT GIAO DIỆN KHÁC (GIỮ NGUYÊN) ---
         const address = `${product.street}, ${product.ward}, ${product.city}`;
         document.querySelector('h1').textContent = product.title;
         const addressLine = document.querySelector('.address-line');
@@ -124,9 +146,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     
         const mapFrame = document.querySelector('.map-container iframe');
-        if (mapFrame) mapFrame.src = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        if (mapFrame) {
+            mapFrame.src = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        }
     
-        if (!isRental) { const propertyValueInput = document.getElementById('lc-property-value'); if (propertyValueInput) { propertyValueInput.value = product.price; propertyValueInput.dispatchEvent(new Event('input', { bubbles: true })); } }
+        if (!isRental) { 
+            const propertyValueInput = document.getElementById('lc-property-value'); 
+            if (propertyValueInput) { 
+                propertyValueInput.value = product.price; 
+                propertyValueInput.dispatchEvent(new Event('input', { bubbles: true })); 
+            } 
+        }
     
         const contactInfoElements = [ { selector: '.contact-sidebar .broker-card', avatar: '.broker-avatar', name: '.broker-name', call: '.btn-call', zalo: '.btn-zalo' }, { selector: '.mobile-cta-bar', call: '.btn-call', zalo: '.btn-zalo' } ];
         contactInfoElements.forEach(config => { const container = document.querySelector(config.selector); if (container) { if(config.avatar) container.querySelector(config.avatar).src = `assets/images/${product.brokerAvatar}`; if(config.name) container.querySelector(config.name).textContent = product.brokerName; const callBtn = container.querySelector(config.call); if(callBtn) callBtn.href = `tel:${product.brokerPhone}`; const zaloBtn = container.querySelector(config.zalo); if(zaloBtn) zaloBtn.href = `https://zalo.me/${product.brokerPhone.replace(/^0/, '')}`; } });

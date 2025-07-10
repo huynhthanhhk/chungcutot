@@ -202,8 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!breadcrumbContainer || !categoryHeader) return;
     
         const params = new URLSearchParams(window.location.search);
-        // [SỬA ĐỔI] Lấy loại hình từ URL, nếu không có thì mặc định là "Chung cư"
-        const loaiHinhSlug = params.get('loaihinh') || toSlug('Chung cư'); 
+        const loaiHinhSlug = params.get('loaihinh'); // Không cần giá trị mặc định nữa
         const citySlug = params.get('thanhpho');
         const wardSlug = params.get('phuong');
         const duongSlug = params.get('duong');
@@ -212,54 +211,61 @@ document.addEventListener('DOMContentLoaded', function() {
         const cityText = cityLookup[citySlug] || citySlug;
         const wardText = wardLookup[wardSlug] || wardSlug;
         const streetText = streetLookup[duongSlug] || duongSlug;
-        // Lấy đúng tên ProjectType từ slug
-        const projectTypeText = projectTypeLookup[loaiHinhSlug] || 'Dự án'; 
+        const projectTypeText = projectTypeLookup[loaiHinhSlug]; // Lấy loại hình từ slug
         
-        // Cập nhật Tiêu đề chính (H1) - Logic này giữ nguyên
-        let mainTitle = `Dự án ${projectTypeText}`;
-        if (duongSlug && wardSlug && citySlug) mainTitle = `Dự án ${projectTypeText} tại đường ${streetText}, Phường ${wardText}, ${cityText}`;
-        else if (wardSlug && citySlug) mainTitle = `Dự án ${projectTypeText} tại Phường ${wardText}, ${cityText}`;
-        else if (citySlug) mainTitle = `Dự án ${projectTypeText} tại ${cityText}`;
+        // Xây dựng Tiêu đề chính (H1)
+        let mainTitle = "Danh sách Dự án"; // Tiêu đề mặc định
+        if (projectTypeText) {
+            mainTitle = `Dự án ${projectTypeText}`;
+            if (duongSlug && wardSlug && citySlug) mainTitle += ` tại đường ${streetText}, Phường ${wardText}, ${cityText}`;
+            else if (wardSlug && citySlug) mainTitle += ` tại Phường ${wardText}, ${cityText}`;
+            else if (citySlug) mainTitle += ` tại ${cityText}`;
+        }
         categoryHeader.textContent = mainTitle;
     
         // ===== BẮT ĐẦU LOGIC BREADCRUMB MỚI =====
         const breadcrumbParts = [];
         const page = 'list-du-an.html';
         
-        // Cấp 1: "Dự án" - Luôn là text, không link
-        breadcrumbParts.push(`<span>Dự án</span>`);
-        
-        // Cấp 2: Loại hình dự án - Luôn là text, không link (theo yêu cầu "khóa")
+        // [SỬA ĐỔI] Gộp "Dự án" và "Loại hình" thành một mục duy nhất không click được
+        let firstCrumbText = "Dự án";
         if (projectTypeText) {
-            breadcrumbParts.push(`<span>${projectTypeText}</span>`);
+            firstCrumbText += ` ${projectTypeText}`; // Ví dụ: "Dự án Chung cư"
         }
+        breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${firstCrumbText}</span>`);
         
-        // Cấp 3: Tỉnh/Thành phố (nếu có) - Sẽ là link
+        // Các cấp sau vẫn là link như cũ
         if (citySlug && cityText) {
-            // Link này không cần chứa loaihinh nữa vì nó đã bị "khóa"
-            breadcrumbParts.push(`<a href="${page}?thanhpho=${citySlug}">${cityText}</a>`);
+            const cityUrlParams = new URLSearchParams();
+            if (loaiHinhSlug) cityUrlParams.set('loaihinh', loaiHinhSlug);
+            cityUrlParams.set('thanhpho', citySlug);
+            breadcrumbParts.push(`<a href="${page}?${cityUrlParams.toString()}">${cityText}</a>`);
         }
         
-        // Cấp 4: Phường/Xã (nếu có) - Sẽ là link
         if (wardSlug && wardText) {
-            breadcrumbParts.push(`<a href="${page}?thanhpho=${citySlug}&phuong=${wardSlug}">Phường ${wardText}</a>`);
+            const wardUrlParams = new URLSearchParams();
+            if (loaiHinhSlug) wardUrlParams.set('loaihinh', loaiHinhSlug);
+            if (citySlug) wardUrlParams.set('thanhpho', citySlug);
+            wardUrlParams.set('phuong', wardSlug);
+            breadcrumbParts.push(`<a href="${page}?${wardUrlParams.toString()}">Phường ${wardText}</a>`);
         }
 
-        // Cấp 5: Đường (nếu có) - Sẽ là link
         if (duongSlug && streetText) {
-            breadcrumbParts.push(`<a href="${page}?thanhpho=${citySlug}&phuong=${wardSlug}&duong=${duongSlug}">${streetText}</a>`);
+            const streetUrlParams = new URLSearchParams();
+            if (loaiHinhSlug) streetUrlParams.set('loaihinh', loaiHinhSlug);
+            if (citySlug) streetUrlParams.set('thanhpho', citySlug);
+            if (wardSlug) streetUrlParams.set('phuong', wardSlug);
+            streetUrlParams.set('duong', duongSlug);
+            breadcrumbParts.push(`<a href="${page}?${streetUrlParams.toString()}">${streetText}</a>`);
         }
     
-        // Chuyển phần tử cuối cùng trong breadcrumb từ link <a> thành <span>
-        // Logic này đảm bảo cấp sâu nhất sẽ không click được
-        if (breadcrumbParts.length > 2) { // Áp dụng từ cấp thành phố trở đi
+        // Chuyển phần tử cuối cùng thành <span> không click được
+        if (breadcrumbParts.length > 1) {
             const lastPart = breadcrumbParts[breadcrumbParts.length - 1];
-            // Thay thế thẻ <a>...</a> bằng <span>...</span>
             const lastPartAsSpan = lastPart.replace(/<a\b[^>]*>/, '<span>').replace(/<\/a>/, '</span>');
             breadcrumbParts[breadcrumbParts.length - 1] = lastPartAsSpan;
         }
         
-        // Hiển thị ra giao diện
         breadcrumbContainer.innerHTML = breadcrumbParts.join(' &gt; ');
     }
     function renderSuggestions(query) {

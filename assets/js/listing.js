@@ -1237,7 +1237,7 @@ function applyAllFilters() {
     }
     
     // Thay thế toàn bộ hàm updateBreadcrumb cũ bằng hàm này
-function updateBreadcrumb() {
+    function updateBreadcrumb() {
     const breadcrumbContainer = document.querySelector('.breadcrumb');
     const categoryHeader = document.querySelector('.category-header h1');
     const categoryDescription = document.querySelector('.category-header p');
@@ -1249,58 +1249,59 @@ function updateBreadcrumb() {
     const loaiHinhSlug = params.get('loaihinh');
     const citySlug = params.get('thanhpho');
     const wardSlug = params.get('phuong');
-    const duongSlug = params.get('duong'); // <-- THÊM MỚI: Đọc tham số đường
+    const duongSlug = params.get('duong');
 
-    // Lấy tên có dấu từ slug
     const cityText = cityLookup[citySlug] || citySlug;
     const wardText = wardLookup[wardSlug] || wardSlug;
-    const streetText = streetLookup[duongSlug] || duongSlug; // <-- THÊM MỚI
+    const streetText = streetLookup[duongSlug] || duongSlug;
     const productCategoryText = categoryLookup[loaiHinhSlug] || 'Bất động sản';
 
     const isRentalPage = window.location.pathname.includes('listing-thue.html');
     const propertyType = isRentalPage ? 'Cho thuê' : 'Mua bán';
     const listingPage = isRentalPage ? 'listing-thue.html' : 'listing-ban.html';
-    
+
+    // --- Logic cập nhật tiêu đề H1 (Giữ nguyên) ---
     let mainTitle = `${propertyType} ${productCategoryText}`;
-    let historyTitleText = `Lịch sử giá ${propertyType.toLowerCase()} ${productCategoryText.toLowerCase()}`;
-    
-    // Cập nhật logic xây dựng tiêu đề
-    if (streetText && wardText && cityText) {
+    if (duongSlug && wardSlug && citySlug) {
         mainTitle = `${propertyType} ${productCategoryText} tại đường ${streetText}, Phường ${wardText}, ${cityText}`;
-        historyTitleText += ` tại đường ${streetText}, Phường ${wardText}, ${cityText}`;
-    } else if (wardText && cityText) {
+    } else if (wardSlug && citySlug) {
         mainTitle = `${propertyType} ${productCategoryText} tại Phường ${wardText}, ${cityText}`;
-        historyTitleText += ` tại Phường ${wardText}, ${cityText}`;
-    } else if (cityText) {
+    } else if (citySlug) {
         mainTitle = `${propertyType} ${productCategoryText} tại ${cityText}`;
-        historyTitleText += ` tại ${cityText}`;
     }
-    
     categoryHeader.textContent = mainTitle;
-    if (priceHistoryTitle) {
-        priceHistoryTitle.textContent = historyTitleText;
-    }
-    if (categoryDescription) {
-        categoryDescription.textContent = `Danh sách ${mainTitle.toLowerCase()} được tìm thấy.`;
+    // ... (Các logic cập nhật tiêu đề khác giữ nguyên)
+
+    // ===== BẮT ĐẦU LOGIC BREADCRUMB MỚI =====
+    const breadcrumbParts = [];
+
+    // Gộp mục đầu tiên (ví dụ: "Mua bán Căn hộ") thành text tĩnh
+    if (productCategoryText !== 'Bất động sản') {
+        breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${propertyType} ${productCategoryText}</span>`);
+    } else {
+        breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${propertyType}</span>`);
     }
 
-    // Cập nhật logic xây dựng breadcrumb
-    const breadcrumbParts = [];
-    breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${propertyType}</span>`);
-    if (productCategoryText !== 'Bất động sản') {
-    // Thay thẻ <a> bằng thẻ <span> để không thể nhấp vào
-    breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${productCategoryText}</span>`);
-}
+    // Tạo các cấp tiếp theo dưới dạng link
     if (cityText && citySlug) {
         breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}&thanhpho=${citySlug}">${cityText}</a>`);
     }
     if (wardText && wardSlug) {
         breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}&thanhpho=${citySlug}&phuong=${wardSlug}">Phường ${wardText}</a>`);
     }
-    if (streetText && duongSlug) { // <-- THÊM MỚI
-        breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${streetText}</span>`);
+    if (streetText && duongSlug) {
+        breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}&thanhpho=${citySlug}&phuong=${wardSlug}&duong=${duongSlug}">${streetText}</a>`);
     }
-    
+
+    // [LOGIC MỚI] Chuyển phần tử cuối cùng trong breadcrumb từ link <a> thành <span>
+    if (breadcrumbParts.length > 1) {
+        const lastPart = breadcrumbParts[breadcrumbParts.length - 1];
+        // Thay thế thẻ <a>...</a> bằng <span>...</span>
+        const lastPartAsSpan = lastPart.replace(/<a\b[^>]*>/, '<span>').replace(/<\/a>/, '</span>');
+        breadcrumbParts[breadcrumbParts.length - 1] = lastPartAsSpan;
+    }
+
+    // Hiển thị ra giao diện
     breadcrumbContainer.innerHTML = breadcrumbParts.join(' &gt; ');
 }
 

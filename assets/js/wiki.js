@@ -1,59 +1,70 @@
 // assets/js/wiki.js
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Kiểm tra xem các biến dữ liệu đã tồn tại chưa
     if (typeof allWikiArticles === 'undefined' || typeof wikiCategories === 'undefined') {
         console.error("Lỗi: Không tìm thấy dữ liệu Wiki (allWikiArticles hoặc wikiCategories).");
         return;
     }
 
     const urlParams = new URLSearchParams(window.location.search);
-    // SỬA Ở ĐÂY: Đổi 'danhmuc' thành 'danh-muc' để khớp với yêu cầu
-    const categorySlug = urlParams.get('danh-muc'); 
+    // Lấy danh mục từ URL, nếu không có thì mặc định là 'phap-ly'
+    const categorySlug = urlParams.get('danh-muc') || 'phap-ly';
 
-    const gridContainer = document.getElementById('wiki-grid-container');
-    const categoryTitleEl = document.getElementById('wiki-category-title');
-    const categoryDescEl = document.getElementById('wiki-category-description');
-    const breadcrumbCategoryNameEl = document.getElementById('breadcrumb-category-name');
-    const sidebarContainer = document.getElementById('sidebar-container');
+    // Lấy các phần tử trên trang để cập nhật
+    const gridContainer = document.querySelector('.wiki-grid');
+    const categoryTitleEl = document.querySelector('.category-header h1');
+    const categoryDescEl = document.querySelector('.category-header p');
+    const breadcrumbContainer = document.querySelector('.breadcrumb');
+    const sidebarList = document.querySelector('.sidebar-column .widget ul');
 
-    if (!categorySlug || !wikiCategories[categorySlug]) {
-        displayError("Danh mục không hợp lệ hoặc không tồn tại.");
+    // Nếu không tìm thấy các vùng chứa chính, dừng lại
+    if (!gridContainer || !categoryTitleEl || !breadcrumbContainer || !sidebarList) {
+        console.error("Lỗi: Thiếu các thành phần HTML quan trọng (grid, header, breadcrumb, sidebar).");
         return;
     }
     
+    // Lọc ra các bài viết thuộc danh mục đang chọn
     const articlesToShow = allWikiArticles.filter(article => article.category === categorySlug);
 
+    // Gọi các hàm để cập nhật giao diện
     updatePageInfo(categorySlug);
     displayArticles(articlesToShow);
-    displaySidebar();
+    displaySidebar(categorySlug);
 
-    function displayError(message) {
-        if (gridContainer) {
-            gridContainer.innerHTML = `<p style="text-align: center; padding: 20px;">${message}</p>`;
-        }
-        if (categoryTitleEl) {
-            categoryTitleEl.textContent = "Lỗi";
-        }
-    }
-
+    /**
+     * Cập nhật tiêu đề trang, H1, mô tả và breadcrumb
+     * @param {string} slug - Slug của danh mục hiện tại
+     */
     function updatePageInfo(slug) {
         const category = wikiCategories[slug];
+        if (!category) return;
+
         document.title = `${category.name} - Wiki - Chung Cư Tốt`;
-        categoryTitleEl.textContent = category.name;
-        categoryDescEl.textContent = category.description;
-        breadcrumbCategoryNameEl.textContent = category.name;
+        categoryTitleEl.textContent = `Wiki ${category.name}`;
+        if(categoryDescEl) categoryDescEl.textContent = category.description;
+
+        // Tạo breadcrumb động
+        const breadcrumbText = `Wiki - ${category.name}`;
+        breadcrumbContainer.innerHTML = `<span class="breadcrumb-item-no-link">${breadcrumbText}</span>`;
     }
 
+    /**
+     * Hiển thị danh sách các bài viết ra grid
+     * @param {Array} articles - Mảng các bài viết cần hiển thị
+     */
     function displayArticles(articles) {
         gridContainer.innerHTML = ''; 
         if (articles.length === 0) {
-            gridContainer.innerHTML = `<p style="text-align: center; padding: 20px;">Chưa có bài viết nào trong danh mục này.</p>`;
+            gridContainer.innerHTML = `<p style="text-align: center; grid-column: 1 / -1; padding: 20px;">Chưa có bài viết nào trong danh mục này.</p>`;
             return;
         }
 
         articles.forEach(article => {
+            // Tạo link cho bài viết chi tiết
+            const articleLink = `bai-viet-chi-tiet.html?id=${article.id}`;
             const card = document.createElement('a');
-            card.href = article.link;
+            card.href = articleLink;
             card.className = 'wiki-card';
             card.innerHTML = `
                 <div class="wiki-card-image">
@@ -69,27 +80,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function displaySidebar() {
-        if (!sidebarContainer) return;
-
-        let linksHTML = '';
+    /**
+     * Hiển thị danh sách các danh mục trong sidebar
+     * @param {string} currentSlug - Slug của danh mục đang active để highlight
+     */
+    function displaySidebar(currentSlug) {
+        sidebarList.innerHTML = '';
         for (const slug in wikiCategories) {
             const category = wikiCategories[slug];
-            // SỬA Ở ĐÂY: Dùng đúng tên tham số 'danh-muc' khi tạo link
             const link = `wiki.html?danh-muc=${slug}`;
-            const isActive = slug === categorySlug ? 'class="active"' : '';
-            linksHTML += `<li><a href="${link}" ${isActive}>${category.name}</a></li>`;
+            const isActive = slug === currentSlug ? 'class="active"' : '';
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `<a href="${link}" ${isActive}>${category.name}</a>`;
+            sidebarList.appendChild(listItem);
         }
-
-        sidebarContainer.innerHTML = `
-            <div class="widget">
-                <h3 class="widget-title">Chủ đề Wiki</h3>
-                <ul>${linksHTML}</ul>
-            </div>
-            <div class="widget">
-                <h3 class="widget-title">Quảng cáo</h3>
-                <a href="#"><img src="https://placehold.co/300x400/eeeeee/333333?text=Banner+Quảng+Cáo" alt="Quảng cáo" style="border-radius: 8px;"></a>
-            </div>
-        `;
     }
 });
