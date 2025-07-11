@@ -351,6 +351,7 @@ function initializeAdvancedPopup() {
         initAllModals();
         initAllCarousels();
         initActualPhotosSection(); 
+        populateFeaturedNews()
         
         
         // [SỬA ĐỔI] Gọi lại hàm initHeroGallery để tạo thumbnail
@@ -642,6 +643,57 @@ function initPageBottomForm() {
 
         // Cuộn tới thông báo để người dùng thấy
         successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+}
+function populateFeaturedNews() {
+    // Chỉ chạy logic này nếu tìm thấy khu vực tin tức và có dữ liệu
+    const featuredNewsContainer = document.querySelector('.featured-news-grid');
+    if (!featuredNewsContainer || typeof allNewsArticles === 'undefined' || allNewsArticles.length === 0) {
+        return;
+    }
+
+    const mainPostContainer = featuredNewsContainer.querySelector('.featured-post-large');
+    const secondaryPostsContainer = featuredNewsContainer.querySelector('.secondary-posts');
+
+    if (!mainPostContainer || !secondaryPostsContainer) return;
+
+    // Lấy bài viết đầu tiên làm bài chính
+    const mainArticle = allNewsArticles[0];
+    // Lấy 3 bài viết tiếp theo làm bài phụ
+    const secondaryArticles = allNewsArticles.slice(1, 4);
+
+    // Hiển thị bài viết chính
+    if (mainArticle) {
+        const articleLink = `bai-viet-chi-tiet.html?id=${mainArticle.id}`;
+        mainPostContainer.innerHTML = `
+            <div class="post-thumbnail-large">
+                <a href="${articleLink}">
+                    <img src="${mainArticle.image}" alt="${mainArticle.title}">
+                </a>
+                <div class="post-content-large">
+                    <h2 class="post-title-large">
+                        <a href="${articleLink}">${mainArticle.title}</a>
+                    </h2>
+                </div>
+            </div>
+        `;
+    }
+
+    // Hiển thị các bài viết phụ
+    secondaryPostsContainer.innerHTML = ''; // Xóa các bài viết tĩnh
+    secondaryArticles.forEach(article => {
+        const articleLink = `bai-viet-chi-tiet.html?id=${article.id}`;
+        const articleElement = document.createElement('article');
+        articleElement.className = 'secondary-post-small';
+        articleElement.innerHTML = `
+            <a href="${articleLink}" class="post-thumbnail-small">
+                <img src="${article.image}" alt="${article.title}">
+            </a>
+            <div class="post-content-small">
+                <h3 class="post-title-small"><a href="${articleLink}">${article.title}</a></h3>
+            </div>
+        `;
+        secondaryPostsContainer.appendChild(articleElement);
     });
 }
 
