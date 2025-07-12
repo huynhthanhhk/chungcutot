@@ -247,20 +247,24 @@ document.addEventListener('DOMContentLoaded', function () {
     // Tạo các bảng tra cứu để chuyển slug -> tên có dấu
     // Tạo các bảng tra cứu để chuyển slug -> tên có dấu và dữ liệu gợi ý
     // --- PHẦN TẠO BẢNG TRA CỨU DỮ LIỆU ---
-    const cityLookup = {};
-    const wardLookup = {};
-    const streetLookup = {};
-    const categoryLookup = {};
+   // --- PHẦN TẠO BẢNG TRA CỨU DỮ LIỆU (Đã sửa lỗi) ---
+    const cityLookup = {}, wardLookup = {}, streetLookup = {}, categoryLookup = {};
     const locations = { streets: {}, wards: {} };
 
-    // BƯỚC 1 (MỚI): Lấy dữ liệu từ Menu để đảm bảo có đủ tất cả các địa danh
-    // Điều này đảm bảo 'Hà Nội', 'Đà Nẵng'... luôn được nhận diện dù trang không có sản phẩm nào ở đó.
+    // BƯỚC 1: Lấy dữ liệu từ Menu để đảm bảo có đủ tất cả các địa danh và loại hình
     if (typeof initialMenuData !== 'undefined') {
         ['Mua bán', 'Cho thuê', 'Dự án'].forEach(menuKey => {
             if (initialMenuData[menuKey]) {
-                initialMenuData[menuKey].forEach(category => {
-                    if (category['Khu vực']) {
-                        category['Khu vực'].forEach(cityName => {
+                initialMenuData[menuKey].forEach(categoryData => {
+                    // Lấy Loại hình (Căn hộ, Shophouse...)
+                    const categoryName = categoryData["Loại hình"];
+                    if (categoryName) {
+                        categoryLookup[toSlug(categoryName)] = categoryName;
+                    }
+
+                    // Lấy Khu vực (TP. Hồ Chí Minh, Hà Nội...)
+                    if (categoryData['Khu vực']) {
+                        categoryData['Khu vực'].forEach(cityName => {
                             if (cityName) {
                                 cityLookup[toSlug(cityName)] = cityName;
                             }
@@ -270,6 +274,31 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    // BƯỚC 2: Bổ sung dữ liệu từ danh sách sản phẩm hiện tại
+    allItems.forEach(item => {
+        if (item.city && !cityLookup[toSlug(item.city)]) {
+            cityLookup[toSlug(item.city)] = item.city;
+        }
+        if (item.ward) {
+            wardLookup[toSlug(item.ward)] = item.ward;
+        }
+        if (item.street) {
+            streetLookup[toSlug(item.street)] = item.street;
+        }
+        // Chỉ thêm nếu chưa có, để ưu tiên dữ liệu từ menu
+        if (item.productCategory && !categoryLookup[toSlug(item.productCategory)]) {
+            categoryLookup[toSlug(item.productCategory)] = item.productCategory;
+        }
+        
+        // Dữ liệu cho gợi ý tìm kiếm
+        if (item.street && !locations.streets[item.street]) {
+            locations.streets[item.street] = item.ward;
+        }
+        if (item.ward && !locations.wards[item.ward]) {
+            locations.wards[item.ward] = item.city;
+        }
+    });
 
     // BƯỚC 2: Bổ sung dữ liệu từ danh sách sản phẩm (giống như logic cũ)
     // Điều này giúp bổ sung các Phường, Đường và các Thành phố khác không có trong Menu chính.
