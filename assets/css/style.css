@@ -117,21 +117,23 @@ a:hover {
 }
 .banner-image {
     flex-basis: 45%;
-    max-width: 450px;
+    max-width: 420px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden; /* Quan trọng: Giấu phần ảnh tràn ra ngoài */
-    border-radius: 12px; /* Thêm bo góc để hiệu ứng đẹp hơn */
+    border-radius: 0px; /* Thêm bo góc để hiệu ứng đẹp hơn */
     margin-top: 30px;
 }
 .banner-image img {
-    max-height: 450px;
+    max-height: 420px;
     width: auto;
     min-width: 100%;
     min-height: 100%;
     /* Áp dụng animation */
     animation: subtleZoom 15s ease-in-out infinite alternate;
+  
+  
 }
 /* MỚI: Định nghĩa animation chuyển động */
 @keyframes subtleZoom {
