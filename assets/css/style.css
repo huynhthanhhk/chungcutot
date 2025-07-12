@@ -5039,3 +5039,8 @@ img {
     user-select: none;
     -webkit-user-select: none;
 }
+.banner-text h2 {
+    font-size: 24px;
+    color: var(--secondary-color);
+    margin: 0 0 10px 0;
+}
