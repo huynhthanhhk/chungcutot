@@ -5026,3 +5026,14 @@ h1, h2, h3, h4, h5, h6, p, a, li, span {
     cursor: default;
     transform: scale(1) !important; /* Ngăn hiệu ứng hover khi nút bị vô hiệu hóa */
 }
+/* Ngăn chặn hành vi kéo ảnh mặc định của trình duyệt */
+img {
+    -webkit-user-drag: none; /* Cho Chrome, Safari, Opera */
+    -khtml-user-drag: none;  /* Cho các trình duyệt cũ hơn */
+    -moz-user-drag: none;     /* Cho Firefox */
+    user-drag: none;          /* Chuẩn trong tương lai */
+
+    /* Tùy chọn: Ngăn người dùng chọn (bôi đen) ảnh như văn bản */
+    user-select: none;
+    -webkit-user-select: none;
+}
