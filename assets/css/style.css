@@ -4372,6 +4372,9 @@ a:hover {
     border-radius: 50%;
     z-index: 1;
 }
+.connectivity-timeline .timeline-item::before {
+    display: none !important; /* Ghi đè để ẩn dot trên trang chi tiết dự án */
+}
 @media (max-width: 768px) {
     .timeline-item::before {
     display: block;
