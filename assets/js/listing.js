@@ -542,7 +542,7 @@ function applyAllFilters() {
     const loaiHinhSlugFromUrl = urlParams.get('loaihinh');
     const citySlugFromUrl = urlParams.get('thanhpho');
     const wardSlugFromUrl = urlParams.get('phuong');
-    const duongSlugFromUrl = urlParams.get('duong'); // <-- THÊM MỚI: Đọc tham số đường
+    const duongSlugFromUrl = urlParams.get('duong');
 
     const priceFilter = getRangeFilter('[data-filter-name="price"]'); 
     const areaFilter = getRangeFilter('[data-filter-name="area"]'); 
@@ -552,6 +552,7 @@ function applyAllFilters() {
     const directionFilter = getCheckboxFilterValues('[data-filter-name="direction"]'); 
     const legalFilter = getCheckboxFilterValues('[data-filter-name="legal"]');
     const leaseTermFilter = getCheckboxFilterValues('[data-filter-name="leaseTerm"]');
+    const floorFilter = getCheckboxFilterValues('[data-filter-name="floor"]'); // <-- THÊM MỚI: Đọc giá trị bộ lọc Tầng
     
     const removeDiacritics = (str) => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd');
     const searchTerm = removeDiacritics(searchInput.value.trim());
@@ -569,6 +570,7 @@ function applyAllFilters() {
         if (directionFilter.length > 0 && !directionFilter.includes(item.doorDirection)) return false; 
         if (legalFilter.length > 0 && item.hasOwnProperty('legal') && !legalFilter.includes(item.legal)) { return false; }
         if (leaseTermFilter.length > 0 && item.hasOwnProperty('leaseTerm') && !leaseTermFilter.includes(item.leaseTerm)) { return false; }
+        if (floorFilter.length > 0 && item.hasOwnProperty('floor') && !floorFilter.includes(item.floor)) return false; // <-- THÊM MỚI: Áp dụng điều kiện lọc Tầng
         
         if (searchTokens.length > 0) {
             const isMatch = searchTokens.every(token => item.searchableString.includes(token));
@@ -579,7 +581,6 @@ function applyAllFilters() {
         if (loaiHinhSlugFromUrl && toSlug(item.productCategory) !== loaiHinhSlugFromUrl) return false;
         if (citySlugFromUrl && toSlug(item.city) !== citySlugFromUrl) return false;
         if (wardSlugFromUrl && toSlug(item.ward) !== wardSlugFromUrl) return false;
-        // THÊM MỚI ĐIỀU KIỆN LỌC THEO ĐƯỜNG
         if (duongSlugFromUrl && toSlug(item.street) !== duongSlugFromUrl) return false;
 
         return true; 
