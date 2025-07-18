@@ -386,7 +386,7 @@ body.menu-open-mobile {
 
 .has-dropdown > a::after {
     content: '▾';
-    font-size: 12px;
+    font-size: 1em;
     margin-left: 6px;
     display: inline-block;
     color: var(--text-dark);
