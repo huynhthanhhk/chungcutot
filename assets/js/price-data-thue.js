@@ -301,20 +301,8 @@ const priceHistoryData_Thue = {
         "publishedAt": "2025-08-28T14:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Nguyễn Trãi", "project": "The EverRich Infinity", "productCategory": "Căn hộ"
     },
     {
-        "area": 53, "price": 11.8, "furniture": "Cơ bản", "id": "Spt-2025-0079", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
-        "publishedAt": "2025-11-10T09:45:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Nguyễn Trãi", "project": "The EverRich Infinity", "productCategory": "Căn hộ"
-    },
-    {
         "area": 53, "price": 13.2, "furniture": "Đầy đủ", "id": "Spt-2025-0080", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
         "publishedAt": "2025-07-22T16:15:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Nguyễn Trãi", "project": "The EverRich Infinity", "productCategory": "Căn hộ"
-    },
-    {
-        "area": 53, "price": 9.5, "furniture": "Nhà trống", "id": "Spt-2025-0081", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
-        "publishedAt": "2025-06-18T18:05:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Nguyễn Trãi", "project": "The EverRich Infinity", "productCategory": "Căn hộ"
-    },
-    {
-        "area": 53, "price": 12.0, "furniture": "Cơ bản", "id": "Spt-2025-0082", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
-        "publishedAt": "2025-05-09T12:50:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Nguyễn Trãi", "project": "The EverRich Infinity", "productCategory": "Căn hộ"
     },
     {
         "area": 53, "price": 14.5, "furniture": "Đầy đủ", "id": "Spt-2025-0083", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
@@ -447,139 +435,162 @@ const priceHistoryData_Thue = {
     {
         "area": 84, "price": 51.5, "furniture": "Đầy đủ", "id": "Spt-2025-ADD-BN10-23", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2,
         "publishedAt": "2025-06-20T19:50:00.000Z", "city": "Hồ Chí Minh", "ward": "Út Tịch", "street": "Thành Thái", "project": "Hà Đô Centrosa Garden", "productCategory": "Căn hộ"
+    },
+    {
+        "area": 86, "price": 7.8, "furniture": "Nội thất cơ bản", "id": "Spt-2025-1101", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2,
+        "publishedAt": "2025-07-20T10:30:00.000Z", "city": "Hồ Chí Minh", "ward": "Út Tịch", "street": "Thành Thái", "project": "Hà Đô Centrosa Garden", "productCategory": "Căn hộ"
+    },
+    {
+        "area": 78, "price": 9.5, "furniture": "Đầy đủ", "id": "Spt-2025-1102", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
+        "publishedAt": "2025-07-18T14:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Út Tịch", "street": "Thành Thái", "project": "Hà Đô Centrosa Garden", "productCategory": "Căn hộ"
+    },
+    {
+        "area": 85, "price": 6.9, "furniture": "Nhà thô", "id": "Spt-2025-1103", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2,
+        "publishedAt": "2025-07-21T09:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Út Tịch", "street": "Thành Thái", "project": "Hà Đô Centrosa Garden", "productCategory": "Căn hộ"
+    },
+    {
+        "area": 53, "price": 11.8, "furniture": "Cơ bản", "id": "Spt-2025-0079", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
+        "publishedAt": "2025-11-10T09:45:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Nguyễn Trãi", "project": "", "productCategory": "Căn hộ"
+    },
+    {
+        "area": 48, "price": 9.5, "furniture": "Nhà trống", "id": "Spt-2025-0081", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
+        "publishedAt": "2025-06-18T18:05:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Nguyễn Trãi", "project": "", "productCategory": "Căn hộ"
+    },
+    {
+        "area": 53, "price": 12, "furniture": "Cơ bản", "id": "Spt-2025-0082", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
+        "publishedAt": "2025-05-09T12:50:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Nguyễn Trãi", "project": "", "productCategory": "Căn hộ"
     }
-    
-],
-    "2024": [
-        // Dữ liệu gốc & đồng bộ hóa
-        {
-            "area": 75, "price": 14, "furniture": "Cơ bản", "id": "Spt-2024-0012", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2024-01-18T07:45:33.876Z", "city": "Hồ Chí Minh", "ward": "Hoà Bình", "street": "Điện Biên Phủ", "project": "The EverRich Infinity", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 80, "price": 16, "furniture": "Đầy đủ", "id": "Spt-2024-0017", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2,
-            "publishedAt": "2024-03-12T19:20:10.543Z", "city": "Hồ Chí Minh", "ward": "Hoà Bình 1", "street": "Điện Biên Phủ", "project": "Sunrise City", "productCategory": "Căn hộ"
-        },
-        // ===== NHÓM DỮ LIỆU DEMO CHO DỰ ÁN VINHOMES GRAND PARK (THÊM MỚI) =====
-        {
-            "area": 60, "price": 12, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP01", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1,
-            "publishedAt": "2024-01-20T08:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 35, "price": 8.5, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP02", "leaseTerm": "Ngắn hạn", "bedrooms": 1, "wc": 1,
-            "publishedAt": "2024-01-22T09:30:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 85, "price": 15, "furniture": "Đầy đủ", "id": "Spt-2024-DEMO-VP03", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2,
-            "publishedAt": "2024-02-05T14:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 62, "price": 12.5, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP04", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2024-02-10T11:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 59, "price": 11.8, "furniture": "Nhà thô", "id": "Spt-2024-DEMO-VP05", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1,
-            "publishedAt": "2024-03-01T16:20:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 33, "price": 8, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP06", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
-            "publishedAt": "2024-04-02T10:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 82, "price": 14.5, "furniture": "Đầy đủ", "id": "Spt-2024-DEMO-VP07", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2,
-            "publishedAt": "2024-05-15T11:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 65, "price": 13, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP08", "leaseTerm": "Ngắn hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2024-06-18T13:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 63, "price": 12.8, "furniture": "Đầy đủ", "id": "Spt-2024-DEMO-VP09", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1,
-            "publishedAt": "2024-07-20T15:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 36, "price": 9, "furniture": "Đầy đủ", "id": "Spt-2024-DEMO-VP10", "leaseTerm": "Ngắn hạn", "bedrooms": 1, "wc": 1,
-            "publishedAt": "2024-08-25T17:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 88, "price": 15.5, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP11", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2,
-            "publishedAt": "2024-08-28T18:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 58, "price": 11.5, "furniture": "Nhà thô", "id": "Spt-2024-DEMO-VP12", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1,
-            "publishedAt": "2024-09-03T19:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 61, "price": 12.2, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP13", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1,
-            "publishedAt": "2024-10-05T08:30:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 34, "price": 8.2, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP14", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1,
-            "publishedAt": "2024-11-10T09:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 80, "price": 14, "furniture": "Nhà thô", "id": "Spt-2024-DEMO-VP15", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2,
-            "publishedAt": "2024-12-12T12:12:12.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        }
-    ],
-    "2023": [
-        // Dữ liệu gốc & đồng bộ hóa
-        {
-            "area": 80, "price": 10.8, "furniture": "Cơ bản", "id": "Spt-2023-0016", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2,
-            "publishedAt": "2023-02-21T11:55:05.321Z", "city": "Hồ Chí Minh", "ward": "Hoà Bình 2", "street": "Điện Biên Phủ", "project": "Tara Residence", "productCategory": "Căn hộ"
-        },
-        {
-            "month": 9, "area": 84, "price": 13, "furniture": "Cơ bản", "id": "Spt-2023-0068", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2,
-            "publishedAt": "2023-09-11T22:05:15.654Z", "city": "Hồ Chí Minh", "ward": "Hoà Bình 3", "street": "Điện Biên Phủ", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ"
-        },
-        // ===== NHÓM DỮ LIỆU DEMO CHO 2 PHÒNG NGỦ (THÊM MỚI) =====
-        {
-            "area": 70, "price": 15, "furniture": "Đầy đủ", "id": "Spt-2023-DEMO-2B01", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2023-01-15T09:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Tân Phong", "street": "Nguyễn Lương Bằng", "project": "Sunrise City", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 68, "price": 14.5, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B02", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2023-02-20T10:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Sơn Bình", "street": "Bến Vân Đồn", "project": "Galaxy 9", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 75, "price": 16, "furniture": "Đầy đủ", "id": "Spt-2023-DEMO-2B03", "leaseTerm": "Ngắn hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2023-03-10T11:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Nguyễn Trãi", "project": "The EverRich Infinity", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 65, "price": 13, "furniture": "Nhà thô", "id": "Spt-2023-DEMO-2B04", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1,
-            "publishedAt": "2023-04-05T14:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Hải Long", "street": "Tạ Quang Bửu", "project": "Tara Residence", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 72, "price": 15.5, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B05", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2023-05-25T16:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Út Tịch", "street": "Thành Thái", "project": "Hà Đô Centrosa Garden", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 66, "price": 14, "furniture": "Đầy đủ", "id": "Spt-2023-DEMO-2B06", "leaseTerm": "Ngắn hạn", "bedrooms": 2, "wc": 1,
-            "publishedAt": "2023-06-01T09:30:00.000Z", "city": "Hồ Chí Minh", "ward": "Tân Phong", "street": "Nguyễn Hữu Thọ", "project": "Sunrise City", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 78, "price": 17, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B07", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2023-07-07T10:45:00.000Z", "city": "Hồ Chí Minh", "ward": "Sơn Bình", "street": "Hoàng Diệu", "project": "Galaxy 9", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 69, "price": 14.8, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B08", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2023-08-11T11:15:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Trần Hưng Đạo", "project": "The EverRich Infinity", "productCategory": "Căn hộ"
-        },
-        {
-            "month": 9, "area": 64, "price": 12.5, "furniture": "Nhà thô", "id": "Spt-2023-DEMO-2B09", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1,
-            "publishedAt": "2023-09-19T13:20:00.000Z", "city": "Hồ Chí Minh", "ward": "Hải Long", "street": "Phạm Hùng", "project": "Tara Residence", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 73, "price": 16.2, "furniture": "Đầy đủ", "id": "Spt-2023-DEMO-2B10", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2023-10-22T15:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Út Tịch", "street": "Cao Thắng", "project": "Hà Đô Centrosa Garden", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 71, "price": 15.2, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B11", "leaseTerm": "Ngắn hạn", "bedrooms": 2, "wc": 2,
-            "publishedAt": "2023-11-02T16:30:00.000Z", "city": "Hồ Chí Minh", "ward": "Tân Phong", "street": "Nguyễn Lương Bằng", "project": "Sunrise City", "productCategory": "Căn hộ"
-        },
-        {
-            "area": 67, "price": 14.2, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B12", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1,
-            "publishedAt": "2023-12-24T18:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Sơn Bình", "street": "Bến Vân Đồn", "project": "Galaxy 9", "productCategory": "Căn hộ"
-        }
-    ]
-};
+], 
+     "2024": [ 
+         // Dữ liệu gốc & đồng bộ hóa 
+         { 
+             "area": 75, "price": 14, "furniture": "Cơ bản", "id": "Spt-2024-0012", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2024-01-18T07:45:33.876Z", "city": "Hồ Chí Minh", "ward": "Hoà Bình", "street": "Điện Biên Phủ", "project": "The EverRich Infinity", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 80, "price": 16, "furniture": "Đầy đủ", "id": "Spt-2024-0017", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2, 
+             "publishedAt": "2024-03-12T19:20:10.543Z", "city": "Hồ Chí Minh", "ward": "Hoà Bình 1", "street": "Điện Biên Phủ", "project": "Sunrise City", "productCategory": "Căn hộ" 
+         }, 
+         // ===== NHÓM DỮ LIỆU DEMO CHO DỰ ÁN VINHOMES GRAND PARK (THÊM MỚI) ===== 
+         { 
+             "area": 60, "price": 12, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP01", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1, 
+             "publishedAt": "2024-01-20T08:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 35, "price": 8.5, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP02", "leaseTerm": "Ngắn hạn", "bedrooms": 1, "wc": 1, 
+             "publishedAt": "2024-01-22T09:30:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 85, "price": 15, "furniture": "Đầy đủ", "id": "Spt-2024-DEMO-VP03", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2, 
+             "publishedAt": "2024-02-05T14:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 62, "price": 12.5, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP04", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2024-02-10T11:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 59, "price": 11.8, "furniture": "Nhà thô", "id": "Spt-2024-DEMO-VP05", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1, 
+             "publishedAt": "2024-03-01T16:20:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 33, "price": 8, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP06", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1, 
+             "publishedAt": "2024-04-02T10:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 82, "price": 14.5, "furniture": "Đầy đủ", "id": "Spt-2024-DEMO-VP07", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2, 
+             "publishedAt": "2024-05-15T11:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 65, "price": 13, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP08", "leaseTerm": "Ngắn hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2024-06-18T13:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 63, "price": 12.8, "furniture": "Đầy đủ", "id": "Spt-2024-DEMO-VP09", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1, 
+             "publishedAt": "2024-07-20T15:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 36, "price": 9, "furniture": "Đầy đủ", "id": "Spt-2024-DEMO-VP10", "leaseTerm": "Ngắn hạn", "bedrooms": 1, "wc": 1, 
+             "publishedAt": "2024-08-25T17:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 88, "price": 15.5, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP11", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2, 
+             "publishedAt": "2024-08-28T18:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 58, "price": 11.5, "furniture": "Nhà thô", "id": "Spt-2024-DEMO-VP12", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1, 
+             "publishedAt": "2024-09-03T19:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 61, "price": 12.2, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP13", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1, 
+             "publishedAt": "2024-10-05T08:30:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 34, "price": 8.2, "furniture": "Cơ bản", "id": "Spt-2024-DEMO-VP14", "leaseTerm": "Dài hạn", "bedrooms": 1, "wc": 1, 
+             "publishedAt": "2024-11-10T09:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 80, "price": 14, "furniture": "Nhà thô", "id": "Spt-2024-DEMO-VP15", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2, 
+             "publishedAt": "2024-12-12T12:12:12.000Z", "city": "Hồ Chí Minh", "ward": "Phước Long B", "street": "Đỗ Xuân Hợp", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         } 
+     ], 
+     "2023": [ 
+         // Dữ liệu gốc & đồng bộ hóa 
+         { 
+             "area": 80, "price": 10.8, "furniture": "Cơ bản", "id": "Spt-2023-0016", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2, 
+             "publishedAt": "2023-02-21T11:55:05.321Z", "city": "Hồ Chí Minh", "ward": "Hoà Bình 2", "street": "Điện Biên Phủ", "project": "Tara Residence", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "month": 9, "area": 84, "price": 13, "furniture": "Cơ bản", "id": "Spt-2023-0068", "leaseTerm": "Dài hạn", "bedrooms": 3, "wc": 2, 
+             "publishedAt": "2023-09-11T22:05:15.654Z", "city": "Hồ Chí Minh", "ward": "Hoà Bình 3", "street": "Điện Biên Phủ", "project": "Vinhomes Grand Park", "productCategory": "Căn hộ" 
+         }, 
+         // ===== NHÓM DỮ LIỆU DEMO CHO 2 PHÒNG NGỦ (THÊM MỚI) ===== 
+         { 
+             "area": 70, "price": 15, "furniture": "Đầy đủ", "id": "Spt-2023-DEMO-2B01", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2023-01-15T09:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Tân Phong", "street": "Nguyễn Lương Bằng", "project": "Sunrise City", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 68, "price": 14.5, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B02", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2023-02-20T10:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Sơn Bình", "street": "Bến Vân Đồn", "project": "Galaxy 9", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 75, "price": 16, "furniture": "Đầy đủ", "id": "Spt-2023-DEMO-2B03", "leaseTerm": "Ngắn hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2023-03-10T11:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Nguyễn Trãi", "project": "The EverRich Infinity", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 65, "price": 13, "furniture": "Nhà thô", "id": "Spt-2023-DEMO-2B04", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1, 
+             "publishedAt": "2023-04-05T14:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Hải Long", "street": "Tạ Quang Bửu", "project": "Tara Residence", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 72, "price": 15.5, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B05", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2023-05-25T16:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Út Tịch", "street": "Thành Thái", "project": "Hà Đô Centrosa Garden", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 66, "price": 14, "furniture": "Đầy đủ", "id": "Spt-2023-DEMO-2B06", "leaseTerm": "Ngắn hạn", "bedrooms": 2, "wc": 1, 
+             "publishedAt": "2023-06-01T09:30:00.000Z", "city": "Hồ Chí Minh", "ward": "Tân Phong", "street": "Nguyễn Hữu Thọ", "project": "Sunrise City", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 78, "price": 17, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B07", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2023-07-07T10:45:00.000Z", "city": "Hồ Chí Minh", "ward": "Sơn Bình", "street": "Hoàng Diệu", "project": "Galaxy 9", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 69, "price": 14.8, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B08", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2023-08-11T11:15:00.000Z", "city": "Hồ Chí Minh", "ward": "Khải Định", "street": "Trần Hưng Đạo", "project": "The EverRich Infinity", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "month": 9, "area": 64, "price": 12.5, "furniture": "Nhà thô", "id": "Spt-2023-DEMO-2B09", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1, 
+             "publishedAt": "2023-09-19T13:20:00.000Z", "city": "Hồ Chí Minh", "ward": "Hải Long", "street": "Phạm Hùng", "project": "Tara Residence", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 73, "price": 16.2, "furniture": "Đầy đủ", "id": "Spt-2023-DEMO-2B10", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2023-10-22T15:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Út Tịch", "street": "Cao Thắng", "project": "Hà Đô Centrosa Garden", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 71, "price": 15.2, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B11", "leaseTerm": "Ngắn hạn", "bedrooms": 2, "wc": 2, 
+             "publishedAt": "2023-11-02T16:30:00.000Z", "city": "Hồ Chí Minh", "ward": "Tân Phong", "street": "Nguyễn Lương Bằng", "project": "Sunrise City", "productCategory": "Căn hộ" 
+         }, 
+         { 
+             "area": 67, "price": 14.2, "furniture": "Cơ bản", "id": "Spt-2023-DEMO-2B12", "leaseTerm": "Dài hạn", "bedrooms": 2, "wc": 1, 
+             "publishedAt": "2023-12-24T18:00:00.000Z", "city": "Hồ Chí Minh", "ward": "Sơn Bình", "street": "Bến Vân Đồn", "project": "Galaxy 9", "productCategory": "Căn hộ" 
+         } 
+     ] 
+ };

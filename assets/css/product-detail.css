@@ -1657,3 +1657,56 @@
     margin: 25px auto 0 auto; /* Căn giữa và tạo khoảng cách với biểu đồ */
     line-height: 1.6;
 }
+/* Thêm vào cuối tệp assets/css/product-detail.css */
+
+/* ========================================================================
+   CSS CHO MỤC TIN TƯƠNG TỰ (MỚI)
+   ======================================================================== */
+
+.similar-listings-section {
+    margin-top: 60px;
+}
+
+.similar-listings-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin: 0 0 25px 0;
+}
+
+.similar-listings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+/* --- Responsive cho Mobile --- */
+@media (max-width: 767px) {
+    .similar-listings-scroller {
+        overflow-x: auto;
+        padding-bottom: 15px;
+        margin: 0 -15px; /* Cho phép cuộn tràn lề */
+        scroll-snap-type: x mandatory;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .similar-listings-scroller::-webkit-scrollbar {
+        display: none;
+    }
+
+    .similar-listings-grid {
+        display: flex;
+        width: max-content;
+        grid-template-columns: unset;
+        gap: 15px;
+        padding: 0 15px;
+    }
+
+    /* Tái sử dụng card từ trang listing và đặt kích thước cho mobile */
+    .similar-listings-grid .product-list-card {
+        width: 80vw; /* Mỗi card chiếm 80% chiều rộng màn hình */
+        max-width: 300px; /* Chiều rộng tối đa */
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+}
