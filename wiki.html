@@ -43,8 +43,7 @@
     <div class="menu-panel-overlay"></div>
     <div class="menu-panel-columns">
         <div class="menu-panel-col col-1">
-            <h4></h4>
-            <ul id="mega-menu-col-1-list"></ul>
+            <h4></h4> <ul id="mega-menu-col-1-list"></ul>
         </div>
         <div class="menu-panel-col col-2">
             <h4>Khu vực</h4>
@@ -251,7 +250,7 @@
             const lowerMenuKey = menuKey.toLowerCase();
             const categorySlug = toSlug(catKey);
             if (lowerMenuKey.includes('dự án'))
-            baseUrl = 'list-du-an.html'; // Đổi thành URL cho trang dự án
+            baseUrl = 'list-du-an.html';
             else if (lowerMenuKey.includes('bán')) baseUrl = 'listing-ban.html';
             else if (lowerMenuKey.includes('thuê')) baseUrl = 'listing-thue.html';
             else if (lowerMenuKey.includes('wiki')) baseUrl = 'wiki.html';
@@ -316,18 +315,41 @@
             megaMenuContainer.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 300); });
         }
 
+        // =======================================================
+        // == HÀM ĐÃ ĐƯỢC CẬP NHẬT ĐẦY ĐỦ LOGIC MỚI NHẤT ==
+        // =======================================================
         function populateDesktopPanel(menuKey) {
             const menuItems = initialMenuData[menuKey];
+            const col1Header = document.querySelector('#cct-mega-menu .menu-panel-col.col-1 h4'); // --- ĐÃ THÊM ---
             const col1List = document.getElementById('mega-menu-col-1-list');
             const col2List = document.getElementById('mega-menu-col-2-list');
             const col3Content = document.getElementById('mega-menu-col-3-content');
-            if (!col1List || !col2List || !col3Content) return;
+
+            if (!col1List || !col2List || !col3Content || !col1Header) return; // --- ĐÃ SỬA ---
+            
             col1List.innerHTML = '';
             col2List.innerHTML = '';
             col3Content.innerHTML = '';
+
+            if (!menuItems || menuItems.length === 0) {
+                col1Header.textContent = '';
+                return;
+            }
+
+            // --- ĐÃ THÊM: LOGIC TỰ ĐỘNG ĐẶT TIÊU ĐỀ ---
             const firstItem = menuItems[0];
+            let col1Title = '';
+            if (firstItem.hasOwnProperty('Loại hình')) {
+                col1Title = 'Loại hình';
+            } else if (firstItem.hasOwnProperty('Danh mục')) {
+                col1Title = 'Danh mục';
+            }
+            col1Header.textContent = col1Title;
+            // --- KẾT THÚC PHẦN THÊM MỚI ---
+
             const isMega = firstItem.hasOwnProperty('Khu vực');
             megaMenuContainer.querySelector('.menu-panel-columns').classList.toggle('is-single-col-data', !isMega);
+            
             menuItems.forEach((item, index) => {
                 const categoryName = item["Loại hình"] || item["Danh mục"];
                 const li = document.createElement('li');
@@ -344,6 +366,7 @@
                 if (index === 0) li.classList.add('active');
                 col1List.appendChild(li);
             });
+
             if (isMega) {
                 updateDesktopSubMenu(menuItems[0]["Loại hình"], menuKey);
                 col1List.addEventListener('mouseover', e => {
@@ -355,6 +378,7 @@
                     }
                 });
             }
+            
             featuredProjectsData.forEach(project => {
                 const card = document.createElement('a');
                 card.href = project.link;
@@ -381,7 +405,6 @@
         }
 
         function handleMobileMenu() {
-          
             const nav = document.getElementById('main-nav');
             const overlay = document.getElementById('menu-overlay');
             const hamburger = document.getElementById('hamburger-button');
@@ -440,69 +463,43 @@
                     return;
                 }
                 const targetLi = target.closest('li[data-key]');
-                const backButton = e.target.closest('.panel-back-button');
-                if (backButton) {
-                    e.preventDefault(); // Ngăn hành vi mặc định của thẻ <a>
-                    const currentPanel = backButton.closest('.menu-panel');
-                    if (currentPanel) {
-                        const currentLevel = parseInt(currentPanel.dataset.level, 10);
-                        // Lùi slider về panel trước đó
-                        slider.style.transform = `translateX(-${(currentLevel - 1) * 100}%)`;
-                        // Xóa panel hiện tại sau khi hiệu ứng kết thúc
-                        setTimeout(() => currentPanel.remove(), 350);
-                    }
-                    return; // Dừng xử lý tại đây
-                }
                 if (targetLi) {
-            // Ngăn chuyển trang nếu là link '#'
-            if(e.target.closest('a')?.getAttribute('href') === '#') {
-                 e.preventDefault();
-            }
-
-            const level = parseInt(targetLi.dataset.level, 10);
-            const menuKey = targetLi.dataset.key;
-            const category = targetLi.dataset.category;
-            let nextLevelContent = '', nextLevelTitle = '';
-
-            // Từ Cấp 1 -> Cấp 2
-            if (level === 0) {
-                nextLevelTitle = menuKey;
-                const items = initialMenuData[menuKey];
-                nextLevelContent = items.map(item => {
-                    const name = item["Loại hình"] || item["Danh mục"];
-                    const hasSubmenu = item.hasOwnProperty('Khu vực');
-                    const link = hasSubmenu ? '#' : getLink(menuKey, name, null);
-                    return `<li class="${hasSubmenu ? 'has-submenu' : ''}" data-level="1" data-key="${menuKey}" data-category="${name}"><a href="${link}">${name}</a></li>`;
-                }).join('');
-            }
-            // Từ Cấp 2 -> Cấp 3
-            else if (level === 1) {
-                const parentItem = initialMenuData[menuKey].find(item => (item["Loại hình"] || item["Danh mục"]) === category);
-                if (!parentItem || !parentItem["Khu vực"]) return;
-                
-                nextLevelTitle = category;
-                const khuVucItems = parentItem["Khu vực"];
-                nextLevelContent = khuVucItems.map(kv => `<li><a href="${getLink(menuKey, category, kv)}">${kv}</a></li>`).join('');
-            }
-
-            // Tạo và trượt đến panel tiếp theo
-            if (nextLevelContent) {
-                const newPanel = createPanel(level + 1, nextLevelTitle, nextLevelContent);
-                slider.appendChild(newPanel);
-                slider.style.transform = `translateX(-${(level+1) * 100}%)`;
-            }
-        }
+                    if(e.target.closest('a')?.getAttribute('href') === '#') { e.preventDefault(); }
+                    const level = parseInt(targetLi.dataset.level, 10);
+                    const menuKey = targetLi.dataset.key;
+                    const category = targetLi.dataset.category;
+                    let nextLevelContent = '', nextLevelTitle = '';
+                    if (level === 0) {
+                        nextLevelTitle = menuKey;
+                        const items = initialMenuData[menuKey];
+                        nextLevelContent = items.map(item => {
+                            const name = item["Loại hình"] || item["Danh mục"];
+                            const hasSubmenu = item.hasOwnProperty('Khu vực');
+                            const link = hasSubmenu ? '#' : getLink(menuKey, name, null);
+                            return `<li class="${hasSubmenu ? 'has-submenu' : ''}" data-level="1" data-key="${menuKey}" data-category="${name}"><a href="${link}">${name}</a></li>`;
+                        }).join('');
+                    }
+                    else if (level === 1) {
+                        const parentItem = initialMenuData[menuKey].find(item => (item["Loại hình"] || item["Danh mục"]) === category);
+                        if (!parentItem || !parentItem["Khu vực"]) return;
+                        nextLevelTitle = category;
+                        const khuVucItems = parentItem["Khu vực"];
+                        nextLevelContent = khuVucItems.map(kv => `<li><a href="${getLink(menuKey, category, kv)}">${kv}</a></li>`).join('');
+                    }
+                    if (nextLevelContent) {
+                        const newPanel = createPanel(level + 1, nextLevelTitle, nextLevelContent);
+                        slider.appendChild(newPanel);
+                        slider.style.transform = `translateX(-${(level+1) * 100}%)`;
+                    }
+                }
             });
         }
         
         // --- PHẦN 4: CÁC SỰ KIỆN TOÀN CỤC ---
-        
-        // Sự kiện cuộn trang (cho Sticky Header và Đóng Menu)
         if (header) {
             let lastScrollTop = 0;
             const sidebar = document.querySelector('.listing-filter-sidebar, .contact-sidebar, .sidebar-column'); 
             window.addEventListener('scroll', () => {
-                // Sticky header
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
                     header.classList.add('header--hidden');
@@ -512,28 +509,22 @@
                     if (sidebar) sidebar.classList.remove('sidebar--header-hidden');
                 }
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-
-                // [THÊM MỚI] Tự động đóng menu desktop khi cuộn
                 if (megaMenuContainer && megaMenuContainer.classList.contains('is-open')) {
                     closeDesktopPanel();
                 }
             });
         }
 
-        // Sự kiện click bên ngoài để đóng Desktop Menu
         document.addEventListener('click', (event) => {
             if (megaMenuContainer && mainMenuContainer && megaMenuContainer.classList.contains('is-open')) {
-                // Nếu click ra ngoài cả thanh nav và cả panel menu
                 if (!mainMenuContainer.contains(event.target) && !megaMenuContainer.contains(event.target)) {
                     closeDesktopPanel();
                 }
             }
         });
 
-        // Sự kiện thay đổi kích thước cửa sổ
         window.addEventListener('resize', debounce(initMenu, 250));
         
-
         // --- PHẦN 5: KHỞI CHẠY LẦN ĐẦU ---
         initMenu();
     });
