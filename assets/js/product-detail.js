@@ -432,24 +432,7 @@ document.addEventListener('DOMContentLoaded', function () {
         favoriteBtn.dataset.itemId = product.id;
         updateAllFavoriteButtons();
         updateFavoriteCounter();
-        favoriteBtn.addEventListener('click', () => {
-            const itemId = product.id;
-            const itemData = {
-                id: itemId,
-                title: product.title,
-                thumbnail: (product.images && product.images.length > 0) ? `assets/images/${product.images[0]}` : '',
-                url: window.location.href
-            };
-            let favorites = getFavorites();
-            if (isFavorite(itemId)) {
-                favorites = favorites.filter(item => item.id !== itemId);
-            } else {
-                favorites.push(itemData);
-            }
-            localStorage.setItem('savedFavorites_v2', JSON.stringify(favorites));
-            updateAllFavoriteButtons();
-            updateFavoriteCounter();
-        });
+
     }
 
     function initNearbyComparison(product, isRental) {
