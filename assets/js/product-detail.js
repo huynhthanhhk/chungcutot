@@ -658,6 +658,29 @@ document.addEventListener('DOMContentLoaded', function () {
             updateLoanAmount();
             loanPercentageEl.textContent = `Vay ${loanSliderEl.value}%`;
         });
+        const validateLoanTerms = () => {
+        const loanTerm = parseInt(loanTermEl.value, 10) || 0;
+        let promoMonths = parseInt(promoMonthsEl.value, 10) || 0;
+
+        if (promoMonths > loanTerm) {
+            alert("Số tháng ưu đãi không được lớn hơn thời gian vay. Đã tự động điều chỉnh.");
+            promoMonthsEl.value = loanTerm;
+        }
+        };
+
+        const validateLoanRates = () => {
+            const annualRate = parseFloat(annualRateEl.value) || 0;
+            let promoRate = parseFloat(promoRateEl.value) || 0;
+
+            if (promoRate > annualRate) {
+                alert("Lãi suất ưu đãi không được cao hơn lãi suất thông thường. Đã tự động điều chỉnh.");
+                promoRateEl.value = annualRate;
+            }
+        };
+        loanTermEl.addEventListener('input', validateLoanTerms);
+    promoMonthsEl.addEventListener('input', validateLoanTerms);
+    annualRateEl.addEventListener('input', validateLoanRates);
+    promoRateEl.addEventListener('input', validateLoanRates);
         showScheduleBtn.addEventListener('click', () => {
             scheduleModal.style.display = 'flex';
         });
