@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (typeof updateFavoriteCounter === 'function') updateFavoriteCounter();
         initNearbyComparison(product, isRental);
         initSimilarListings(product); // BỔ SUNG: Khởi tạo mục tin đăng tương tự
-
+        initShareButton(product);
         const loanCalculatorSection = document.querySelector('.loan-calculator');
         const priceHistorySection = document.querySelector('.price-history-section-detail');
 
@@ -1259,7 +1259,73 @@ function initGlobalFavoriteSystem() {
             updateAllFavoriteButtons();
             updateFavoriteCounter();
         });
+        
     } 
+   function initShareButton(product) {
+    const shareBtn = document.querySelector('.hero-actions .share-btn');
+    const sharePopup = document.getElementById('share-popup');
+    if (!shareBtn || !sharePopup) return;
+
+    // --- LOGIC CHÍNH KHI CLICK NÚT CHIA SẺ ---
+    shareBtn.addEventListener('click', async (event) => { // Thêm async
+        event.stopPropagation();
+        
+        // Ưu tiên Web Share API trên mobile
+        if (navigator.share) {
+            shareBtn.disabled = true; // Vô hiệu hóa nút để chống click nhanh
+            try {
+                await navigator.share({
+                    title: product.title,
+                    text: `Hãy xem bất động sản này: ${product.title}`,
+                    url: window.location.href
+                });
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.error('Lỗi khi chia sẻ:', error);
+                }
+            } finally {
+                shareBtn.disabled = false; // Luôn kích hoạt lại nút sau khi xong
+            }
+        } else {
+            // Hiển thị popup trên desktop
+            updateShareLinks(product);
+            sharePopup.style.display = 'block';
+        }
+    });
+
+    // --- CÁC LOGIC CÒN LẠI GIỮ NGUYÊN ---
+    const closePopupBtn = document.getElementById('close-share-popup');
+    const copyLinkBtn = document.getElementById('copy-link-btn');
+
+    closePopupBtn.addEventListener('click', () => {
+        sharePopup.style.display = 'none';
+    });
+
+    copyLinkBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            const span = copyLinkBtn.querySelector('span');
+            span.textContent = 'Đã sao chép!';
+            setTimeout(() => {
+                span.textContent = 'Sao chép liên kết';
+            }, 2000);
+        });
+    });
+
+    function updateShareLinks(product) {
+        const url = encodeURIComponent(window.location.href);
+        const title = encodeURIComponent(product.title);
+        document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        document.getElementById('share-zalo').href = `https://zalo.me/share/d/desktop?id=${url}&page=1`;
+        document.getElementById('share-telegram').href = `https://t.me/share/url?url=${url}&text=${title}`;
+        document.getElementById('share-email').href = `mailto:?subject=${title}&body=${url}`;
+    }
+
+    document.addEventListener('click', (event) => {
+        if (!shareBtn.contains(event.target) && !sharePopup.contains(event.target)) {
+            sharePopup.style.display = 'none';
+        }
+    });
+}
     // Gọi các hàm khởi tạo
     initPage();
     initGlobalFavoriteSystem(); 

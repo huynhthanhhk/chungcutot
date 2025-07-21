@@ -1710,3 +1710,74 @@
         scroll-snap-align: start;
     }
 }
+.share-popup {
+    display: none; /* Mặc định ẩn */
+    position: absolute;
+    top: calc(100% + 10px); /* Vị trí ngay dưới nút cha */
+    right: 0;
+    width: 280px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+    border: 1px solid var(--border-color);
+    z-index: 20;
+    overflow: hidden;
+}
+.share-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+.share-popup-header h4 {
+    margin: 0;
+    font-size: 16px;
+}
+.close-share-btn {
+    background: none; border: none; font-size: 24px; cursor: pointer; color: #aaa;
+}
+
+.share-popup-body {
+    padding: 15px;
+}
+
+.share-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+.share-option:hover {
+    background-color: #e9ecef;
+}
+
+.social-share-options {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.social-share-options .social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #f0f2f5;
+    color: var(--text-dark);
+    transition: all 0.2s ease;
+}
+.social-share-options .social-icon:hover {
+    transform: scale(1.1);
+    background-color: var(--primary-color);
+    color: #fff;
+}
