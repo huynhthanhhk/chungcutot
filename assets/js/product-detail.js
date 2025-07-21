@@ -658,6 +658,7 @@ document.addEventListener('DOMContentLoaded', function () {
             updateLoanAmount();
             loanPercentageEl.textContent = `Vay ${loanSliderEl.value}%`;
         });
+        
         const validateLoanTerms = () => {
         const loanTerm = parseInt(loanTermEl.value, 10) || 0;
         let promoMonths = parseInt(promoMonthsEl.value, 10) || 0;
