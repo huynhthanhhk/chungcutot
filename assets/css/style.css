@@ -99,16 +99,16 @@ a:hover {
     font-weight: 600;
     margin: 10px 0 5px 0;
     color: var(--primary-color);
-    /* --- Bắt đầu CSS mới --- */
     display: flex;
-    align-items: center;
-    gap: 8px; /* Khoảng cách giữa icon và chữ */
+    align-items: flex-start; /* Thay đổi ở đây */
+    gap: 8px; 
 }
 .worry-title svg {
     width: 20px;
     height: 20px;
     flex-shrink: 0; /* Đảm bảo icon không bị co lại */
     color: var(--primary-color); /* Tô màu xanh cho icon */
+    padding-top: 5px
 }
 .worry-detail {
     margin: 0;
