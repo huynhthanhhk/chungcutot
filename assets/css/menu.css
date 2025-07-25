@@ -329,7 +329,7 @@ body.menu-open-mobile {
     width: 100%;
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-     background-color: #fff !important; /* hoặc var(--white-color) !important */
+     background-color: var(--white-color) !important;
     /* Thêm dòng này để tạo hiệu ứng trượt mượt mà */
     transition: transform 0.3s ease-in-out; 
 }

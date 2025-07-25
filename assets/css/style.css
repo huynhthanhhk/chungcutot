@@ -320,8 +320,12 @@ a:hover {
 
 /* --- Footer --- */
 .footer-wrapper {
-    background-color: var(--secondary-color);
-    color: #ccc;
+    /* ĐỒNG BỘ: Dùng nền trắng giống header */
+    background-color: var(--white-color); 
+    /* THÊM MỚI: Thêm đường kẻ trên để phân tách với nội dung */
+    border-top: 1px solid var(--border-color);
+    /* ĐỔI MÀU: Màu chữ chính thành màu xám nhạt, dễ đọc trên nền trắng */
+    color: var(--text-light); 
     padding: 50px 0 20px 0;
     margin-top: 0px;
 }
@@ -336,18 +340,21 @@ a:hover {
     margin-bottom: 30px;
 }
 .footer-widget p {
-    margin: 5px 0;
+    margin: 0;
+    padding-bottom: 12px;
 }
+/* ĐỔI MÀU: Màu link và hover */
 .footer-widget a {
-    color: #ccc;
+    color: var(--text-dark); 
 }
 .footer-widget a:hover {
-    color: var(--white-color);
+    color: var(--primary-color);
 }
+/* ĐỔI MÀU: Màu tiêu đề widget */
 .footer-widget h4.widget-title {
     font-size: 18px;
     margin: 0 0 20px 0;
-    color: var(--white-color);
+    color: var(--secondary-color);
     position: relative;
     padding-bottom: 10px;
     border: none;
@@ -366,16 +373,40 @@ a:hover {
     list-style: none;
     padding: 0;
     margin: 0;
-    line-height: 2.2;
+    line-height: 1.7;
+}
+.widget-links li {
+    padding-bottom: 12px;
+}
+.widget-links li:last-child,
+.footer-widget p:last-of-type {
+    padding-bottom: 0;
 }
 .bct-logo {
     width: 150px;
 }
 .copyright-text {
     text-align: center;
-    border-top: 1px solid #3d6a63;
+    border-top: 1px solid var(--border-color);
     padding-top: 20px;
     font-size: 14px;
+}
+.footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+/* ĐỔI MÀU: Màu icon social */
+.social-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--text-light); 
+    transition: all 0.3s ease;
+}
+.social-icon:hover svg {
+    fill: var(--primary-color);
+    transform: scale(1.1);
 }
 
 /* --- Responsive Media Queries --- */
