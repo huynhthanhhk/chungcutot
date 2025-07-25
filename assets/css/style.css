@@ -5038,7 +5038,7 @@ a:hover {
 .social-icon svg {
     width: 24px;
     height: 24px;
-    fill: #ccc; /* Màu icon mặc định, cùng màu với text footer */
+    fill: var(--text-dark); /* Màu icon mặc định, cùng màu với text footer */
     transition: all 0.3s ease;
 }
 
