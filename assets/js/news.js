@@ -16,11 +16,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const categoryTitleEl = document.querySelector('.category-header h1');
     const categoryDescEl = document.querySelector('.category-header p');
     const breadcrumbContainer = document.querySelector('.breadcrumb');
-    const tabsContainer = document.querySelector('.topic-tabs-container');
-
-    // Nếu không tìm thấy các vùng chứa chính, dừng lại
-    if (!gridContainer || !categoryTitleEl || !breadcrumbContainer || !tabsContainer) {
-        console.error("Lỗi: Thiếu các thành phần HTML quan trọng (grid, header, breadcrumb, tabs).");
+    
+    // [ĐÃ SỬA] Loại bỏ biến và kiểm tra cho 'tabsContainer'
+    if (!gridContainer || !categoryTitleEl || !breadcrumbContainer) {
+        console.error("Lỗi: Thiếu các thành phần HTML quan trọng (grid, header, breadcrumb).");
         return;
     }
     
@@ -30,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Gọi các hàm để cập nhật giao diện
     updatePageInfo(categorySlug);
     displayArticles(articlesToShow);
-    displayCategoryTabs(categorySlug);
+    // [ĐÃ XÓA] Lời gọi hàm displayCategoryTabs(categorySlug);
 
     /**
      * Cập nhật tiêu đề trang, H1, mô tả và breadcrumb
@@ -44,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
         categoryTitleEl.textContent = `Tin tức ${category.name}`;
         if(categoryDescEl) categoryDescEl.textContent = category.description;
 
-        // [LOGIC BREADCRUMB ĐỘNG ĐÃ THÊM VÀO]
         const breadcrumbText = `Tin tức - ${category.name}`;
         breadcrumbContainer.innerHTML = `<span class="breadcrumb-item-no-link">${breadcrumbText}</span>`;
     }
@@ -67,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const card = document.createElement('article');
             card.className = 'article-card';
             
-            // [ĐÃ SỬA LỖI] Sử dụng đúng ký tự backtick (`) và dấu đô la ($)
             card.innerHTML = `
                 <a href="${articleLink}" class="article-thumbnail">
                     <img src="${article.image}" alt="${article.title}">
@@ -83,22 +80,9 @@ document.addEventListener('DOMContentLoaded', function () {
             gridContainer.appendChild(card);
         });
     }
+
     /**
-     * Hiển thị các tab danh mục
-     * @param {string} currentSlug - Slug của danh mục đang active để highlight
+     * [ĐÃ XÓA] Toàn bộ hàm displayCategoryTabs đã được loại bỏ.
      */
-    function displayCategoryTabs(currentSlug) {
-        tabsContainer.innerHTML = '';
-        for (const slug in newsCategories) {
-            const category = newsCategories[slug];
-            const link = `news.html?danh-muc=${slug}`;
-            const isActive = slug === currentSlug ? 'active' : '';
-            const tabLink = document.createElement('a');
-            tabLink.href = link;
-            tabLink.className = isActive;
-            tabLink.textContent = category.name;
-            tabsContainer.appendChild(tabLink);
-        }
-    }
     
 });
