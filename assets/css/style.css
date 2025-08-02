@@ -27,7 +27,7 @@ body {
     overflow-x: hidden;
 }
 img {
-    max-width: 100%;
+  
     height: auto;
     display: block;
 }
@@ -214,7 +214,7 @@ a:hover {
 }
 .featured-news-grid {
     display: grid;
-    grid-template-columns: 1.5fr 1fr; 
+    grid-template-columns: 1.3fr 1fr; 
     gap: 40px;
 }
 .post-thumbnail-large {
@@ -222,7 +222,7 @@ a:hover {
     display: block;
     border-radius: 12px;
     overflow: hidden;
-    height: 100%;
+    aspect-ratio: 1366 / 768;
 }
 .post-thumbnail-large img {
     width: 100%;
@@ -276,11 +276,12 @@ a:hover {
     align-items: flex-start;
 }
 .post-thumbnail-small img {
-    width: 240px; /* Tăng kích thước để nổi bật hơn */
-    height: 135px; /* Giữ đúng tỷ lệ 4:3 */
+    width: 165px;
+    aspect-ratio: 1366 / 768;
+    height: auto;
     object-fit: cover;
     border-radius: 8px;
-    flex-shrink: 0; /* Đảm bảo ảnh không bị co lại */
+    flex-shrink: 0;
 }
 .post-title-small {
     margin: 0;
@@ -288,7 +289,10 @@ a:hover {
     line-height: 1.5;
     font-weight: 600;
 
-    /* ĐÃ THÊM: Giới hạn tiêu đề trong 3 dòng và thêm dấu ... */
+    /* ĐÃ THÊM: Cố định chiều cao để các mục tin bằng nhau */
+    height: 72px; 
+
+    /* Giới hạn tiêu đề trong 3 dòng và thêm dấu ... */
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -498,9 +502,6 @@ a:hover {
     .featured-news-grid {
         grid-template-columns: 1fr;
     }
-    .post-thumbnail-large img {
-        height: 350px;
-    }
     .site-footer {
         grid-template-columns: 1fr 1fr;
     }
@@ -548,9 +549,6 @@ a:hover {
     .featured-news-grid {
         grid-template-columns: 1fr;
     }
-    .post-thumbnail-large img {
-        height: 350px;
-    }
     .site-footer {
         grid-template-columns: 1fr 1fr;
     }
@@ -595,11 +593,7 @@ a:hover {
     .expert-content {
         min-height: auto;
     }
-    .post-thumbnail-small img {
-        width: 120px;
-        height: 90px;
-    }
-
+   
   
      .footer-col-1 .footer-logo, .footer-col-4 .bct-logo {
         margin-left: 0;
@@ -4001,14 +3995,16 @@ a:hover {
 }
 .article-thumbnail {
     flex-shrink: 0;
-    width: 250px;
+    width: 280px;
     display: block;
+    aspect-ratio: 1366 / 768;
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 100%;
 }
 .article-thumbnail img {
     width: 100%;
-    height: 180px;
     object-fit: cover;
-    border-radius: 8px;
     transition: transform 0.3s ease;
 }
 .article-card:hover .article-thumbnail img {
@@ -4022,6 +4018,11 @@ a:hover {
     font-size: 22px;
     line-height: 1.4;
     font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 .article-content .article-title a {
     color: var(--secondary-color);
@@ -4029,13 +4030,7 @@ a:hover {
 .article-content .article-title a:hover {
     color: var(--primary-color);
 }
-.article-meta {
-    font-size: 14px;
-    color: var(--text-light);
-    border-top: 1px dashed var(--border-color); /* Thay đường kẻ dưới bằng đường kẻ trên */
-    padding-top: 10px;
 
-}
 .article-meta a {
     color: var(--text-dark);
     font-weight: 600;
@@ -4133,6 +4128,7 @@ a:hover {
         position: static;
         margin-top: 40px;
     }
+    
 }
 
 @media (max-width: 767px) {
@@ -4161,6 +4157,7 @@ a:hover {
     }
     .article-thumbnail {
         width: 100%;
+        aspect-ratio: 1366 / 768;
     }
     .article-content .article-title {
         font-size: 20px;
