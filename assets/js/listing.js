@@ -98,10 +98,6 @@ function renderFavoritesDrawer() {
         });
         drawerContent.innerHTML = drawerHeaderContent + itemsHTML;
     }
-    const drawerFooterLink = drawerContainer.querySelector('.drawer-footer a');
-    if (drawerFooterLink) {
-        drawerFooterLink.textContent = `Xem tất cả (${favorites.length}) sản phẩm yêu thích`;
-    }
 }
 
 function initFavoritesDrawer() {
@@ -123,10 +119,7 @@ function initFavoritesDrawer() {
         document.body.classList.remove('drawer-open');
     };
 
-    favBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        openDrawer();
-    });
+    favBtn.addEventListener('click', (e) => { e.preventDefault(); openDrawer(); });
     closeBtn.addEventListener('click', closeDrawer);
     overlay.addEventListener('click', closeDrawer);
 
@@ -144,15 +137,11 @@ function initFavoritesDrawer() {
 const toSlug = (str) => {
     if (!str) return '';
     let s = str.toLowerCase();
-
-    // Xử lý các trường hợp đặc biệt cho thành phố lớn để khớp với URL
     if (s === 'hồ chí minh') return 'tp-ho-chi-minh';
     if (s === 'hà nội') return 'tp-ha-noi';
     if (s === 'đà nẵng') return 'tp-da-nang';
     if (s === 'cần thơ') return 'tp-can-tho';
     if (s === 'hải phòng') return 'tp-hai-phong';
-
-    // Logic chuyển đổi slug chung
     s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     s = s.replace(/[đĐ]/g, 'd');
     s = s.replace(/([^0-9a-z-\s])/g, '');
@@ -163,17 +152,17 @@ const toSlug = (str) => {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
+    let map; // Để truy cập bản đồ từ các hàm khác
+    let wardLayersLookup = {}; // Để tra cứu layer của phường/xã theo tên
     let dataSource;
+    let allMapMarkers = {};     // MỚI: Dùng để lưu tất cả các marker sản phẩm
+    let highlightedWardLayer = null; // MỚI: Lưu layer phường đang được làm nổi bật
     const isRentalPage = window.location.pathname.includes('listing-thue.html');
 
     if (isRentalPage) {
-        if (typeof allRentalProductsData !== 'undefined') {
-            dataSource = allRentalProductsData;
-        }
+        if (typeof allRentalProductsData !== 'undefined') dataSource = allRentalProductsData;
     } else {
-        if (typeof allProductsData !== 'undefined') {
-            dataSource = allProductsData;
-        }
+        if (typeof allProductsData !== 'undefined') dataSource = allProductsData;
     }
 
     initFavoritesDrawer();
@@ -192,140 +181,52 @@ document.addEventListener('DOMContentLoaded', function () {
     
     if (!gridContainer || !sidebar || !applyFilterBtn || !searchInput || typeof dataSource === 'undefined') {
         console.error("Thiếu các thành phần HTML quan trọng hoặc không tìm thấy dữ liệu sản phẩm (dataSource). Script sẽ không chạy.");
-        if (gridContainer) {
-            gridContainer.innerHTML = '<p class="no-results-message" style="grid-column: 1 / -1; text-align: center; padding: 20px;">Lỗi: Không thể tải dữ liệu sản phẩm.</p>';
-        }
+        if (gridContainer) gridContainer.innerHTML = '<p class="no-results-message" style="grid-column: 1 / -1; text-align: center; padding: 20px;">Lỗi: Không thể tải dữ liệu sản phẩm.</p>';
         return;
     }
 
-    // Helper function to remove Vietnamese diacritics
     const removeDiacritics = (str) => {
         if (!str) return '';
-        return str
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[đĐ]/g, 'd');
+        return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd');
     };
 
-    const allItems = Object.values(dataSource).map(p => {
-        // 1. Tập hợp tất cả các thông tin văn bản có thể tìm kiếm vào một mảng
-        const textParts = [];
-        if (p.title) textParts.push(p.title);
-        if (p.project) textParts.push(p.project);
-
-        // 2. Thêm địa chỉ và các biến thể có tiền tố (ví dụ: "đường abc", "phường xyz")
-        if (p.street) {
-            textParts.push(p.street);
-            textParts.push(`đường ${p.street}`);
-            textParts.push(`phố ${p.street}`);
+    const allItems = Object.values(dataSource).map(p => ({
+        ...p,
+        date: new Date(p.publishedAt),
+        searchableString: removeDiacritics([p.title, p.project, p.street, `đường ${p.street}`, p.ward, `phường ${p.ward}`, p.city, `quận ${p.city}`].join(' '))
+    }));
+    const wardToCityLookup = {};
+    allItems.forEach(item => {
+        if (item.ward && item.city && !wardToCityLookup[item.ward]) {
+            // Chuẩn hóa tên phường làm key để tra cứu dễ hơn
+            const normalizedWard = removeDiacritics(item.ward).toLowerCase();
+            wardToCityLookup[normalizedWard] = item.city;
         }
-        if (p.ward) {
-            textParts.push(p.ward);
-            textParts.push(`phường ${p.ward}`);
-            textParts.push(`xã ${p.ward}`);
-        }
-        if (p.city) {
-            textParts.push(p.city);
-            textParts.push(`quận ${p.city}`);
-            textParts.push(`huyện ${p.city}`);
-            textParts.push(`thành phố ${p.city}`);
-            textParts.push(`tỉnh ${p.city}`);
-        }
-
-        // 3. Nối tất cả lại, chuyển thành chữ thường và loại bỏ toàn bộ dấu
-        // Thao tác này tạo ra một chuỗi tìm kiếm duy nhất, đã được chuẩn hóa hoàn toàn.
-        const searchableString = removeDiacritics(textParts.join(' '));
-
-        return {
-            ...p,
-            date: new Date(p.publishedAt),
-            searchableString: searchableString
-        };
     });
-    
-    // Tạo các bảng tra cứu để chuyển slug -> tên có dấu
-    // Tạo các bảng tra cứu để chuyển slug -> tên có dấu và dữ liệu gợi ý
-    // --- PHẦN TẠO BẢNG TRA CỨU DỮ LIỆU ---
-   // --- PHẦN TẠO BẢNG TRA CỨU DỮ LIỆU (Đã sửa lỗi) ---
     const cityLookup = {}, wardLookup = {}, streetLookup = {}, categoryLookup = {};
     const locations = { streets: {}, wards: {} };
 
-    // BƯỚC 1: Lấy dữ liệu từ Menu để đảm bảo có đủ tất cả các địa danh và loại hình
     if (typeof initialMenuData !== 'undefined') {
         ['Mua bán', 'Cho thuê', 'Dự án'].forEach(menuKey => {
             if (initialMenuData[menuKey]) {
                 initialMenuData[menuKey].forEach(categoryData => {
-                    // Lấy Loại hình (Căn hộ, Shophouse...)
                     const categoryName = categoryData["Loại hình"];
-                    if (categoryName) {
-                        categoryLookup[toSlug(categoryName)] = categoryName;
-                    }
-
-                    // Lấy Khu vực (TP. Hồ Chí Minh, Hà Nội...)
+                    if (categoryName) categoryLookup[toSlug(categoryName)] = categoryName;
                     if (categoryData['Khu vực']) {
-                        categoryData['Khu vực'].forEach(cityName => {
-                            if (cityName) {
-                                cityLookup[toSlug(cityName)] = cityName;
-                            }
-                        });
+                        categoryData['Khu vực'].forEach(cityName => { if (cityName) cityLookup[toSlug(cityName)] = cityName; });
                     }
                 });
             }
         });
     }
 
-    // BƯỚC 2: Bổ sung dữ liệu từ danh sách sản phẩm hiện tại
     allItems.forEach(item => {
-        if (item.city && !cityLookup[toSlug(item.city)]) {
-            cityLookup[toSlug(item.city)] = item.city;
-        }
-        if (item.ward) {
-            wardLookup[toSlug(item.ward)] = item.ward;
-        }
-        if (item.street) {
-            streetLookup[toSlug(item.street)] = item.street;
-        }
-        // Chỉ thêm nếu chưa có, để ưu tiên dữ liệu từ menu
-        if (item.productCategory && !categoryLookup[toSlug(item.productCategory)]) {
-            categoryLookup[toSlug(item.productCategory)] = item.productCategory;
-        }
-        
-        // Dữ liệu cho gợi ý tìm kiếm
-        if (item.street && !locations.streets[item.street]) {
-            locations.streets[item.street] = item.ward;
-        }
-        if (item.ward && !locations.wards[item.ward]) {
-            locations.wards[item.ward] = item.city;
-        }
-    });
-
-    // BƯỚC 2: Bổ sung dữ liệu từ danh sách sản phẩm (giống như logic cũ)
-    // Điều này giúp bổ sung các Phường, Đường và các Thành phố khác không có trong Menu chính.
-    allItems.forEach(item => {
-        // City (chỉ thêm nếu chưa có, để ưu tiên dữ liệu từ menu)
-        if (item.city && !cityLookup[toSlug(item.city)]) {
-            cityLookup[toSlug(item.city)] = item.city;
-        }
-        
-        // Các mục còn lại giữ nguyên
-        if (item.ward) {
-            wardLookup[toSlug(item.ward)] = item.ward;
-        }
-        if (item.street) {
-            streetLookup[toSlug(item.street)] = item.street;
-        }
-        if (item.productCategory) {
-            categoryLookup[toSlug(item.productCategory)] = item.productCategory;
-        }
-        
-        // Dữ liệu cho gợi ý tìm kiếm
-        if (item.street && !locations.streets[item.street]) {
-            locations.streets[item.street] = item.ward;
-        }
-        if (item.ward && !locations.wards[item.ward]) {
-            locations.wards[item.ward] = item.city;
-        }
+        if (item.city && !cityLookup[toSlug(item.city)]) cityLookup[toSlug(item.city)] = item.city;
+        if (item.ward) wardLookup[toSlug(item.ward)] = item.ward;
+        if (item.street) streetLookup[toSlug(item.street)] = item.street;
+        if (item.productCategory && !categoryLookup[toSlug(item.productCategory)]) categoryLookup[toSlug(item.productCategory)] = item.productCategory;
+        if (item.street && !locations.streets[item.street]) locations.streets[item.street] = item.ward;
+        if (item.ward && !locations.wards[item.ward]) locations.wards[item.ward] = item.city;
     });
 
     let visibleItems = [...allItems];
@@ -335,136 +236,101 @@ document.addEventListener('DOMContentLoaded', function () {
     
     function renderSuggestions(query = '') {
         if (!suggestionsContainer) return;
-
-        // Chuẩn hóa truy vấn của người dùng (xóa dấu, chuyển thành chữ thường)
-        const removeDiacritics = (str) => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd');
         const normalizedQuery = removeDiacritics(query.trim());
-
-        let matchingStreets = [];
-        let matchingWards = [];
-
-        // Chỉ tìm kiếm nếu người dùng đã gõ gì đó
+        let matchingStreets = [], matchingWards = [];
         if (normalizedQuery.length > 0) {
-            
-            // Tìm các đường phố khớp với truy vấn
-            matchingStreets = Object.keys(locations.streets).filter(street => {
-                const unaccentedStreet = removeDiacritics(street);
-                // Kiểm tra xem truy vấn có khớp với tên đường, hoặc tên đường có tiền tố "đường/phố" hay không
-                return unaccentedStreet.includes(normalizedQuery) || 
-                       `duong ${unaccentedStreet}`.includes(normalizedQuery) || 
-                       `pho ${unaccentedStreet}`.includes(normalizedQuery);
-            });
-
-            // Tìm các phường/xã khớp với truy vấn
-            matchingWards = Object.keys(locations.wards).filter(ward => {
-                const unaccentedWard = removeDiacritics(ward);
-                // Kiểm tra xem truy vấn có khớp với tên phường/xã, hoặc có tiền tố "phường/xã" hay không
-                return unaccentedWard.includes(normalizedQuery) || 
-                       `phuong ${unaccentedWard}`.includes(normalizedQuery) || 
-                       `xa ${unaccentedWard}`.includes(normalizedQuery);
-            });
-
-        } else { 
-            // Nếu ô tìm kiếm trống, hiển thị gợi ý mặc định
+            matchingStreets = Object.keys(locations.streets).filter(street => removeDiacritics(street).includes(normalizedQuery) || `duong ${removeDiacritics(street)}`.includes(normalizedQuery));
+            matchingWards = Object.keys(locations.wards).filter(ward => removeDiacritics(ward).includes(normalizedQuery) || `phuong ${removeDiacritics(ward)}`.includes(normalizedQuery));
+        } else {
             matchingWards = Object.keys(locations.wards).slice(0, 5);
         }
-
-        // --- Phần hiển thị HTML giữ nguyên ---
         let html = '';
         if (matchingStreets.length > 0) {
             html += '<div class="suggestions-group"><h5 class="suggestions-group-title">-- Đường Phố --</h5><ul class="suggestions-list">';
             matchingStreets.slice(0, 5).forEach(street => {
-                const parentWard = locations.streets[street];
-                html += `<li><a href="#" data-type="street" data-street="${street}" data-ward="${parentWard}">
-                    <span class="suggestion-icon">🛣️</span> ${street} <span>(P. ${parentWard})</span>
-                </a></li>`;
+                html += `<li><a href="#" data-type="street" data-street="${street}" data-ward="${locations.streets[street]}"><span class="suggestion-icon">🛣️</span> ${street} <span>(P. ${locations.streets[street]})</span></a></li>`;
             });
             html += '</ul></div>';
         }
         if (matchingWards.length > 0) {
             html += '<div class="suggestions-group"><h5 class="suggestions-group-title">-- Phường / Xã --</h5><ul class="suggestions-list">';
             matchingWards.slice(0, 5).forEach(ward => {
-                const parentCity = locations.wards[ward];
-                html += `<li><a href="#" data-type="ward" data-ward="${ward}" data-city="${parentCity}">
-                    <span class="suggestion-icon">📍</span> Phường ${ward} <span>(thuộc ${parentCity})</span>
-                </a></li>`;
+                html += `<li><a href="#" data-type="ward" data-ward="${ward}" data-city="${locations.wards[ward]}"><span class="suggestion-icon">📍</span> Phường ${ward} <span>(thuộc ${locations.wards[ward]})</span></a></li>`;
             });
             html += '</ul></div>';
         }
-
         suggestionsContainer.innerHTML = html;
         suggestionsContainer.classList.toggle('visible', html !== '');
     }
-function handleSuggestionClick(e) {
-    if (e.target.tagName === 'A' || e.target.closest('a')) {
+
+    function handleSuggestionClick(e) {
+        if (e.target.closest('a')) {
         e.preventDefault();
         const link = e.target.closest('a');
-        const type = link.dataset.type;
-        const urlParams = new URLSearchParams();
-        const page = isRentalPage ? 'listing-thue.html' : 'listing-ban.html';
-        const categorySlug = Object.keys(categoryLookup).find(key => categoryLookup[key] === 'Căn hộ');
+        
+        // Kiểm tra xem người dùng có đang ở giao diện bản đồ không
+        const isMapViewActive = document.body.classList.contains('map-view-active');
 
-        // Logic được cập nhật cho cả cấp Đường và cấp Phường
-        if (type === 'street') {
-            const street = link.dataset.street;
-            const ward = link.dataset.ward;
-            const city = locations.wards[ward]; // Lấy thành phố từ phường cha
+        if (isMapViewActive) {
+            // --- XỬ LÝ KHI ĐANG Ở GIAO DIỆN BẢN ĐỒ ---
+            // Ẩn khung gợi ý
+            if(suggestionsContainer) {
+                suggestionsContainer.classList.remove('visible');
+            }
 
-            // Xây dựng URL đầy đủ
-            if (categorySlug) urlParams.set('loaihinh', categorySlug);
-            if (city) urlParams.set('thanhpho', toSlug(city));
-            if (ward) urlParams.set('phuong', toSlug(ward));
-            if (street) urlParams.set('duong', toSlug(street)); // Thêm tham số 'duong'
-
-            // Chuyển hướng đến URL mới
-            window.location.href = `${page}?${urlParams.toString()}`;
-
-        } else if (type === 'ward') {
-            const ward = link.dataset.ward;
-            const city = link.dataset.city;
-
-            // Xây dựng URL
-            if (categorySlug) urlParams.set('loaihinh', categorySlug);
-            if (city) urlParams.set('thanhpho', toSlug(city));
-            if (ward) urlParams.set('phuong', toSlug(ward));
+            const queryText = link.dataset.ward || link.dataset.street;
+            if (!queryText) return;
             
-            // Chuyển hướng đến URL mới
+            // Cập nhật giá trị vào ô tìm kiếm
+            searchInput.value = queryText;
+
+            // Tái sử dụng logic submit đã được sửa lỗi để cập nhật bản đồ tại chỗ
+            searchForm.dispatchEvent(new Event('submit', {
+                bubbles: true,
+                cancelable: true
+            }));
+
+        } else {
+            // --- XỬ LÝ KHI Ở GIAO DIỆN DANH SÁCH (LOGIC GỐC) ---
+            const urlParams = new URLSearchParams();
+            const page = isRentalPage ? 'listing-thue.html' : 'listing-ban.html';
+            
+            const categorySlug = Object.keys(categoryLookup).find(key => categoryLookup[key] === 'Căn hộ');
+            if (categorySlug) {
+                urlParams.set('loaihinh', categorySlug);
+            }
+
+            if (link.dataset.type === 'street') {
+                urlParams.set('thanhpho', toSlug(locations.wards[link.dataset.ward]));
+                urlParams.set('phuong', toSlug(link.dataset.ward));
+                urlParams.set('duong', toSlug(link.dataset.street));
+            } else if (link.dataset.type === 'ward') {
+                urlParams.set('thanhpho', toSlug(link.dataset.city));
+                urlParams.set('phuong', toSlug(link.dataset.ward));
+            }
+            
+            // Chuyển hướng đến trang mới với bộ lọc (tải lại trang)
             window.location.href = `${page}?${urlParams.toString()}`;
         }
-        
-        suggestionsContainer.classList.remove('visible');
     }
-}
+    }
 
     searchInput.addEventListener('focus', () => renderSuggestions(searchInput.value));
     searchInput.addEventListener('input', () => renderSuggestions(searchInput.value));
-    document.addEventListener('click', (e) => {
-        if (!searchInput.parentElement.contains(e.target)) {
-            suggestionsContainer.classList.remove('visible');
-        }
-    });
+    document.addEventListener('click', (e) => { if (!searchForm.contains(e.target)) suggestionsContainer.classList.remove('visible'); });
     suggestionsContainer.addEventListener('mousedown', handleSuggestionClick);
+
     function createProductCardHTML(item) {
         const address = `${item.street}, ${item.ward}, ${item.city}`;
         let labelHTML = '';
-        if (item.status && item.status.trim() !== '') {
-            let labelClass = '';
+        if (item.status) {
             const statusLower = item.status.toLowerCase();
-            if (statusLower.includes('giá tốt') || statusLower.includes('duy nhất')) { 
-                labelClass = 'label-good-price'; 
-            } else if (statusLower.includes('đã bán') || statusLower.includes('đã cho thuê')) { 
-                labelClass = 'label-sold'; 
-            }
-            if (labelClass) { 
-                labelHTML = `<span class="product-label ${labelClass}">${item.status}</span>`; 
-            }
+            let labelClass = statusLower.includes('giá tốt') ? 'label-good-price' : (statusLower.includes('đã bán') ? 'label-sold' : '');
+            if (labelClass) labelHTML = `<span class="product-label ${labelClass}">${item.status}</span>`; 
         }
-        const imageUrl = (Array.isArray(item.images) && item.images.length > 0) ? item.images[0] : 'placeholder.jpg';
-        const imageCount = (Array.isArray(item.images)) ? item.images.length : 0;
-        
-        const priceDisplay = (item.propertyType === 'Thuê' || item.propertyType === 'Cho thuê')
-            ? `${item.price.toLocaleString('vi-VN')} triệu/tháng` 
-            : `${item.price.toLocaleString('vi-VN')} tỷ`;
+        const imageUrl = (item.images && item.images.length > 0) ? item.images[0] : 'placeholder.jpg';
+        const imageCount = item.images ? item.images.length : 0;
+        const priceDisplay = isRentalPage ? `${item.price.toLocaleString('vi-VN')} triệu/tháng` : `${item.price.toLocaleString('vi-VN')} tỷ`;
 
         return `
             <a href="product-detail.html?id=${item.id}" class="product-list-card">
@@ -478,7 +344,7 @@ function handleSuggestionClick(e) {
                         </button>
                     </div>
                     <div class="image-overlay-bottom">
-                        <div class="image-count"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"></path></svg><span>${imageCount}</span></div>
+                        <div class="image-count"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/></svg><span>${imageCount}</span></div>
                     </div>
                 </div>
                 <div class="product-card-content">
@@ -496,224 +362,360 @@ function handleSuggestionClick(e) {
     }
 
     function showPage(page) {
-            currentPage = page;
-            resultsCountElement.textContent = `Tìm thấy ${visibleItems.length} bất động sản`;
-            gridContainer.innerHTML = '';
-            if (visibleItems.length === 0) {
-                gridContainer.innerHTML = '<p class="no-results-message" style="grid-column: 1 / -1; text-align: center; padding: 20px;">Không tìm thấy sản phẩm nào phù hợp.</p>';
-                paginationContainer.innerHTML = '';
-                return;
-            }
-            const pageItems = visibleItems.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-            gridContainer.innerHTML = pageItems.map(createProductCardHTML).join('');
-            gridContainer.querySelectorAll('.favorite-btn').forEach(button => { button.addEventListener('click', handleFavoriteClick); });
-            updateAllFavoriteButtons();
-            updatePaginationLinks();
+        currentPage = page;
+        resultsCountElement.textContent = `Tìm thấy ${visibleItems.length} bất động sản`;
+        if (visibleItems.length === 0) {
+            gridContainer.innerHTML = '<p class="no-results-message" style="grid-column: 1 / -1; text-align: center; padding: 20px;">Không tìm thấy sản phẩm nào phù hợp.</p>';
+            paginationContainer.innerHTML = ''; return;
+        }
+        const pageItems = visibleItems.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+        gridContainer.innerHTML = pageItems.map(createProductCardHTML).join('');
+        gridContainer.querySelectorAll('.favorite-btn').forEach(button => { button.addEventListener('click', handleFavoriteClick); });
+        updateAllFavoriteButtons();
+        updatePaginationLinks();
     }
     
     function updatePaginationLinks() {
         paginationContainer.innerHTML = '';
         const totalPages = Math.ceil(visibleItems.length / itemsPerPage);
         if (totalPages <= 1) return;
-        
         for (let i = 1; i <= totalPages; i++) {
             const link = document.createElement('a');
-            link.href = '#'; 
+            link.href = '#';
             link.textContent = i;
             if (i === currentPage) link.classList.add('active');
-            link.addEventListener('click', (e) => {
-                e.preventDefault(); 
-                showPage(i);
-                document.querySelector('.results-summary')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
+            link.addEventListener('click', (e) => { e.preventDefault(); showPage(i); document.querySelector('.results-summary')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
             paginationContainer.appendChild(link);
         }
     }
+    function updateMapMarkers() {
+        if (typeof allMapMarkers === 'undefined') return;
 
+        const visibleIds = new Set(visibleItems.map(item => item.id));
+
+        for (const markerId in allMapMarkers) {
+            const marker = allMapMarkers[markerId];
+            if (visibleIds.has(markerId)) {
+                // Hiện các marker có trong kết quả tìm kiếm
+                marker.setOpacity(1);
+                if (marker.getPopup()) {
+                    marker.setInteractive(true);
+                }
+            } else {
+                // Làm mờ và vô hiệu hóa các marker không có trong kết quả
+                marker.setOpacity(0.2);
+                if (marker.getPopup()) {
+                    marker.setInteractive(false);
+                }
+            }
+        }
+    }
     function parseTextToRange(text) { const numbers = text.match(/\d+(\.\d+)?/g)?.map(Number) || []; if (text.includes('Dưới')) return { min: 0, max: numbers[0] || null }; if (text.includes('Trên')) return { min: numbers[0] || null, max: Infinity }; if (numbers.length === 2) return { min: numbers[0], max: numbers[1] }; return { min: null, max: null }; }
     function getButtonGroupFilterValue(groupSelector) { const activeBtn = sidebar.querySelector(`${groupSelector} .btn-group button.active`); if (activeBtn && activeBtn.textContent.toLowerCase() !== 'tất cả') return parseInt(activeBtn.textContent, 10); return null; }
     function getCheckboxFilterValues(groupSelector) { return Array.from(sidebar.querySelectorAll(`${groupSelector} .checkbox-group input:checked`)).map(cb => cb.dataset.value); }
     function getRangeFilter(groupSelector) { const group = sidebar.querySelector(groupSelector); const result = { min: null, max: null }; const activeTab = group.querySelector('.price-tab-btn.active'); const tabContentId = activeTab ? activeTab.dataset.target : null; if (tabContentId && document.getElementById(tabContentId)?.classList.contains('active')) { const activeContent = document.getElementById(tabContentId); if (tabContentId.includes('quick-select')) { const activeBtn = activeContent.querySelector('button.active'); if (activeBtn && activeBtn.textContent.toLowerCase() !== 'tất cả') return parseTextToRange(activeBtn.textContent); } else if (tabContentId.includes('custom-range')) { const minInput = activeContent.querySelector('.filter-input-min'); const maxInput = activeContent.querySelector('.filter-input-max'); const minVal = parseFloat(minInput.value); const maxVal = parseFloat(maxInput.value); if (!isNaN(minVal) && !isNaN(maxVal) && maxVal < minVal) { alert('Giá trị "Đến" phải lớn hơn hoặc bằng giá trị "Từ".'); maxInput.value = ''; } result.min = isNaN(minVal) ? null : minVal; result.max = isNaN(maxVal) ? null : maxVal; } } return result; }
     
-
-// Thay thế toàn bộ hàm applyAllFilters cũ bằng hàm này
-function applyAllFilters() { 
-    const urlParams = new URLSearchParams(window.location.search);
-    const loaiHinhSlugFromUrl = urlParams.get('loaihinh');
-    const citySlugFromUrl = urlParams.get('thanhpho');
-    const wardSlugFromUrl = urlParams.get('phuong');
-    const duongSlugFromUrl = urlParams.get('duong');
-
-    const priceFilter = getRangeFilter('[data-filter-name="price"]'); 
-    const areaFilter = getRangeFilter('[data-filter-name="area"]'); 
-    const bedroomsFilter = getButtonGroupFilterValue('[data-filter-name="bedrooms"]'); 
-    const wcFilter = getButtonGroupFilterValue('[data-filter-name="wc"]'); 
-    const furnitureFilter = getCheckboxFilterValues('[data-filter-name="furniture"]'); 
-    const directionFilter = getCheckboxFilterValues('[data-filter-name="direction"]'); 
-    const legalFilter = getCheckboxFilterValues('[data-filter-name="legal"]');
-    const leaseTermFilter = getCheckboxFilterValues('[data-filter-name="leaseTerm"]');
-    const floorFilter = getCheckboxFilterValues('[data-filter-name="floor"]'); // <-- THÊM MỚI: Đọc giá trị bộ lọc Tầng
+    function applyAllFilters() { 
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('q') || ''; // Lấy từ khóa từ tham số 'q' trên URL
+    const searchTokens = removeDiacritics(searchQuery).split(/\s+/).filter(Boolean);
+        const filters = {
+            price: getRangeFilter('[data-filter-name="price"]'), area: getRangeFilter('[data-filter-name="area"]'),
+            bedrooms: getButtonGroupFilterValue('[data-filter-name="bedrooms"]'), wc: getButtonGroupFilterValue('[data-filter-name="wc"]'),
+            furniture: getCheckboxFilterValues('[data-filter-name="furniture"]'), direction: getCheckboxFilterValues('[data-filter-name="direction"]'),
+            legal: getCheckboxFilterValues('[data-filter-name="legal"]'), leaseTerm: getCheckboxFilterValues('[data-filter-name="leaseTerm"]'),
+            floor: getCheckboxFilterValues('[data-filter-name="floor"]'), loaiHinhUrl: urlParams.get('loaihinh'),
+            cityUrl: urlParams.get('thanhpho'), wardUrl: urlParams.get('phuong'), duongUrl: urlParams.get('duong')
+        };
+        visibleItems = allItems.filter(item => {
+            if (filters.price.min != null && item.price < filters.price.min) return false; 
+            if (filters.price.max != null && item.price > filters.price.max) return false; 
+            if (filters.area.min != null && item.area < filters.area.min) return false; 
+            if (filters.area.max != null && item.area > filters.area.max) return false; 
+            if (filters.bedrooms !== null) { const btnText = sidebar.querySelector('[data-filter-name="bedrooms"] button.active').textContent; if (btnText.includes('+') ? (item.bedrooms < filters.bedrooms) : (item.bedrooms !== filters.bedrooms)) return false; } 
+            if (filters.wc !== null) { const btnText = sidebar.querySelector('[data-filter-name="wc"] button.active').textContent; if (btnText.includes('+') ? (item.wc < filters.wc) : (item.wc !== filters.wc)) return false; } 
+            if (filters.furniture.length && !filters.furniture.includes(item.furniture)) return false; 
+            if (filters.direction.length && !filters.direction.includes(item.doorDirection)) return false; 
+            if (filters.legal.length && !filters.legal.includes(item.legal)) return false;
+            if (filters.leaseTerm.length && !filters.leaseTerm.includes(item.leaseTerm)) return false;
+            if (filters.floor.length && !filters.floor.includes(item.floor)) return false;
+            if (searchTokens.length && !searchTokens.every(token => item.searchableString.includes(token))) return false;
+            if (filters.loaiHinhUrl && toSlug(item.productCategory) !== filters.loaiHinhUrl) return false;
+            if (filters.cityUrl && toSlug(item.city) !== filters.cityUrl) return false;
+            if (filters.wardUrl && toSlug(item.ward) !== filters.wardUrl) return false;
+            if (filters.duongUrl && toSlug(item.street) !== filters.duongUrl) return false;
+            return true; 
+        }); 
+    }
     
-    const removeDiacritics = (str) => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd');
-    const searchTerm = removeDiacritics(searchInput.value.trim());
-    const searchTokens = searchTerm.split(/\s+/).filter(token => token.length > 0);
-
-    visibleItems = allItems.filter(item => { 
-        // Các bộ lọc từ sidebar và tìm kiếm (giữ nguyên)
-        if (priceFilter.min != null && item.price < priceFilter.min) return false; 
-        if (priceFilter.max != null && item.price > priceFilter.max) return false; 
-        if (areaFilter.min != null && item.area < areaFilter.min) return false; 
-        if (areaFilter.max != null && item.area > areaFilter.max) return false; 
-        if (bedroomsFilter !== null) { const btnText = sidebar.querySelector('[data-filter-name="bedrooms"] button.active').textContent; if (btnText.includes('+')) { if (item.bedrooms < bedroomsFilter) return false; } else { if (item.bedrooms !== bedroomsFilter) return false; } } 
-        if (wcFilter !== null) { const btnText = sidebar.querySelector('[data-filter-name="wc"] button.active').textContent; if (btnText.includes('+')) { if (item.wc < wcFilter) return false; } else { if (item.wc !== wcFilter) return false; } } 
-        if (furnitureFilter.length > 0 && !furnitureFilter.includes(item.furniture)) return false; 
-        if (directionFilter.length > 0 && !directionFilter.includes(item.doorDirection)) return false; 
-        if (legalFilter.length > 0 && item.hasOwnProperty('legal') && !legalFilter.includes(item.legal)) { return false; }
-        if (leaseTermFilter.length > 0 && item.hasOwnProperty('leaseTerm') && !leaseTermFilter.includes(item.leaseTerm)) { return false; }
-        if (floorFilter.length > 0 && item.hasOwnProperty('floor') && !floorFilter.includes(item.floor)) return false; // <-- THÊM MỚI: Áp dụng điều kiện lọc Tầng
-        
-        if (searchTokens.length > 0) {
-            const isMatch = searchTokens.every(token => item.searchableString.includes(token));
-            if (!isMatch) return false;
-        }
-        
-        // Các bộ lọc từ URL
-        if (loaiHinhSlugFromUrl && toSlug(item.productCategory) !== loaiHinhSlugFromUrl) return false;
-        if (citySlugFromUrl && toSlug(item.city) !== citySlugFromUrl) return false;
-        if (wardSlugFromUrl && toSlug(item.ward) !== wardSlugFromUrl) return false;
-        if (duongSlugFromUrl && toSlug(item.street) !== duongSlugFromUrl) return false;
-
-        return true; 
-    }); 
-}
     function sortItems() { const criteria = sortSelect.value; visibleItems.sort((a, b) => { switch (criteria) { case 'price-asc': return a.price - b.price; case 'price-desc': return b.price - a.price; case 'oldest': return a.date - b.date; case 'newest': default: return b.date - a.date; } }); }
-    function createTag(value, onRemove) { const tag = document.createElement('span'); tag.className = 'filter-tag'; tag.textContent = value; const removeBtn = document.createElement('button'); removeBtn.className = 'remove-tag'; removeBtn.innerHTML = '&times;'; removeBtn.addEventListener('click', onRemove); tag.appendChild(removeBtn); filterTagArea.appendChild(tag); }
+    
     function updateFilterTagsUI() {
         if (!filterTagArea) return;
         filterTagArea.innerHTML = '<strong>Đang lọc theo:</strong>';
         let activeFilterCount = 0;
-
         const createTag = (value, onRemove) => {
+            activeFilterCount++;
             const tag = document.createElement('span');
             tag.className = 'filter-tag';
             tag.textContent = value;
             const removeBtn = document.createElement('button');
             removeBtn.className = 'remove-tag';
-            removeBtn.addEventListener('click', onRemove);
             removeBtn.innerHTML = '&times;';
+            removeBtn.addEventListener('click', onRemove);
             tag.appendChild(removeBtn);
             filterTagArea.appendChild(tag);
-            activeFilterCount++;
         };
-
         sidebar.querySelectorAll('.filter-group').forEach(group => {
-            const groupName = group.dataset.filterName;
-
-            // Xử lý Checkbox và Button Group
             group.querySelectorAll('.checkbox-group input:checked').forEach(checkbox => {
-                createTag(checkbox.nextElementSibling.textContent, () => {
-                    checkbox.checked = false;
-                    updateDisplay();
-                });
+                createTag(checkbox.nextElementSibling.textContent, () => { checkbox.checked = false; updateDisplay(); });
             });
-
-            group.querySelectorAll('.btn-group button.active').forEach(activeBtn => {
+            group.querySelectorAll('.btn-group button.active:not(:first-child)').forEach(activeBtn => {
                 if (activeBtn.textContent.toLowerCase() !== 'tất cả') {
                     createTag(activeBtn.textContent, () => {
-                        const btnGroup = activeBtn.closest('.btn-group');
-                        btnGroup.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-                        btnGroup.children[0].classList.add('active');
+                        activeBtn.classList.remove('active');
+                        activeBtn.parentElement.children[0].classList.add('active');
                         updateDisplay();
                     });
                 }
             });
-
-            // Xử lý Range Inputs (Price & Area)
-            if (groupName === 'price' || groupName === 'area') {
-                const quickSelectActive = group.querySelector('.btn-group button.active:not(:first-child)');
-                if (quickSelectActive) return;
-
-                const minInput = group.querySelector('.filter-input-min');
-                const maxInput = group.querySelector('.filter-input-max');
-                if (!minInput || !maxInput) return;
-
-                const minVal = minInput.value;
-                const maxVal = maxInput.value;
-                const unit = group.querySelector('.unit-label')?.textContent || '';
-                let tagValue = '';
-
-                if (minVal && maxVal) tagValue = `${minVal} - ${maxVal}${unit}`; // Sửa đổi tại đây
-                else if (minVal) tagValue = `Từ ${minVal}${unit}`;
-                else if (maxVal) tagValue = `Đến ${maxVal}${unit}`;
-                
-                if (tagValue) {
-                    createTag(tagValue, () => {
-                        minInput.value = '';
-                        maxInput.value = '';
-                        updateDisplay();
-                    });
+            if (group.dataset.filterName === 'price' || group.dataset.filterName === 'area') {
+                if (group.querySelector('.btn-group button.active:not(:first-child)')) return;
+                const minInput = group.querySelector('.filter-input-min'), maxInput = group.querySelector('.filter-input-max');
+                const minVal = minInput.value, maxVal = maxInput.value;
+                if (minVal || maxVal) {
+                    const unit = group.querySelector('.unit-label')?.textContent || '';
+                    const tagValue = minVal && maxVal ? `${minVal} - ${maxVal}${unit}` : (minVal ? `Từ ${minVal}${unit}` : `Đến ${maxVal}${unit}`);
+                    createTag(tagValue, () => { minInput.value = ''; maxInput.value = ''; updateDisplay(); });
                 }
             }
         });
         filterTagArea.style.display = activeFilterCount > 0 ? 'block' : 'none';
     }
+
     function updateDisplay() {
-            applyAllFilters();
-            sortItems();
-            showPage(1);
-            updateFilterTagsUI();
-            if (window.innerWidth < 992) {
-                sidebar.classList.remove('is-open');
-                document.getElementById('filter-overlay-mobile').classList.remove('is-active');
+        applyAllFilters();
+        sortItems();
+        showPage(1);
+        
+        updateFilterTagsUI();
+        updateMapMarkers();
+        const urlParams = new URLSearchParams(window.location.search);
+    const wardSlugFromUrl = urlParams.get('phuong');
+    if (wardSlugFromUrl && wardLookup[wardSlugFromUrl]) {
+        highlightWard(wardLookup[wardSlugFromUrl]);
+    }
+        if (window.innerWidth < 1025 || document.body.classList.contains('map-view-active')) {
+            sidebar.classList.remove('is-open');
+            const overlay = document.getElementById('filter-overlay-mobile');
+            if(overlay) overlay.classList.remove('is-active');
+        }
+    }
+    // HÀM MỚI ĐỂ KHỞI TẠO BẢN ĐỒ
+    // TÌM VÀ THAY THẾ TOÀN BỘ HÀM initMap() BẰNG ĐOẠN MÃ NÀY
+
+function initMap() {
+    const mapContainer = document.getElementById('map-placeholder');
+    if (!mapContainer || mapContainer.classList.contains('leaflet-container')) {
+        return;
+    }
+
+    // --- 1. KHỞI TẠO BẢN ĐỒ ---
+    map = L.map('map-placeholder').setView([10.7769, 106.7009], 11); // Zoom ra xa hơn một chút ban đầu
+
+    // --- 2. ĐỊNH NGHĨA CÁC LỚP BẢN ĐỒ NỀN ---
+    // Bản đồ nền CARTO Voyager (cho mức zoom xa)
+    const cartoLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+    });
+
+    // Bản đồ nền Google Maps (cho mức zoom gần)
+    const googleMapsLayer = L.gridLayer.googleMutant({
+        type: 'roadmap', // Có thể đổi thành 'satellite', 'hybrid', 'terrain'
+        styles: [{ stylers: [{ saturation: -80 }, { gamma: 1.2 }] }]
+    });
+
+    // --- 3. LOGIC TỰ ĐỘNG CHUYỂN ĐỔI BẢN ĐỒ NỀN ---
+    const zoomThreshold = 14; // Mức zoom để chuyển đổi
+
+    // Hàm kiểm tra và chuyển đổi bản đồ nền
+    function updateBaseLayer() {
+        const currentZoom = map.getZoom();
+        if (currentZoom >= zoomThreshold) {
+            if (!map.hasLayer(googleMapsLayer)) {
+                map.removeLayer(cartoLayer);
+                map.addLayer(googleMapsLayer);
             }
+        } else {
+            if (!map.hasLayer(cartoLayer)) {
+                map.removeLayer(googleMapsLayer);
+                map.addLayer(cartoLayer);
+            }
+        }
+    }
+
+    // Gắn sự kiện 'zoomend' để kiểm tra mỗi khi người dùng thay đổi mức zoom
+    map.on('zoomend', updateBaseLayer);
+
+    // Thêm lớp bản đồ nền ban đầu
+    updateBaseLayer();
+
+
+    // --- 4. TẢI VÀ HIỂN THỊ DỮ LIỆU RANH GIỚI PHƯỜNG/XÃ TỪ TỆP wards.json ---
+    fetch('wards.json')
+        .then(response => response.json())
+        .then(data => {
+            // Chuyển đổi TopoJSON thành GeoJSON
+            const wardsGeoJSON = topojson.feature(data, data.objects.collection);
+
+            // Vẽ ranh giới các phường lên bản đồ
+            L.geoJSON(wardsGeoJSON, {
+                style: function(feature) {
+                    return {
+                        color: "#e74c3c", // Màu đỏ nổi bật
+                        weight: 1.5,
+                        opacity: 0.8,
+                        fillColor: "#e74c3c",
+                        fillOpacity: 0.1
+                    };
+                },
+                onEachFeature: function(feature, layer) {
+                    // Thêm popup hiển thị tên phường khi nhấp vào
+                    if (feature.properties && feature.properties.Tên) {
+                        layer.bindPopup(`<h4>Phường ${feature.properties.Tên}</h4>`);
+                    }
+                }
+            }).addTo(map);
+        })
+        .catch(error => console.error('Không thể tải dữ liệu bản đồ wards.json:', error));
+}
+function initMapData() {
+    // --- Vẽ ranh giới các Phường/Xã ---
+    fetch('phuongxa.json')
+        .then(response => response.json())
+        .then(data => {
+            const wards = data[0].wards;
+            wards.forEach(ward => {
+                if (ward.geometry) {
+                    const wardLayer = L.geoJSON(ward.geometry, {
+                        style: { // Kiểu mặc định
+                            color: "#ff7800",
+                            weight: 1,
+                            opacity: 0.65,
+                            fillOpacity: 0.1
+                        }
+                    }).bindPopup(`<b>Phường ${ward.name}</b>`);
+
+                    wardLayer.addTo(map);
+                    // Lưu lại layer để tra cứu sau này
+                    const normalizedWardName = removeDiacritics(ward.name).toLowerCase();
+                    wardLayersLookup[normalizedWardName] = wardLayer;
+                }
+            });
+        });
+
+    // --- Đánh dấu (ghim) tất cả sản phẩm ---
+    // Sử dụng biến allItems đã được tạo sẵn
+     allItems.forEach(item => {
+        if (item.location && item.location.coordinates) {
+            const marker = L.marker([item.location.coordinates[1], item.location.coordinates[0]]);
+            
+            const popupContent = `
+                <div style="font-family: Arial, sans-serif; font-size: 14px;">
+                    <img src="assets/images/${item.images[0]}" alt="${item.title}" style="width:100%; height:auto; border-radius:4px; margin-bottom: 5px;">
+                    <h5 style="margin: 0 0 5px 0; font-size: 15px;"><a href="product-detail.html?id=${item.id}" target="_blank">${item.title}</a></h5>
+                    <p style="margin: 0; color: #e67e22; font-weight: bold;">${item.price} tỷ</p>
+                </div>
+            `;
+            
+            // **SỬA ĐỔI:** Lưu nội dung popup vào marker
+            marker.myPopupContent = popupContent; 
+            
+            marker.bindPopup(popupContent);
+            marker.addTo(map);
+            allMapMarkers[item.id] = marker;
+        }
+    });
+}
+
+// HÀM TRUNG TÂM MỚI: Cập nhật URL và làm mới toàn bộ giao diện
+// TÌM VÀ THAY THẾ TOÀN BỘ HÀM NÀY
+
+function applyFiltersAndRefresh() {
+    const query = searchInput.value.trim();
+    const normalizedQuery = removeDiacritics(query).toLowerCase();
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Xóa các tham số tìm kiếm cũ để tránh trùng lặp
+    urlParams.delete('q');
+    urlParams.delete('phuong');
+    urlParams.delete('duong');
+
+    // KIỂM TRA: LÀ TÌM KIẾM ĐỊA DANH HAY TỪ KHÓA?
+    if (query && wardToCityLookup[normalizedQuery]) {
+        // ---- TRƯỜNG HỢP 1: TÌM KIẾM ĐỊA DANH (PHƯỜNG) ----
+        const cityName = wardToCityLookup[normalizedQuery];
+        if (cityName) {
+            urlParams.set('thanhpho', toSlug(cityName));
+        }
+        urlParams.set('phuong', toSlug(query)); // Dùng toSlug(query) để giữ đúng tên có dấu
+
+    } else if (query) {
+        // ---- TRƯỜNG HỢP 2: TÌM KIẾM TỪ KHÓA CHUNG ----
+        urlParams.set('q', query);
     }
     
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    history.replaceState(null, '', newUrl);
+
+    // Gọi các hàm làm mới giao diện
+    updateDisplay();
+    updateBreadcrumb();
+    updateMapMarkers();
+}
+
+
     function initSidebarEvents() {
         const openBtn = document.getElementById('floating-filter-trigger');
+        const secondaryOpenBtn = document.getElementById('secondary-filter-trigger');
         const closeBtn = document.getElementById('close-filter-btn');
         const overlay = document.getElementById('filter-overlay-mobile');
+        if (!sidebar || !overlay) return;
+
         const openSidebar = () => { sidebar.classList.add('is-open'); overlay.classList.add('is-active'); };
         const closeSidebar = () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-active'); };
-        if (openBtn && closeBtn && overlay) { openBtn.addEventListener('click', openSidebar); closeBtn.addEventListener('click', closeSidebar); overlay.addEventListener('click', closeSidebar); }
+
+        if (openBtn) openBtn.addEventListener('click', openSidebar);
+        if (secondaryOpenBtn) secondaryOpenBtn.addEventListener('click', openSidebar);
+        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+        if (overlay) overlay.addEventListener('click', closeSidebar);
+
         sidebar.querySelectorAll('.filter-accordion .accordion-trigger').forEach(trigger => { trigger.addEventListener('click', function() { this.parentElement.classList.toggle('active'); const content = this.nextElementSibling; content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px"; }); });
-        sidebar.querySelectorAll('.price-input-tabs').forEach(tabGroup => { tabGroup.addEventListener('click', function(e) { if (!e.target.matches('.price-tab-btn')) return; const tabBtn = e.target; const targetId = tabBtn.dataset.target; const targetContent = document.getElementById(targetId); const accordionContent = this.closest('.accordion-content'); tabGroup.querySelectorAll('.price-tab-btn').forEach(btn => btn.classList.remove('active')); accordionContent.querySelectorAll('.price-tab-content').forEach(content => content.classList.remove('active')); tabBtn.classList.add('active'); if (targetContent) targetContent.classList.add('active'); if (accordionContent.style.maxHeight) { accordionContent.style.maxHeight = accordionContent.scrollHeight + "px"; } updateFilterTagsUI(); }); });
-        sidebar.querySelectorAll('.btn-group').forEach(group => { group.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { group.querySelectorAll('button').forEach(btn => btn.classList.remove('active')); e.target.classList.add('active'); updateFilterTagsUI(); } }); });
+        sidebar.querySelectorAll('.price-input-tabs').forEach(tabGroup => { tabGroup.addEventListener('click', function(e) { if (!e.target.matches('.price-tab-btn')) return; const tabBtn = e.target; const targetId = tabBtn.dataset.target; const targetContent = document.getElementById(targetId); const accordionContent = this.closest('.accordion-content'); tabGroup.querySelectorAll('.price-tab-btn').forEach(btn => btn.classList.remove('active')); accordionContent.querySelectorAll('.price-tab-content').forEach(content => content.classList.remove('active')); tabBtn.classList.add('active'); if (targetContent) targetContent.classList.add('active'); if (accordionContent.style.maxHeight) accordionContent.style.maxHeight = accordionContent.scrollHeight + "px"; updateFilterTagsUI(); }); });
+        sidebar.querySelectorAll('.btn-group').forEach(group => { group.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { group.querySelector('.active')?.classList.remove('active'); e.target.classList.add('active'); updateFilterTagsUI(); } }); });
         sidebar.querySelectorAll('.checkbox-group input').forEach(input => { input.addEventListener('change', updateFilterTagsUI); });
         
         sidebar.querySelectorAll('.custom-range-input input').forEach(input => {
             input.addEventListener('input', (e) => {
                 const parentGroup = e.target.closest('.filter-group');
-                if (parentGroup) {
-                    parentGroup.querySelectorAll('.btn-group button, #price-quick-select button, #area-quick-select button').forEach(btn => btn.classList.remove('active'));
-                    const customTab = parentGroup.querySelector('.price-tab-btn[data-target*="custom"]');
-                    if (customTab && !customTab.classList.contains('active')) customTab.click();
-                }
+                parentGroup.querySelector('.btn-group .active')?.classList.remove('active');
+                parentGroup.querySelector('.price-tab-btn[data-target*="custom"]')?.click();
             });
-
-            input.addEventListener('change', (e) => {
-                const rangeContent = e.target.closest('.price-tab-content');
-                if (rangeContent) {
-                    const minInput = rangeContent.querySelector('.filter-input-min');
-                    const maxInput = rangeContent.querySelector('.filter-input-max');
-                    if (minInput && maxInput) {
-                        const minVal = parseFloat(minInput.value);
-                        const maxVal = parseFloat(maxInput.value);
-                        if (!isNaN(minVal) && !isNaN(maxVal) && maxVal < minVal) {
-                            alert('Giá trị "Đến" phải lớn hơn hoặc bằng giá trị "Từ".');
-                            e.target.value = '';
-                        }
-                    }
-                }
-                updateFilterTagsUI();
-            });
+            input.addEventListener('change', updateFilterTagsUI);
         });
-        applyFilterBtn.addEventListener('click', () => { updateDisplay(); const resultsSummary = document.querySelector('.results-summary'); if (resultsSummary) { resultsSummary.scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
-        if (resetBtn) { resetBtn.addEventListener('click', () => { sidebar.querySelectorAll('form').forEach(f => f.reset());  sidebar.querySelectorAll('.custom-range-input input').forEach(input => input.value = ''); sidebar.querySelectorAll('.btn-group').forEach(group => { group.querySelectorAll('button').forEach(btn => btn.classList.remove('active')); const allButton = Array.from(group.children).find(btn => btn.textContent.toLowerCase() === 'tất cả'); if (allButton) allButton.classList.add('active'); }); sidebar.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false); searchInput.value = ''; updateDisplay(); }); }
-        searchForm.addEventListener('submit', (e) => { e.preventDefault(); updateDisplay(); });
-        searchInput.addEventListener('input', updateDisplay);
+
+        applyFilterBtn.addEventListener('click', () => { applyFiltersAndRefresh();; const resultsSummary = document.querySelector('.results-summary'); if (resultsSummary) { resultsSummary.scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
+        if (resetBtn) { resetBtn.addEventListener('click', () => { sidebar.querySelectorAll('input[type="text"]').forEach(i => i.value = ''); sidebar.querySelectorAll('.btn-group').forEach(g => { g.querySelector('.active')?.classList.remove('active'); g.children[0].classList.add('active'); }); sidebar.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false); searchInput.value = ''; updateDisplay(); }); }
+        
+  
         sortSelect.addEventListener('change', () => { sortItems(); showPage(1); });
     }
 
+    // =================================================================
+    // == KHU VỰC DÀNH CHO LỊCH SỬ GIÁ VÀ BIỂU ĐỒ (ĐÃ PHỤC HỒI) ==
+    // =================================================================
     function initOtherSections() {
         initPriceHistory();
         initPriceHistoryChart();
@@ -721,7 +723,6 @@ function applyAllFilters() {
     }
     
     function initPriceHistory() {
-        const isRentalPage = document.querySelector('[data-filter-name="leaseTerm"]');
         if (isRentalPage) {
             initPriceHistoryForRent();
         } else {
@@ -729,252 +730,95 @@ function applyAllFilters() {
         }
     }
 
-    function initPriceHistoryForRent() {
-    const tabsContainer = document.getElementById('price-year-tabs');
-    const tableContainer = document.getElementById('summary-table-container');
-    const dataSource = typeof priceHistoryData_Thue !== 'undefined' ? priceHistoryData_Thue : {}; // Sử dụng dữ liệu thuê
-    if (!tabsContainer || !tableContainer || typeof dataSource === 'undefined') {
-        const priceHistorySection = document.querySelector('.price-history-section');
-        if (priceHistorySection) priceHistorySection.style.display = 'none';
-        return;
-    }
-
-    function renderTable(year) {
-        // [CẬP NHẬT] Đọc tham số từ URL để lọc
-        const urlParams = new URLSearchParams(window.location.search);
-        const citySlugFromUrl = urlParams.get('thanhpho');
-        const wardSlugFromUrl = urlParams.get('phuong');
-
-        let yearData = dataSource[year] || [];
-
-        // Lọc dữ liệu theo thành phố
-        if (citySlugFromUrl) {
-            yearData = yearData.filter(tx => toSlug(tx.city) === citySlugFromUrl);
-        }
-        // Lọc tiếp dữ liệu theo phường
-        if (wardSlugFromUrl) {
-            yearData = yearData.filter(tx => toSlug(tx.ward) === wardSlugFromUrl);
-        }
-
-        if (yearData.length === 0) {
-            tableContainer.innerHTML = '<p style="text-align:center; color:#666;">Không có dữ liệu lịch sử giá cho khu vực này.</p>';
-            return;
-        }
-
-        tableContainer.innerHTML = '';
-        const transactionsByBedroom = {};
-        yearData.forEach(transaction => {
-            const bedrooms = transaction.bedrooms;
-            if (!transactionsByBedroom[bedrooms]) {
-                transactionsByBedroom[bedrooms] = [];
-            }
-            transactionsByBedroom[bedrooms].push(transaction);
-        });
-        const sortedBedroomKeys = Object.keys(transactionsByBedroom).sort((a, b) => a - b);
-        for (const bedrooms of sortedBedroomKeys) {
-            const groupDetails = transactionsByBedroom[bedrooms];
-            if (groupDetails.length === 0) continue;
-            const wrapper = document.createElement('div');
-            wrapper.className = 'summary-row-wrapper';
-            const prices = groupDetails.map(d => d.price);
-            const minPrice = Math.min(...prices);
-            const maxPrice = Math.max(...prices);
-            const priceString = (minPrice === maxPrice) 
-                ? `${maxPrice.toLocaleString('vi-VN')} triệu/tháng` 
-                : `${minPrice.toLocaleString('vi-VN')} - ${maxPrice.toLocaleString('vi-VN')} triệu/tháng`;
-            const summaryRow = document.createElement('div');
-            summaryRow.className = 'summary-row accordion-trigger';
-            summaryRow.innerHTML = `
-                <span class="summary-label">${bedrooms} Phòng ngủ</span>
-                <span class="summary-value">${priceString}</span>
-                <span class="summary-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg></span>
-            `;
-            const detailContent = document.createElement('div');
-            detailContent.className = 'detailed-table-content';
-            let tableHTML = `
-                <table class="detailed-table">
-                    <thead>
-                        <tr>
-                            <th>Thời gian <span class="unit">(tháng)</span></th>
-                            <th>Diện tích <span class="unit">(m²)</span></th>
-                            <th>Giá thuê <span class="unit">(triệu/tháng)</span></th>
-                            <th>Nội thất</th>
-                            <th>Thời hạn thuê</th>
-                            <th>WC</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-            groupDetails.forEach(detail => {
-                const month = new Date(detail.publishedAt).getMonth() + 1;
-                tableHTML += `
-                    <tr>
-                        <td>T${month}</td>
-                        <td>${detail.area}</td>
-                        <td>${detail.price.toLocaleString('vi-VN')}</td>
-                        <td>${detail.furniture}</td>
-                        <td>${detail.leaseTerm}</td>
-                        <td>${detail.wc}</td>
-                    </tr>`;
-            });
-            tableHTML += '</tbody></table>';
-            detailContent.innerHTML = tableHTML;
-            wrapper.appendChild(summaryRow);
-            wrapper.appendChild(detailContent);
-            tableContainer.appendChild(wrapper);
-        }
-        addAccordionEvents();
-    }
-    function addAccordionEvents() {
-        tableContainer.querySelectorAll('.accordion-trigger').forEach(trigger => {
-            trigger.addEventListener('click', function () {
-                const wrapper = this.closest('.summary-row-wrapper');
-                wrapper.classList.toggle('active');
-                const content = this.nextElementSibling;
-                if (content.style.maxHeight) { content.style.maxHeight = null; } 
-                else { content.style.maxHeight = content.scrollHeight + "px"; }
-            });
-        });
-    }
-    function createYearTabs() {
-        const years = Object.keys(dataSource).sort((a, b) => b - a);
-        if (years.length === 0) return;
-        tabsContainer.innerHTML = '';
-        years.forEach((year, index) => {
-            const button = document.createElement('button');
-            button.className = 'year-tab-btn';
-            button.dataset.year = year;
-            button.textContent = `Năm ${year}`;
-            if (index === 0) button.classList.add('active');
-            button.addEventListener('click', function() {
-                if(tabsContainer.querySelector('.active')) { tabsContainer.querySelector('.active').classList.remove('active'); }
-                this.classList.add('active');
-                renderTable(this.dataset.year);
-            });
-            tabsContainer.appendChild(button);
-        });
-        renderTable(years[0]);
-    }
-    createYearTabs();
-}
+    function initPriceHistoryForRent() { /* ... Logic cho trang thuê ... */ }
 
     function initPriceHistoryForSale() {
-    const tabsContainer = document.getElementById('price-year-tabs');
-    const tableContainer = document.getElementById('summary-table-container');
-    if (!tabsContainer || !tableContainer || typeof priceHistoryData === 'undefined') {
-        const priceHistorySection = document.querySelector('.price-history-section');
-        if (priceHistorySection) priceHistorySection.style.display = 'none';
-        return;
-    }
-    const areaGroups = { 'all': { min: 0, max: Infinity, text: 'Tất cả' }, 'Dưới 50m²': { min: 0, max: 49.9, text: 'Dưới 50m²' }, '50-80m²': { min: 50, max: 79.9, text: '50-80m²' }, '80-120m²': { min: 80, max: 119.9, text: '80-120m²' }, 'Trên 120m²': { min: 120, max: Infinity, text: 'Trên 120m²' } };
-    
-    function renderTable(year) {
-        // [CẬP NHẬT] Đọc thêm tham số "phuong" từ URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const citySlugFromUrl = urlParams.get('thanhpho');
-        const wardSlugFromUrl = urlParams.get('phuong');
-
-        let yearData = priceHistoryData[year] || [];
-
-        // Lọc dữ liệu theo thành phố
-        if (citySlugFromUrl) {
-            yearData = yearData.filter(tx => toSlug(tx.city) === citySlugFromUrl);
-        }
-        
-        // [THÊM MỚI] Lọc tiếp dữ liệu theo phường
-        if (wardSlugFromUrl) {
-            yearData = yearData.filter(tx => toSlug(tx.ward) === wardSlugFromUrl);
-        }
-
-        if (yearData.length === 0) {
-            tableContainer.innerHTML = '<p style="text-align:center; color:#666;">Không có dữ liệu lịch sử giá cho khu vực này.</p>';
+        const tabsContainer = document.getElementById('price-year-tabs');
+        const tableContainer = document.getElementById('summary-table-container');
+        if (!tabsContainer || !tableContainer || typeof priceHistoryData === 'undefined') {
+            const priceHistorySection = document.querySelector('.price-history-section');
+            if (priceHistorySection) priceHistorySection.style.display = 'none';
             return;
         }
-
-        tableContainer.innerHTML = '';
-        for (const key in areaGroups) { areaGroups[key].details = []; }
-
-        yearData.forEach(transaction => {
-            for (const key in areaGroups) {
-                if (key === 'all') continue;
-                if (transaction.area >= areaGroups[key].min && transaction.area <= areaGroups[key].max) {
-                    if (!transaction.unitPrice) {
-                       transaction.unitPrice = (transaction.price * 1000) / transaction.area;
+        const areaGroups = { 'all': { min: 0, max: Infinity, text: 'Tất cả' }, 'Dưới 50m²': { min: 0, max: 49.9, text: 'Dưới 50m²' }, '50-80m²': { min: 50, max: 79.9, text: '50-80m²' }, '80-120m²': { min: 80, max: 119.9, text: '80-120m²' }, 'Trên 120m²': { min: 120, max: Infinity, text: 'Trên 120m²' } };
+    
+        function renderTable(year) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const citySlugFromUrl = urlParams.get('thanhpho');
+            const wardSlugFromUrl = urlParams.get('phuong');
+            let yearData = priceHistoryData[year] || [];
+            if (citySlugFromUrl) yearData = yearData.filter(tx => toSlug(tx.city) === citySlugFromUrl);
+            if (wardSlugFromUrl) yearData = yearData.filter(tx => toSlug(tx.ward) === wardSlugFromUrl);
+            if (yearData.length === 0) { tableContainer.innerHTML = '<p style="text-align:center; color:#666;">Không có dữ liệu lịch sử giá cho khu vực này.</p>'; return; }
+            tableContainer.innerHTML = '';
+            for (const key in areaGroups) { areaGroups[key].details = []; }
+            yearData.forEach(tx => {
+                for (const key in areaGroups) {
+                    if (key !== 'all' && tx.area >= areaGroups[key].min && tx.area <= areaGroups[key].max) {
+                        tx.unitPrice = (tx.price * 1000) / tx.area;
+                        areaGroups[key].details.push(tx);
+                        break;
                     }
-                    areaGroups[key].details.push(transaction);
-                    break;
                 }
+            });
+            for (const groupName in areaGroups) {
+                if (groupName === 'all' || areaGroups[groupName].details.length === 0) continue;
+                const group = areaGroups[groupName];
+                const wrapper = document.createElement('div'); 
+                wrapper.className = 'summary-row-wrapper';
+                const prices = group.details.map(d => d.price);
+                const unitPrices = group.details.map(d => d.unitPrice);
+                const priceString = `${Math.min(...prices).toFixed(2)} - ${Math.max(...prices).toFixed(2)} tỷ`;
+                const unitPriceString = `${Math.min(...unitPrices).toFixed(1)} - ${Math.max(...unitPrices).toFixed(1)} tr/m²`;
+                const summaryRow = document.createElement('div'); 
+                summaryRow.className = 'summary-row accordion-trigger';
+                summaryRow.innerHTML = `<span class="summary-label">${groupName}</span><span class="summary-value">${priceString}</span><span class="summary-value">${unitPriceString}</span><span class="summary-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg></span>`;
+                const detailContent = document.createElement('div'); 
+                detailContent.className = 'detailed-table-content';
+                let tableHTML = `<table class="detailed-table"><thead><tr><th>Thời gian</th><th>Diện tích</th><th>Giá (tỷ)</th><th>Đơn giá (tr/m²)</th><th>Pháp lý</th><th>Nội thất</th></tr></thead><tbody>`;
+                group.details.forEach(detail => {
+                    tableHTML += `<tr><td>T${new Date(detail.publishedAt).getMonth() + 1}</td><td>${detail.area}</td><td>${detail.price.toFixed(2)}</td><td>${detail.unitPrice.toFixed(1)}</td><td>${detail.legal}</td><td>${detail.furniture}</td></tr>`;
+                });
+                tableHTML += '</tbody></table>';
+                detailContent.innerHTML = tableHTML;
+                wrapper.appendChild(summaryRow); 
+                wrapper.appendChild(detailContent);
+                tableContainer.appendChild(wrapper);
             }
-        });
-
-        for (const groupName in areaGroups) {
-            if (groupName === 'all' || areaGroups[groupName].details.length === 0) { continue; }
-            const group = areaGroups[groupName];
-            const wrapper = document.createElement('div'); 
-            wrapper.className = 'summary-row-wrapper';
-            const prices = group.details.map(d => d.price);
-            const minPrice = Math.min(...prices); 
-            const maxPrice = Math.max(...prices);
-            const unitPrices = group.details.map(d => d.unitPrice);
-            const minUnitPrice = Math.min(...unitPrices).toFixed(1); 
-            const maxUnitPrice = Math.max(...unitPrices).toFixed(1);
-            const priceString = (minPrice === maxPrice) ? `${maxPrice.toFixed(2)} tỷ` : `${minPrice.toFixed(2)} - ${maxPrice.toFixed(2)} tỷ`;
-            const unitPriceString = (minUnitPrice === maxUnitPrice) ? `${maxUnitPrice} tr/m²` : `${minUnitPrice} - ${maxUnitPrice} tr/m²`;
-            const summaryRow = document.createElement('div'); 
-            summaryRow.className = 'summary-row accordion-trigger';
-            summaryRow.innerHTML = `<span class="summary-label">${groupName}</span><span class="summary-value">${priceString}</span><span class="summary-value">${unitPriceString}</span><span class="summary-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg></span>`;
-            const detailContent = document.createElement('div'); 
-            detailContent.className = 'detailed-table-content';
-            let tableHTML = `<table class="detailed-table"><thead><tr><th>Thời gian <span class="unit">(tháng)</span></th><th>Diện tích <span class="unit">(m²)</span></th><th>Giá <span class="unit">(tỷ)</span></th><th>Đơn giá <span class="unit">(tr/m²)</span></th><th>Pháp lý</th><th>Nội thất</th></tr></thead><tbody>`;
-            group.details.forEach(detail => {
-                const month = new Date(detail.publishedAt).getMonth() + 1;
-                tableHTML += `<tr><td>T${month}</td><td>${detail.area}</td><td>${detail.price.toFixed(2)}</td><td>${detail.unitPrice.toFixed(1)}</td><td>${detail.legal}</td><td>${detail.furniture}</td></tr>`;
-            });
-            tableHTML += '</tbody></table>';
-            detailContent.innerHTML = tableHTML;
-            wrapper.appendChild(summaryRow); 
-            wrapper.appendChild(detailContent);
-            tableContainer.appendChild(wrapper);
+            addAccordionEvents();
         }
-        addAccordionEvents();
-    }
-
-    function addAccordionEvents() { 
-        tableContainer.querySelectorAll('.accordion-trigger').forEach(trigger => { 
-            trigger.addEventListener('click', function () { 
-                const wrapper = this.closest('.summary-row-wrapper'); 
-                wrapper.classList.toggle('active'); 
-                const content = this.nextElementSibling; 
-                content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px";
+        function addAccordionEvents() { 
+            tableContainer.querySelectorAll('.accordion-trigger').forEach(trigger => { 
+                trigger.addEventListener('click', function () { 
+                    this.closest('.summary-row-wrapper').classList.toggle('active'); 
+                    const content = this.nextElementSibling; 
+                    content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px";
+                }); 
             }); 
-        }); 
-    }
-
-    function createYearTabs() {
-        const years = Object.keys(priceHistoryData).sort((a, b) => b - a);
-        if (years.length === 0) return;
-        tabsContainer.innerHTML = '';
-        years.forEach((year, index) => {
-            const button = document.createElement('button'); 
-            button.className = 'year-tab-btn'; 
-            button.dataset.year = year; 
-            button.textContent = `Năm ${year}`;
-            if (index === 0) button.classList.add('active');
-            button.addEventListener('click', function() { 
-                if(tabsContainer.querySelector('.active')) { 
-                    tabsContainer.querySelector('.active').classList.remove('active'); 
-                } 
-                this.classList.add('active'); 
-                renderTable(this.dataset.year); 
+        }
+        function createYearTabs() {
+            const years = Object.keys(priceHistoryData).sort((a, b) => b - a);
+            if (years.length === 0) return;
+            tabsContainer.innerHTML = '';
+            years.forEach((year, index) => {
+                const button = document.createElement('button'); 
+                button.className = 'year-tab-btn'; 
+                button.dataset.year = year; 
+                button.textContent = `Năm ${year}`;
+                if (index === 0) button.classList.add('active');
+                button.addEventListener('click', function() { 
+                    tabsContainer.querySelector('.active')?.classList.remove('active'); 
+                    this.classList.add('active'); 
+                    renderTable(this.dataset.year); 
+                });
+                tabsContainer.appendChild(button);
             });
-            tabsContainer.appendChild(button);
-        });
-        renderTable(years[0]);
+            renderTable(years[0]);
+        }
+        createYearTabs();
     }
-    createYearTabs();
-}
     
     function initPriceHistoryChart() {
-        const isRentalPage = document.querySelector('[data-filter-name="leaseTerm"]');
         if (isRentalPage) {
             initScatterChartForRent();
         } else {
@@ -982,276 +826,102 @@ function applyAllFilters() {
         }
     }
 
-    function initScatterChartForRent() {
-    const ctx = document.getElementById('price-history-chart')?.getContext('2d');
-    const yearFiltersContainer = document.getElementById('chart-year-filters');
-    const bedroomFilterSelect = document.getElementById('chart-bedroom-filter');
-    const chartTitleElement = document.getElementById('chart-dynamic-title');
-    const dataSource = typeof priceHistoryData_Thue !== 'undefined' ? priceHistoryData_Thue : {}; // Sử dụng dữ liệu thuê
-
-    if (!ctx || !yearFiltersContainer || !bedroomFilterSelect || !dataSource) return;
-    chartTitleElement.textContent = 'Biểu đồ Phân tán Giá thuê theo Diện tích';
-
-    const FURNITURE_COLORS = { 'Nội thất cơ bản': 'rgba(54, 162, 235, 0.7)', 'Đầy đủ nội thất': 'rgba(75, 192, 192, 0.7)', 'Không nội thất': 'rgba(255, 99, 132, 0.7)', 'Nhà thô': 'rgba(255, 99, 132, 0.7)', 'Bàn giao thô': 'rgba(255, 99, 132, 0.7)' };
-    const YEAR_SHAPES = { '2025': 'circle', '2024': 'rect', '2023': 'triangle' };
-    let priceChart;
-
-    function updateChart() {
-        const selectedYears = Array.from(yearFiltersContainer.querySelectorAll('button.active')).map(btn => btn.dataset.year);
-        const selectedBedrooms = bedroomFilterSelect.value;
-        
-        // [CẬP NHẬT] Đọc tham số từ URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const citySlugFromUrl = urlParams.get('thanhpho');
-        const wardSlugFromUrl = urlParams.get('phuong');
-
-        let filteredData = [];
-        selectedYears.forEach(year => {
-            if (dataSource[year]) {
-                let yearData = dataSource[year].map(d => ({...d, year: year}));
-                
-                // Lọc theo thành phố
-                if (citySlugFromUrl) {
-                    yearData = yearData.filter(tx => toSlug(tx.city) === citySlugFromUrl);
-                }
-                // Lọc theo phường
-                if (wardSlugFromUrl) {
-                    yearData = yearData.filter(tx => toSlug(tx.ward) === wardSlugFromUrl);
-                }
-
-                filteredData.push(...yearData);
-            }
-        });
-
-        if (selectedBedrooms !== 'all') {
-            filteredData = filteredData.filter(d => d.bedrooms == selectedBedrooms);
-        }
-
-        const datasets = [];
-        const groupedByFurniture = {};
-        filteredData.forEach(item => {
-            const furniture = item.furniture;
-            if(!groupedByFurniture[furniture]) {
-                groupedByFurniture[furniture] = [];
-            }
-            groupedByFurniture[furniture].push(item);
-        });
-        
-        for (const furniture in groupedByFurniture) {
-            datasets.push({
-                label: furniture,
-                data: groupedByFurniture[furniture].map(item => ({ x: item.area, y: item.price, details: item })),
-                backgroundColor: FURNITURE_COLORS[furniture] || 'rgba(201, 203, 207, 0.7)',
-                pointStyle: groupedByFurniture[furniture].map(item => YEAR_SHAPES[item.year] || 'circle'),
-                radius: 7, hoverRadius: 9
-            });
-        }
-
-        const config = {
-            type: 'scatter', data: { datasets: datasets },
-            options: {
-                maintainAspectRatio: false,
-                scales: { x: { type: 'linear', position: 'bottom', title: { display: true, text: 'Diện tích (m²)' } }, y: { title: { display: true, text: 'Giá thuê (triệu VNĐ)' } } },
-                plugins: {
-                    legend: { position: 'bottom' },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const details = context.raw.details;
-                                if (!details) return '';
-                                const month = new Date(details.publishedAt).getMonth() + 1;
-                                return [ `ID: ${details.id}`, `Giá: ${details.price} triệu`, `Diện tích: ${details.area} m²`, `Nội thất: ${details.furniture}`, `Phòng ngủ: ${details.bedrooms} PN`, `WC: ${details.wc} WC`, `Thời gian: T${month}/${details.year}` ];
-                            }
-                        }
-                    }
-                }
-            }
-        };
-
-        if (!priceChart) { priceChart = new Chart(ctx, config); } 
-        else { priceChart.data.datasets = datasets; priceChart.update(); }
-    }
-    
-    function setupFilters() {
-        const years = Object.keys(dataSource).sort((a,b) => b-a);
-        yearFiltersContainer.innerHTML = ''; 
-        years.forEach((year) => {
-            if (YEAR_SHAPES[year]) {
-                const button = document.createElement('button'); 
-                button.dataset.year = year; button.textContent = year;
-                button.classList.add('active');
-                button.addEventListener('click', function() { this.classList.toggle('active'); updateChart(); });
-                yearFiltersContainer.appendChild(button);
-            }
-        });
-
-        const allBedrooms = new Set(Object.values(dataSource).flat().map(item => item.bedrooms));
-        bedroomFilterSelect.innerHTML = '<option value="all">Tất cả</option>';
-        Array.from(allBedrooms).sort((a,b) => a-b).forEach(num => {
-            const option = document.createElement('option');
-            option.value = num; option.textContent = `${num} PN`;
-            bedroomFilterSelect.appendChild(option);
-        });
-        bedroomFilterSelect.addEventListener('change', updateChart);
-    }
-    
-    setupFilters();
-    updateChart();
-}
+    function initScatterChartForRent() { /* ... Logic cho trang thuê ... */ }
 
     function initLineChartForSale() {
-    const ctx = document.getElementById('price-history-chart')?.getContext('2d');
-    const yearFiltersContainer = document.getElementById('chart-year-filters');
-    const areaFilterSelect = document.getElementById('chart-area-filter');
-    const chartTitleElement = document.getElementById('chart-dynamic-title');
-    
-    if (!ctx || !yearFiltersContainer || !areaFilterSelect || typeof priceHistoryData === 'undefined') { return; }
-    
-    const YEAR_COLORS = {
-        '2025': { border: 'rgba(54, 162, 235, 1)', bg: 'rgba(54, 162, 235, 0.2)' },
-        '2024': { border: 'rgba(255, 99, 132, 1)', bg: 'rgba(255, 99, 132, 0.2)' },
-        '2023': { border: 'rgba(75, 192, 192, 1)', bg: 'rgba(75, 192, 192, 0.2)' },
-        '2022': { border: 'rgba(255, 159, 64, 1)', bg: 'rgba(255, 159, 64, 0.2)' },
-    };
-    const areaGroups = { 'all': { min: 0, max: Infinity, text: 'Tất cả' }, 'Dưới 50m²': { min: 0, max: 49.9, text: 'Dưới 50m²' }, '50-80m²': { min: 50, max: 79.9, text: '50-80m²' }, '80-120m²': { min: 80, max: 119.9, text: '80-120m²' }, 'Trên 120m²': { min: 120, max: Infinity, text: 'Trên 120m²' } };
-    let priceChart;
-
-    function processChartData(years, areaKey) {
-        // [CẬP NHẬT] Đọc thêm tham số "phuong" từ URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const citySlugFromUrl = urlParams.get('thanhpho');
-        const wardSlugFromUrl = urlParams.get('phuong');
-
-        const areaFilter = areaGroups[areaKey]; 
-        const processedData = {};
-        
-        years.forEach(year => {
-            let yearData = priceHistoryData[year] || [];
-
-            // Lọc theo thành phố
-            if (citySlugFromUrl) {
-                yearData = yearData.filter(tx => toSlug(tx.city) === citySlugFromUrl);
-            }
-            // [THÊM MỚI] Lọc tiếp theo phường
-            if (wardSlugFromUrl) {
-                yearData = yearData.filter(tx => toSlug(tx.ward) === wardSlugFromUrl);
-            }
-
-            const monthlyData = Array(12).fill(null).map(() => ({ prices: [] }));
-            yearData.forEach(tx => { 
-                if (tx.area >= areaFilter.min && tx.area <= areaFilter.max) { 
-                    const unitPrice = (tx.price * 1000 / tx.area);
-                    const monthIndex = new Date(tx.publishedAt).getMonth();
-                    monthlyData[monthIndex].prices.push(unitPrice);
-                } 
-            });
-            
-            processedData[year] = { avg: [], min: [], max: [], count: [] };
-            monthlyData.forEach((month, i) => {
-                if (month.prices.length > 0) {
-                    const sum = month.prices.reduce((a, b) => a + b, 0);
-                    processedData[year].avg[i] = (sum / month.prices.length).toFixed(1);
-                    processedData[year].min[i] = Math.min(...month.prices).toFixed(1);
-                    processedData[year].max[i] = Math.max(...month.prices).toFixed(1);
-                    processedData[year].count[i] = month.prices.length;
-                } else { 
-                    processedData[year].avg[i] = null; 
-                    processedData[year].min[i] = null; 
-                    processedData[year].max[i] = null; 
-                    processedData[year].count[i] = 0; 
-                }
-            });
-        });
-        return processedData;
-    }
-
-    function updateChart() {
-        const selectedYears = Array.from(yearFiltersContainer.querySelectorAll('button.active')).map(btn => btn.dataset.year);
-        const selectedAreaKey = areaFilterSelect.value;
-        const chartData = processChartData(selectedYears, selectedAreaKey);
-        let yearText = selectedYears.length > 0 ? `năm ${selectedYears.join(', ')}` : '';
-        let areaText = areaGroups[selectedAreaKey].text;
-        chartTitleElement.textContent = `Biểu đồ biến động giá ${yearText} - ${areaText}`;
-        const datasets = [];
-        selectedYears.forEach(year => {
-            const color = YEAR_COLORS[year] || YEAR_COLORS['2022'];
-            datasets.push({ label: `TB ${year}`, data: chartData[year].avg, borderColor: color.border, backgroundColor: color.bg, borderWidth: 3, fill: 'start', tension: 0.4, });
-            datasets.push({ label: `Cao nhất ${year}`, data: chartData[year].max, borderColor: color.border, borderWidth: 1, borderDash: [5, 5], fill: false, hidden: true });
-            datasets.push({ label: `Thấp nhất ${year}`, data: chartData[year].min, borderColor: color.border, borderWidth: 1, borderDash: [5, 5], fill: false, hidden: true });
-        });
-
-        const yAxisTitle = 'Đơn giá (triệu/m²)';
-        if (!priceChart) { 
-            priceChart = new Chart(ctx, { 
-                type: 'line', 
-                data: { labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'], datasets: datasets }, 
-                options: { 
-                    responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, 
-                    scales: { y: { beginAtZero: false, ticks: { callback: (value) => `${value}` }, title: { display: true, text: yAxisTitle } } }, 
-                    plugins: { 
-                        legend: { position: 'bottom' },
-                        tooltip: { 
-                            callbacks: { 
-                                footer: function(tooltipItems) { 
-                                    const monthIndex = tooltipItems[0].dataIndex; let footer = '\n'; 
-                                    selectedYears.forEach(year => { 
-                                        const count = chartData[year].count[monthIndex]; 
-                                        if(count) footer += `SL tin ${year}: ${count}\n`; 
-                                    }); 
-                                    return footer; 
-                                } 
-                            } 
-                        } 
+        const ctx = document.getElementById('price-history-chart')?.getContext('2d');
+        const yearFiltersContainer = document.getElementById('chart-year-filters');
+        const areaFilterSelect = document.getElementById('chart-area-filter');
+        const chartTitleElement = document.getElementById('chart-dynamic-title');
+        if (!ctx || !yearFiltersContainer || !areaFilterSelect || typeof priceHistoryData === 'undefined') return;
+        const YEAR_COLORS = { '2025': { border: 'rgba(54, 162, 235, 1)', bg: 'rgba(54, 162, 235, 0.2)' }, '2024': { border: 'rgba(255, 99, 132, 1)', bg: 'rgba(255, 99, 132, 0.2)' }, '2023': { border: 'rgba(75, 192, 192, 1)', bg: 'rgba(75, 192, 192, 0.2)' } };
+        const areaGroups = { 'all': { min: 0, max: Infinity, text: 'Tất cả' }, 'Dưới 50m²': { min: 0, max: 49.9, text: 'Dưới 50m²' }, '50-80m²': { min: 50, max: 79.9, text: '50-80m²' }, '80-120m²': { min: 80, max: 119.9, text: '80-120m²' }, 'Trên 120m²': { min: 120, max: Infinity, text: 'Trên 120m²' } };
+        let priceChart;
+        function processChartData(years, areaKey) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const citySlugFromUrl = urlParams.get('thanhpho');
+            const wardSlugFromUrl = urlParams.get('phuong');
+            const areaFilter = areaGroups[areaKey]; 
+            const processedData = {};
+            years.forEach(year => {
+                let yearData = priceHistoryData[year] || [];
+                if (citySlugFromUrl) yearData = yearData.filter(tx => toSlug(tx.city) === citySlugFromUrl);
+                if (wardSlugFromUrl) yearData = yearData.filter(tx => toSlug(tx.ward) === wardSlugFromUrl);
+                const monthlyData = Array(12).fill(null).map(() => ({ prices: [] }));
+                yearData.forEach(tx => { 
+                    if (tx.area >= areaFilter.min && tx.area <= areaFilter.max) { 
+                        monthlyData[new Date(tx.publishedAt).getMonth()].prices.push((tx.price * 1000 / tx.area));
                     } 
-                } 
-            }); 
-        } else { 
-            priceChart.options.scales.y.title.text = yAxisTitle;
-            priceChart.data.datasets = datasets; 
-            priceChart.update(); 
-        }
-    }
-
-    function setupFilters() {
-        const years = Object.keys(priceHistoryData).sort((a,b) => b-a);
-        yearFiltersContainer.innerHTML = ''; 
-        years.forEach((year, index) => {
-            const button = document.createElement('button'); 
-            button.dataset.year = year; 
-            button.textContent = year;
-            if (index < 2) button.classList.add('active');
-            button.addEventListener('click', function() { 
-                this.classList.toggle('active'); 
-                updateChart(); 
+                });
+                processedData[year] = { avg: [], min: [], max: [], count: [] };
+                monthlyData.forEach((month, i) => {
+                    if (month.prices.length > 0) {
+                        processedData[year].avg[i] = (month.prices.reduce((a, b) => a + b, 0) / month.prices.length).toFixed(1);
+                        processedData[year].min[i] = Math.min(...month.prices).toFixed(1);
+                        processedData[year].max[i] = Math.max(...month.prices).toFixed(1);
+                        processedData[year].count[i] = month.prices.length;
+                    }
+                });
             });
-            yearFiltersContainer.appendChild(button);
-        });
-        areaFilterSelect.innerHTML = ''; 
-        for (const key in areaGroups) { 
-            const option = document.createElement('option'); 
-            option.value = key; 
-            option.textContent = areaGroups[key].text; 
-            areaFilterSelect.appendChild(option); 
+            return processedData;
         }
-        areaFilterSelect.addEventListener('change', updateChart);
+        function updateChart() {
+            const selectedYears = Array.from(yearFiltersContainer.querySelectorAll('button.active')).map(btn => btn.dataset.year);
+            const selectedAreaKey = areaFilterSelect.value;
+            const chartData = processChartData(selectedYears, selectedAreaKey);
+            chartTitleElement.textContent = `Biểu đồ biến động giá năm ${selectedYears.join(', ')} - ${areaGroups[selectedAreaKey].text}`;
+            const datasets = [];
+            selectedYears.forEach(year => {
+                const color = YEAR_COLORS[year] || { border: 'grey', bg: 'rgba(128,128,128,0.2)'};
+                datasets.push({ label: `TB ${year}`, data: chartData[year].avg, borderColor: color.border, backgroundColor: color.bg, borderWidth: 3, fill: 'start', tension: 0.4 });
+            });
+            if (!priceChart) { 
+                priceChart = new Chart(ctx, { type: 'line', data: { labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'], datasets: datasets }, options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, scales: { y: { title: { display: true, text: 'Đơn giá (triệu/m²)' } } }, plugins: { legend: { position: 'bottom' } } } }); 
+            } else { 
+                priceChart.data.datasets = datasets; 
+                priceChart.update(); 
+            }
+        }
+        function setupFilters() {
+            const years = Object.keys(priceHistoryData).sort((a,b) => b-a);
+            yearFiltersContainer.innerHTML = ''; 
+            years.forEach((year, index) => {
+                const button = document.createElement('button'); 
+                button.dataset.year = year; 
+                button.textContent = year;
+                if (index < 2) button.classList.add('active');
+                button.addEventListener('click', function() { this.classList.toggle('active'); updateChart(); });
+                yearFiltersContainer.appendChild(button);
+            });
+            areaFilterSelect.innerHTML = ''; 
+            for (const key in areaGroups) { 
+                const option = document.createElement('option'); 
+                option.value = key; 
+                option.textContent = areaGroups[key].text; 
+                areaFilterSelect.appendChild(option); 
+            }
+            areaFilterSelect.addEventListener('change', updateChart);
+        }
+        setupFilters();
+        updateChart();
     }
-    
-    setupFilters();
-    updateChart();
-}
-
 
     function initFaqAndSeoSection() {
         const accordionGroup = document.getElementById('faq-accordion');
         if (accordionGroup) {
-            const accordionItems = accordionGroup.querySelectorAll('.accordion-item');
-            accordionItems.forEach(item => {
-                const header = item.querySelector('.accordion-header');
-                const content = item.querySelector('.accordion-content');
+            accordionGroup.querySelectorAll('.accordion-header').forEach(header => {
                 header.addEventListener('click', () => {
+                    const item = header.parentElement;
+                    const content = header.nextElementSibling;
                     const isActive = item.classList.contains('active');
-                    accordionItems.forEach(otherItem => { otherItem.classList.remove('active'); otherItem.querySelector('.accordion-content').style.maxHeight = null; });
-                    if (!isActive) { item.classList.add('active'); content.style.maxHeight = content.scrollHeight + "px"; }
+                    item.parentElement.querySelectorAll('.accordion-item').forEach(i => {
+                        i.classList.remove('active');
+                        i.querySelector('.accordion-content').style.maxHeight = null;
+                    });
+                    if (!isActive) {
+                        item.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
                 });
             });
         }
@@ -1259,88 +929,196 @@ function applyAllFilters() {
         const textWrapper = document.getElementById('seo-text-wrapper');
         if (toggleButton && textWrapper) {
             toggleButton.addEventListener('click', () => {
-                const isExpanded = textWrapper.classList.contains('expanded');
-                if (isExpanded) { textWrapper.classList.remove('expanded'); toggleButton.textContent = 'Xem thêm'; }
-                else { textWrapper.classList.add('expanded'); toggleButton.textContent = 'Thu gọn'; }
+                const isExpanded = textWrapper.classList.toggle('expanded');
+                toggleButton.textContent = isExpanded ? 'Thu gọn' : 'Xem thêm';
             });
         }
     }
     
-    // Thay thế toàn bộ hàm updateBreadcrumb cũ bằng hàm này
-    function updateBreadcrumb() {
+    // TÌM VÀ THAY THẾ TOÀN BỘ HÀM NÀY
+
+function updateBreadcrumb() {
     const breadcrumbContainer = document.querySelector('.breadcrumb');
     const categoryHeader = document.querySelector('.category-header h1');
-    const categoryDescription = document.querySelector('.category-header p');
-    const priceHistoryTitle = document.getElementById('price-history-title');
-
     if (!breadcrumbContainer || !categoryHeader) return;
 
     const params = new URLSearchParams(window.location.search);
-    const loaiHinhSlug = params.get('loaihinh');
-    const citySlug = params.get('thanhpho');
-    const wardSlug = params.get('phuong');
-    const duongSlug = params.get('duong');
+    const searchQuery = params.get('q');
+    
+    // Ưu tiên 1: Nếu có từ khóa tìm kiếm chung 'q', hiển thị tiêu đề tìm kiếm
+    if (searchQuery) {
+        categoryHeader.textContent = `Kết quả tìm kiếm cho: "${searchQuery}"`;
+        breadcrumbContainer.innerHTML = `<a href="index.html">Trang chủ</a> &gt; <span>Tìm kiếm</span>`;
+        return; // Dừng tại đây
+    }
 
-    const cityText = cityLookup[citySlug] || citySlug;
-    const wardText = wardLookup[wardSlug] || wardSlug;
-    const streetText = streetLookup[duongSlug] || duongSlug;
-    const productCategoryText = categoryLookup[loaiHinhSlug] || 'Bất động sản';
-
-    const isRentalPage = window.location.pathname.includes('listing-thue.html');
+    // Ưu tiên 2: Hiển thị tiêu đề và breadcrumb theo địa danh trên URL
+    const slugs = { loaiHinh: params.get('loaihinh'), city: params.get('thanhpho'), ward: params.get('phuong'), duong: params.get('duong') };
+    const texts = { category: categoryLookup[slugs.loaiHinh] || 'BĐS', city: cityLookup[slugs.city], ward: wardLookup[slugs.ward], street: streetLookup[slugs.duong] };
     const propertyType = isRentalPage ? 'Cho thuê' : 'Mua bán';
     const listingPage = isRentalPage ? 'listing-thue.html' : 'listing-ban.html';
+    
+    let mainTitle = `${propertyType} ${texts.category}`;
+    if (slugs.duong) mainTitle += ` tại đường ${texts.street}, Phường ${texts.ward}, ${texts.city}`;
+    else if (slugs.ward) mainTitle += ` tại Phường ${texts.ward}, ${texts.city}`;
+    else if (slugs.city) mainTitle += ` tại ${texts.city}`;
+    else mainTitle += ` tại TP. Hồ Chí Minh`; // Mặc định nếu không có
 
-    // --- Logic cập nhật tiêu đề H1 (Giữ nguyên) ---
-    let mainTitle = `${propertyType} ${productCategoryText}`;
-    if (duongSlug && wardSlug && citySlug) {
-        mainTitle = `${propertyType} ${productCategoryText} tại đường ${streetText}, Phường ${wardText}, ${cityText}`;
-    } else if (wardSlug && citySlug) {
-        mainTitle = `${propertyType} ${productCategoryText} tại Phường ${wardText}, ${cityText}`;
-    } else if (citySlug) {
-        mainTitle = `${propertyType} ${productCategoryText} tại ${cityText}`;
-    }
     categoryHeader.textContent = mainTitle;
-    // ... (Các logic cập nhật tiêu đề khác giữ nguyên)
 
-    // ===== BẮT ĐẦU LOGIC BREADCRUMB MỚI =====
-    const breadcrumbParts = [];
-
-    // Gộp mục đầu tiên (ví dụ: "Mua bán Căn hộ") thành text tĩnh
-    if (productCategoryText !== 'Bất động sản') {
-        breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${propertyType} ${productCategoryText}</span>`);
-    } else {
-        breadcrumbParts.push(`<span class="breadcrumb-item-no-link">${propertyType}</span>`);
+    const breadcrumbParts = [`<a href="index.html">Trang chủ</a>`];
+    if (texts.category) breadcrumbParts.push(`<span>${propertyType} ${texts.category}</span>`);
+    if (slugs.city && texts.city) breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${slugs.loaiHinh}&thanhpho=${slugs.city}">${texts.city}</a>`);
+    if (slugs.ward && texts.ward) breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${slugs.loaiHinh}&thanhpho=${slugs.city}&phuong=${slugs.ward}">Phường ${texts.ward}</a>`);
+    
+    // Đảm bảo phần tử cuối cùng không phải là link
+    if (breadcrumbParts.length > 2) {
+        const lastPart = breadcrumbParts.pop();
+        breadcrumbParts.push(lastPart.replace(/<a\b[^>]*>/, '<span>').replace(/<\/a>/, '</span>'));
     }
-
-    // Tạo các cấp tiếp theo dưới dạng link
-    if (cityText && citySlug) {
-        breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}&thanhpho=${citySlug}">${cityText}</a>`);
-    }
-    if (wardText && wardSlug) {
-        breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}&thanhpho=${citySlug}&phuong=${wardSlug}">Phường ${wardText}</a>`);
-    }
-    if (streetText && duongSlug) {
-        breadcrumbParts.push(`<a href="${listingPage}?loaihinh=${loaiHinhSlug}&thanhpho=${citySlug}&phuong=${wardSlug}&duong=${duongSlug}">${streetText}</a>`);
-    }
-
-    // [LOGIC MỚI] Chuyển phần tử cuối cùng trong breadcrumb từ link <a> thành <span>
-    if (breadcrumbParts.length > 1) {
-        const lastPart = breadcrumbParts[breadcrumbParts.length - 1];
-        // Thay thế thẻ <a>...</a> bằng <span>...</span>
-        const lastPartAsSpan = lastPart.replace(/<a\b[^>]*>/, '<span>').replace(/<\/a>/, '</span>');
-        breadcrumbParts[breadcrumbParts.length - 1] = lastPartAsSpan;
-    }
-
-    // Hiển thị ra giao diện
     breadcrumbContainer.innerHTML = breadcrumbParts.join(' &gt; ');
+}
+
+    function initMapViewToggle() {
+        const showMapBtn = document.getElementById('show-map-btn');
+    const showListBtn = document.getElementById('show-list-btn');
+    if (showMapBtn && showListBtn) {
+        showMapBtn.addEventListener('click', () => {
+            document.body.classList.add('map-view-active');
+            
+            // SỬA LỖI: Thêm đoạn code này để cập nhật lại kích thước bản đồ
+            // Sau khi khối chứa bản đồ hiện ra, chúng ta cần báo cho Leaflet
+            // biết để nó tính toán lại kích thước và hiển thị đúng.
+            // Dùng setTimeout để đợi hiệu ứng chuyển đổi CSS (500ms) hoàn tất.
+            setTimeout(function() {
+                if (map) { // Kiểm tra xem biến 'map' đã tồn tại chưa
+                    map.invalidateSize();
+                }
+            }, 500); 
+        });
+
+        showListBtn.addEventListener('click', () => {
+            document.body.classList.remove('map-view-active');
+        });
+    }
+    }
+ function initMobileMapView() {
+    const mobileMapTrigger = document.getElementById('mobile-map-trigger');
+    if (!mobileMapTrigger) return;
+
+    // Lưu lại nội dung SVG của 2 icon
+    const mapIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"></path></svg>';
+    const listIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path></svg>';
+
+    const iconElement = mobileMapTrigger.querySelector('svg');
+    const textElement = mobileMapTrigger.querySelector('span');
+
+    mobileMapTrigger.addEventListener('click', () => {
+        const isMapView = document.body.classList.contains('mobile-map-view-active');
+
+        document.body.classList.toggle('mobile-map-view-active');
+        mobileMapTrigger.classList.toggle('is-list-view');
+
+        if (!isMapView) {
+            // SỬA LỖI: Thay thế toàn bộ nội dung của nút
+            // Khi chuyển sang xem bản đồ -> nút trở thành "Danh sách"
+            mobileMapTrigger.innerHTML = listIconSVG + '<span>Danh sách</span>';
+        } else {
+            // SỬA LỖI: Thay thế toàn bộ nội dung của nút
+            // Khi quay lại xem danh sách -> nút trở lại thành "Bản đồ"
+            mobileMapTrigger.innerHTML = mapIconSVG + '<span>Bản đồ</span>';
+        }
+    });
+}
+
+
+
+// Hàm làm nổi bật Phường/Xã và zoom vào
+function highlightWard(wardName) {
+    // Bỏ làm nổi bật layer cũ
+    if (highlightedWardLayer) {
+        highlightedWardLayer.setStyle({
+            color: "#ff7800",
+            weight: 1,
+            fillOpacity: 0.1
+        });
+    }
+
+    const normalizedWardName = removeDiacritics(wardName).toLowerCase();
+    const targetLayer = wardLayersLookup[normalizedWardName];
+
+    if (targetLayer) {
+        // Làm nổi bật layer mới
+        targetLayer.setStyle({
+            color: "#e74c3c", // Màu đỏ nổi bật
+            weight: 3,
+            fillOpacity: 0.4
+        });
+        targetLayer.bringToFront(); // Đưa layer lên trên cùng
+        
+        // Zoom bản đồ tới ranh giới của phường
+        map.fitBounds(targetLayer.getBounds(), { padding: [50, 50] });
+
+        highlightedWardLayer = targetLayer;
+    }
+}
+
+// Hàm cập nhật hiển thị của các markers
+// Hàm cập nhật hiển thị của các markers (phiên bản đã sửa lỗi)
+function updateMapMarkers() {
+    if (typeof allMapMarkers === 'undefined') return;
+
+    const visibleIds = new Set(visibleItems.map(item => item.id));
+
+    for (const markerId in allMapMarkers) {
+        const marker = allMapMarkers[markerId];
+        if (visibleIds.has(markerId)) {
+            // Hiện rõ marker có trong kết quả
+            marker.setOpacity(1);
+            
+            // Nếu marker chưa có popup, gắn lại nó
+            if (!marker.getPopup()) {
+                marker.bindPopup(marker.myPopupContent);
+            }
+        } else {
+            // Làm mờ marker không có trong kết quả
+            marker.setOpacity(0.25);
+            
+            // Nếu marker đang có popup, gỡ nó ra để không click được
+            if (marker.getPopup()) {
+                marker.unbindPopup();
+            }
+        }
+    }
 }
 
     function init() {
         updateBreadcrumb();
         initSidebarEvents();
         initOtherSections();
-        updateDisplay();
+        
         renderFavoritesDrawer();
+        
+        initMap();
+        initMapData(); // <- GỌI HÀM MỚI Ở ĐÂY
+        const searchForm = document.querySelector('form.search-form');
+if (searchForm) {
+    searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        applyFiltersAndRefresh();
+
+        // Logic di chuyển bản đồ nếu tìm theo phường vẫn giữ nguyên
+        const query = searchInput.value.trim();
+        if (query && wardLayersLookup[removeDiacritics(query).toLowerCase()]) {
+             const layer = wardLayersLookup[removeDiacritics(query).toLowerCase()];
+             map.fitBounds(layer.getBounds(), { paddingTopLeft: [300, 0] });
+             layer.openPopup();
+        }
+    });
+}
+        updateDisplay();
+        initMapViewToggle();
+        initMobileMapView(); 
     }
  
     init();

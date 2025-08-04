@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/listing.css">
     <link rel="stylesheet" href="assets/css/menu.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
 </head>
 <body>
   
@@ -59,191 +61,184 @@
     </div>
     <div class="main-container">
         <div class="content-limiter">
-            <div class="listing-page-wrapper">
-
-                <aside class="listing-filter-sidebar" id="listing-filter-sidebar">
-                    <div class="filter-sidebar-header">
-                        <h3>Bộ lọc</h3>
-                        <button id="close-filter-btn" class="filter-close-btn">&times;</button>
+            <div class="listing-view-container">
+                <div class="map-column-container" id="map-view-container">
+                    <div id="map-placeholder" style="width:100%; height:100%; background:#e9e9e9; display:flex; align-items:center; justify-content:center; color:#999; font-size: 1.2rem;">
+                        Bản đồ đang tải...
                     </div>
-
-                    <div class="filter-block-header">
-                        <h3 class="filter-main-title">Bộ lọc</h3>
-                        <button class="filter-reset-btn">Đặt lại</button>
-                    </div>
-
-                    <div class="filter-groups-container">
-                        <div class="filter-tag-area">
-                            <strong>Đang lọc theo:</strong>
+                </div>
+                <div class="listing-page-wrapper">
+                    <aside class="listing-filter-sidebar" id="listing-filter-sidebar">
+                        <div class="filter-sidebar-header">
+                            <h3>Bộ lọc</h3>
+                            <button id="close-filter-btn" class="filter-close-btn">&times;</button>
                         </div>
-
-                        <div class="filter-group filter-accordion active" data-filter-name="price">
-                            <h4 class="filter-title accordion-trigger">Mức giá</h4>
-                            <div class="accordion-content" style="max-height: initial;">
-                                <div class="price-input-tabs">
-                                    <button class="price-tab-btn active" data-target="price-quick-select">Gợi ý</button>
-                                    <button class="price-tab-btn" data-target="price-custom-range">Tuỳ chọn</button>
-                                </div>
-                                <div id="price-quick-select" class="price-tab-content active">
-                                    <div class="btn-group">
-                                        <button class="active">Tất cả</button>
-                                        <button>Dưới 2 tỷ</button>
-                                        <button>2 - 3 tỷ</button>
-                                        <button>3 - 5 tỷ</button>
-                                        <button>5 - 10 tỷ</button>
+                        <div class="filter-block-header">
+                            <h3 class="filter-main-title">Bộ lọc</h3>
+                            <button class="filter-reset-btn">Đặt lại</button>
+                        </div>
+                        <div class="filter-groups-container">
+                            <div class="filter-tag-area">
+                                <strong>Đang lọc theo:</strong>
+                            </div>
+                            <div class="filter-group filter-accordion active" data-filter-name="price">
+                                <h4 class="filter-title accordion-trigger">Mức giá</h4>
+                                <div class="accordion-content" style="max-height: initial;">
+                                    <div class="price-input-tabs">
+                                        <button class="price-tab-btn active" data-target="price-quick-select">Gợi ý</button>
+                                        <button class="price-tab-btn" data-target="price-custom-range">Tuỳ chọn</button>
+                                    </div>
+                                    <div id="price-quick-select" class="price-tab-content active">
+                                        <div class="btn-group">
+                                            <button class="active">Tất cả</button>
+                                            <button>Dưới 2 tỷ</button>
+                                            <button>2 - 3 tỷ</button>
+                                            <button>3 - 5 tỷ</button>
+                                            <button>5 - 10 tỷ</button>
+                                        </div>
+                                    </div>
+                                    <div id="price-custom-range" class="price-tab-content">
+                                        <div class="custom-range-input">
+                                            <input type="text" placeholder="Từ" class="filter-input-min"><span class="unit-label">tỷ</span>
+                                        </div>
+                                        <div class="custom-range-input">
+                                            <input type="text" placeholder="Đến" class="filter-input-max"><span class="unit-label">tỷ</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="price-custom-range" class="price-tab-content">
-                                    <div class="custom-range-input">
-                                        <input type="text" placeholder="Từ" class="filter-input-min"><span class="unit-label">tỷ</span>
-                                    </div>
-                                    <div class="custom-range-input">
-                                        <input type="text" placeholder="Đến" class="filter-input-max"><span class="unit-label">tỷ</span>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="filter-group filter-accordion" data-filter-name="area">
-                            <h4 class="filter-title accordion-trigger">Diện tích</h4>
-                            <div class="accordion-content">
-                                <div class="price-input-tabs">
-                                    <button class="price-tab-btn active" data-target="area-quick-select">Gợi ý</button>
-                                    <button class="price-tab-btn" data-target="area-custom-range">Tuỳ chọn</button>
-                                </div>
-                                <div id="area-quick-select" class="price-tab-content active">
-                                    <div class="btn-group">
-                                        <button class="active">Tất cả</button>
-                                        <button>Dưới 50m²</button>
-                                        <button>50 - 80m²</button>
-                                        <button>80 - 120m²</button>
-                                        <button>Trên 120m²</button>
+                            <div class="filter-group filter-accordion" data-filter-name="area">
+                                <h4 class="filter-title accordion-trigger">Diện tích</h4>
+                                <div class="accordion-content">
+                                    <div class="price-input-tabs">
+                                        <button class="price-tab-btn active" data-target="area-quick-select">Gợi ý</button>
+                                        <button class="price-tab-btn" data-target="area-custom-range">Tuỳ chọn</button>
+                                    </div>
+                                    <div id="area-quick-select" class="price-tab-content active">
+                                        <div class="btn-group">
+                                            <button class="active">Tất cả</button>
+                                            <button>Dưới 50m²</button>
+                                            <button>50 - 80m²</button>
+                                            <button>80 - 120m²</button>
+                                            <button>Trên 120m²</button>
+                                        </div>
+                                    </div>
+                                    <div id="area-custom-range" class="price-tab-content">
+                                        <div class="custom-range-input"><input type="text" placeholder="Từ" class="filter-input-min"><span class="unit-label">m²</span></div>
+                                        <div class="custom-range-input"><input type="text" placeholder="Đến" class="filter-input-max"><span class="unit-label">m²</span></div>
                                     </div>
                                 </div>
-                                <div id="area-custom-range" class="price-tab-content">
-                                    <div class="custom-range-input"><input type="text" placeholder="Từ" class="filter-input-min"><span class="unit-label">m²</span></div>
-                                    <div class="custom-range-input"><input type="text" placeholder="Đến" class="filter-input-max"><span class="unit-label">m²</span></div>
+                            </div>
+                            <div class="filter-group filter-accordion" data-filter-name="bedrooms">
+                                <h4 class="filter-title accordion-trigger">Số phòng ngủ</h4>
+                                <div class="accordion-content">
+                                    <div class="btn-group three-cols">
+                                        <button class="active">Tất cả</button><button>1</button><button>2</button>
+                                        <button>3</button><button>4</button><button>5+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-group filter-accordion" data-filter-name="wc">
+                                <h4 class="filter-title accordion-trigger">Số toilet</h4>
+                                <div class="accordion-content">
+                                    <div class="btn-group three-cols">
+                                        <button class="active">Tất cả</button><button>1</button><button>2</button>
+                                        <button>3</button><button>4+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-group filter-accordion" data-filter-name="legal">
+                                <h4 class="filter-title accordion-trigger">Pháp lý</h4>
+                                <div class="accordion-content">
+                                    <div class="checkbox-group">
+                                        <div><input type="checkbox" id="pl-sohong" data-value="Đã có Sổ hồng"><label for="pl-sohong">Đã có Sổ hồng</label></div>
+                                        <div><input type="checkbox" id="pl-hdmbb" data-value="Hợp đồng mua bán"><label for="pl-hdmbb">Hợp đồng mua bán</label></div>
+                                        <div><input type="checkbox" id="pl-hdc" data-value="Hợp đồng cọc"><label for="pl-hdc">Hợp đồng cọc</label></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-group filter-accordion" data-filter-name="furniture">
+                                <h4 class="filter-title accordion-trigger">Nội thất</h4>
+                                <div class="accordion-content">
+                                    <div class="checkbox-group">
+                                        <div><input type="checkbox" id="nt-cb" data-value="Nội thất cơ bản"><label for="nt-cb">Nội thất cơ bản</label></div>
+                                        <div><input type="checkbox" id="nt-full" data-value="Đầy đủ nội thất"><label for="nt-full">Đầy đủ nội thất</label></div>
+                                        <div><input type="checkbox" id="nt-tho" data-value="Bàn giao thô"><label for="nt-tho">Bàn giao thô</label></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-group filter-accordion" data-filter-name="direction">
+                                <h4 class="filter-title accordion-trigger">Hướng cửa chính</h4>
+                                <div class="accordion-content">
+                                    <div class="checkbox-group two-columns">
+                                        <div><input type="checkbox" id="d-dong" data-value="Đông"><label for="d-dong">Đông</label></div>
+                                        <div><input type="checkbox" id="d-tay" data-value="Tây"><label for="d-tay">Tây</label></div>
+                                        <div><input type="checkbox" id="d-nam" data-value="Nam"><label for="d-nam">Nam</label></div>
+                                        <div><input type="checkbox" id="d-bac" data-value="Bắc"><label for="d-bac">Bắc</label></div>
+                                        <div><input type="checkbox" id="d-db" data-value="Đông-Bắc"><label for="d-db">Đông-Bắc</label></div>
+                                        <div><input type="checkbox" id="d-tb" data-value="Tây-Bắc"><label for="d-tb">Tây-Bắc</label></div>
+                                        <div><input type="checkbox" id="d-dn" data-value="Đông-Nam"><label for="d-dn">Đông-Nam</label></div>
+                                        <div><input type="checkbox" id="d-tn" data-value="Tây-Nam"><label for="d-tn">Tây-Nam</label></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-group filter-accordion" data-filter-name="floor">
+                                <h4 class="filter-title accordion-trigger">Tầng</h4>
+                                <div class="accordion-content">
+                                    <div class="checkbox-group">
+                                        <div><input type="checkbox" id="t-thap" data-value="Thấp"><label for="t-thap">Tầng thấp</label></div>
+                                        <div><input type="checkbox" id="t-trung" data-value="Trung"><label for="t-trung">Tầng trung</label></div>
+                                        <div><input type="checkbox" id="t-cao" data-value="Cao"><label for="t-cao">Tầng cao</label></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="filter-group filter-accordion" data-filter-name="bedrooms">
-                            <h4 class="filter-title accordion-trigger">Số phòng ngủ</h4>
-                            <div class="accordion-content">
-                                <div class="btn-group three-cols">
-                                    <button class="active">Tất cả</button><button>1</button><button>2</button>
-                                    <button>3</button><button>4</button><button>5+</button>
+                        <div class="filter-apply-btn-wrapper">
+                            <button class="btn-primary filter-apply-btn">Xem kết quả</button>
+                        </div>
+                    </aside>
+                    <main class="listing-results-column">
+                        <div class="breadcrumb">
+                        </div>
+                        <div class="category-header">
+                            <h1>Mua bán Căn hộ TP. Hồ Chí Minh</h1>
+                            <p>Tìm kiếm ngôi nhà mơ ước của bạn từ hàng ngàn bất động sản trên khắp cả nước.</p>
+                        </div>
+                        <section class="search-section">
+                            <form class="search-form" autocomplete="off">
+                                <input type="search" placeholder="Tìm kiếm theo địa điểm, tên dự án...">
+                                <div class="search-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                    </svg>
                                 </div>
+                                <div id="search-suggestions" class="search-suggestions-container"></div>
+                            </form>
+                        </section>
+                        <div class="results-summary">
+                            <div class="results-summary-left">
+                                <h2 class="results-count">Tìm thấy 16 bất động sản</h2>
+                                <button id="secondary-filter-trigger" class="btn-secondary-filter">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"></path></svg>
+                                    <span>Lọc</span>
+                                </button>
+                            </div>
+                            <div class="sort-by-container">
+                                <label for="sort-select">Sắp xếp:</label>
+                                <select id="sort-select" class="sort-dropdown">
+                                    <option value="newest">Mới nhất</option>
+                                    <option value="oldest">Cũ nhất</option>
+                                    <option value="price-asc">Giá thấp đến cao</option>
+                                    <option value="price-desc">Giá cao đến thấp</option>
+                                </select>
                             </div>
                         </div>
-                        
-                        <div class="filter-group filter-accordion" data-filter-name="wc">
-                            <h4 class="filter-title accordion-trigger">Số toilet</h4>
-                            <div class="accordion-content">
-                                <div class="btn-group three-cols">
-                                    <button class="active">Tất cả</button><button>1</button><button>2</button>
-                                    <button>3</button><button>4+</button>
-                                </div>
-                            </div>
+                        <div class="product-listing-grid">
                         </div>
-
-                        <div class="filter-group filter-accordion" data-filter-name="legal">
-                            <h4 class="filter-title accordion-trigger">Pháp lý</h4>
-                            <div class="accordion-content">
-                                <div class="checkbox-group">
-                                    <div><input type="checkbox" id="pl-sohong" data-value="Đã có Sổ hồng"><label for="pl-sohong">Đã có Sổ hồng</label></div>
-                                    <div><input type="checkbox" id="pl-hdmbb" data-value="Hợp đồng mua bán"><label for="pl-hdmbb">Hợp đồng mua bán</label></div>
-                                    <div><input type="checkbox" id="pl-hdc" data-value="Hợp đồng cọc"><label for="pl-hdc">Hợp đồng cọc</label></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="filter-group filter-accordion" data-filter-name="furniture">
-                            <h4 class="filter-title accordion-trigger">Nội thất</h4>
-                            <div class="accordion-content">
-                                <div class="checkbox-group">
-                                    <div><input type="checkbox" id="nt-cb" data-value="Nội thất cơ bản"><label for="nt-cb">Nội thất cơ bản</label></div>
-                                    <div><input type="checkbox" id="nt-full" data-value="Đầy đủ nội thất"><label for="nt-full">Đầy đủ nội thất</label></div>
-                                    <div><input type="checkbox" id="nt-tho" data-value="Bàn giao thô"><label for="nt-tho">Bàn giao thô</label></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="filter-group filter-accordion" data-filter-name="direction">
-                            <h4 class="filter-title accordion-trigger">Hướng cửa chính</h4>
-                            <div class="accordion-content">
-                                <div class="checkbox-group two-columns">
-                                    <div><input type="checkbox" id="d-dong" data-value="Đông"><label for="d-dong">Đông</label></div>
-                                    <div><input type="checkbox" id="d-tay" data-value="Tây"><label for="d-tay">Tây</label></div>
-                                    <div><input type="checkbox" id="d-nam" data-value="Nam"><label for="d-nam">Nam</label></div>
-                                    <div><input type="checkbox" id="d-bac" data-value="Bắc"><label for="d-bac">Bắc</label></div>
-                                    <div><input type="checkbox" id="d-db" data-value="Đông-Bắc"><label for="d-db">Đông-Bắc</label></div>
-                                    <div><input type="checkbox" id="d-tb" data-value="Tây-Bắc"><label for="d-tb">Tây-Bắc</label></div>
-                                    <div><input type="checkbox" id="d-dn" data-value="Đông-Nam"><label for="d-dn">Đông-Nam</label></div>
-                                    <div><input type="checkbox" id="d-tn" data-value="Tây-Nam"><label for="d-tn">Tây-Nam</label></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="filter-group filter-accordion" data-filter-name="floor">
-                            <h4 class="filter-title accordion-trigger">Tầng</h4>
-                            <div class="accordion-content">
-                                <div class="checkbox-group">
-                                    <div><input type="checkbox" id="t-thap" data-value="Thấp"><label for="t-thap">Tầng thấp</label></div>
-                                    <div><input type="checkbox" id="t-trung" data-value="Trung"><label for="t-trung">Tầng trung</label></div>
-                                    <div><input type="checkbox" id="t-cao" data-value="Cao"><label for="t-cao">Tầng cao</label></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="filter-apply-btn-wrapper">
-                        <button class="btn-primary filter-apply-btn">Xem kết quả</button>
-                    </div>
-                </aside>
-                
-                <main class="listing-results-column">
-                    <div class="breadcrumb">
-               
-                    </div>
-                      <div class="category-header">
-                        <h1>Mua bán Căn hộ TP. Hồ Chí Minh</h1>
-                        <p>Tìm kiếm ngôi nhà mơ ước của bạn từ hàng ngàn bất động sản trên khắp cả nước.</p>
-                    </div>
-
-                    <section class="search-section">
-    <form class="search-form" autocomplete="off">
-        <input type="search" placeholder="Tìm kiếm theo địa điểm, tên dự án...">
-        <div class="search-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-            </svg>
-        </div>
-        
-        <div id="search-suggestions" class="search-suggestions-container"></div>
-        </form>
-</section>
-
-                    <div class="results-summary">
-                        <h2 class="results-count">Tìm thấy 16 bất động sản</h2>
-                        <div class="sort-by-container">
-                            <label for="sort-select">Sắp xếp:</label>
-                            <select id="sort-select" class="sort-dropdown">
-                                <option value="newest">Mới nhất</option>
-                                <option value="oldest">Cũ nhất</option>
-                                <option value="price-asc">Giá thấp đến cao</option>
-                                <option value="price-desc">Giá cao đến thấp</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="product-listing-grid">
-                    </div>
-                    <nav class="pagination">
-                    </nav>
-                    
-                </main>
-
+                        <nav class="pagination">
+                        </nav>
+                    </main>
+                </div>
             </div>
             <section class="explore-section">
                 <div class="explore-by-type">
@@ -258,7 +253,6 @@
                         <a href="#" class="type-tag">Nhà xưởng</a>
                     </div>
                 </div>
-
                 <div class="explore-cta-card">
                 <a href="#" class="cta-card-link">
                     <div class="cta-card-image cta-image-overlay">
@@ -268,7 +262,7 @@
                             <p class="cta-card-description">Hàng ngàn lựa chọn căn hộ với mức giá tốt nhất</p>
                             <span class="cta-card-button">
                                 Xem Danh Sách
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"></svg>
                             </span>
                         </div>
                         <div class="cta-overlay"></div>
@@ -279,17 +273,13 @@
             <section class="price-history-section">
                 <div class="price-history-card">
                     <h2 class="section-title" id="price-history-title">Lịch sử giá bán căn hộ TP. Hồ Chí Minh</h2>
-                    
                     <div class="price-history-content">
                         <div class="price-summary-container">
                             <div class="year-tabs" id="price-year-tabs">
-                                
                             </div>
-                            
                             <div class="summary-table" id="summary-table-container">
                                 </div>
                         </div>
-
                         <div class="price-chart-container">
                             <div class="chart-header">
                                 <h3 id="chart-dynamic-title" class="chart-title">Biểu đồ biến động giá</h3>
@@ -317,7 +307,6 @@
                 <div class="faq-container">
                     <h2 class="section-title">Câu hỏi thường gặp</h2>
                     <div class="accordion-group" id="faq-accordion">
-                        
                         <div class="accordion-item">
                             <button class="accordion-header">
                                 <span>Căn hộ chung cư là gì?</span>
@@ -327,7 +316,6 @@
                                 <p>Căn hộ chung cư là một đơn vị nhà ở độc lập thuộc một tòa nhà lớn hơn, nơi mỗi hộ gia đình sở hữu căn hộ của riêng mình nhưng chia sẻ các khu vực chung như hành lang, thang máy, và các tiện ích khác.</p>
                             </div>
                         </div>
-
                         <div class="accordion-item">
                             <button class="accordion-header">
                                 <span>Pháp lý của căn hộ chung cư bao gồm những gì?</span>
@@ -337,7 +325,6 @@
                                 <p>Pháp lý quan trọng nhất là Giấy chứng nhận quyền sở hữu nhà ở (sổ hồng). Ngoài ra, khi mua dự án đang xây dựng, bạn cần có Hợp đồng mua bán (HĐMB) hợp lệ với chủ đầu tư uy tín. Mọi dự án đều phải có giấy phép xây dựng và được cơ quan nhà nước phê duyệt.</p>
                             </div>
                         </div>
-
                         <div class="accordion-item">
                             <button class="accordion-header">
                                 <span>Phí quản lý chung cư bao gồm những gì?</span>
@@ -347,7 +334,6 @@
                                 <p>Phí quản lý hàng tháng thường bao gồm các chi phí cho việc vận hành các khu vực chung: an ninh 24/7, vệ sinh, chiếu sáng công cộng, chăm sóc cảnh quan, bảo trì thang máy và các tiện ích như hồ bơi, phòng gym. Phí gửi xe thường được tính riêng.</p>
                             </div>
                         </div>
-
                         <div class="accordion-item">
                             <button class="accordion-header">
                                 <span>Nên chọn mua chung cư ở tầng cao hay tầng thấp?</span>
@@ -357,21 +343,17 @@
                                 <p>Tầng cao thường có view đẹp, thoáng đãng, ít ồn ào và ít côn trùng hơn. Tuy nhiên, việc di chuyển có thể mất thời gian hơn và giá thường cao hơn. Tầng thấp tiện lợi cho việc đi lại, đặc biệt với gia đình có người lớn tuổi hoặc trẻ nhỏ, nhưng có thể ồn ào và ẩm hơn. Việc lựa chọn phụ thuộc vào ưu tiên và nhu cầu của gia đình bạn.</p>
                             </div>
                         </div>
-
                     </div>
                     <p style="margin-top: 15px;"><i>Ngày cập nhật: 17/07/2025</i></p>
                 </div>
-
                 <div class="seo-content-container">
                 <div class="seo-text-content">
                     <h2 class="section-title">Đầu tư Căn hộ Cao cấp</h2>
-                    
                     <div class="seo-image-wrapper">
                         <img src="assets/images/seo.jpg" 
                             alt="Đầu tư Căn hộ Cao cấp"
                             onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/e2e8f0?text=Loi+tai+anh';">
                     </div>
-                    
                     <h3>Xu hướng và Tiềm năng tại TP. Hồ Chí Minh</h3>
                     <div class="text-content-wrapper" id="seo-text-wrapper">
                         <p>Thị trường bất động sản TP. Hồ Chí Minh luôn là tâm điểm chú ý của các nhà đầu tư, trong đó phân khúc căn hộ cao cấp nổi lên như một kênh đầu tư hấp dẫn và bền vững. Với sự phát triển không ngừng của cơ sở hạ tầng và tốc độ đô thị hóa, nhu cầu về một không gian sống hiện đại, tiện nghi và an toàn ngày càng tăng cao.</p>
@@ -383,7 +365,6 @@
                     <button class="read-more-btn" id="seo-toggle-button">Xem thêm</button>
                 </div>
             </div>
-
             </section>
         </div>
     </div>
@@ -392,6 +373,14 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/></svg>
         <span>Lọc</span>
     </button>
+     <button id="mobile-map-trigger" class="floating-map-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"></path>
+        </svg>
+        <span>Bản đồ</span>
+    </button>
+
+    <div id="filter-overlay-mobile" class="filter-overlay"></div>
     <div id="filter-overlay-mobile" class="filter-overlay"></div>
     <div id="favorites-drawer-container">
         <div class="favorites-drawer-overlay"></div>
@@ -402,9 +391,20 @@
             </div>
             <div class="drawer-content">
                 </div>
-         
         </div>
     </div>
+    
+    <button id="show-map-btn" class="fab fab-map" title="Xem bản đồ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"></path>
+        </svg>
+    </button>
+    <button id="show-list-btn" class="fab fab-list" title="Xem danh sách">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
+        </svg>
+    </button>
+    
     <footer class="footer-wrapper">
         <div class="header-footer-limiter">
             <div class="site-footer">
@@ -417,7 +417,6 @@
                     <p>Mail: <a href="mailto:contact@bdstot.net">contact@bdstot.net</a></p>
                     
                 </div>
-
                 <div class="footer-widget">
                     <h4 class="widget-title accordion-toggle">VỀ CHÚNG TÔI</h4>
                     <ul class="widget-links">
@@ -426,7 +425,6 @@
                         <li><a href="lien-he.html">Liên hệ</a></li>
                     </ul>
                 </div>
-
                 <div class="footer-widget">
                     <h4 class="widget-title accordion-toggle">ĐIỀU KHOẢN</h4>
                     <ul class="widget-links">
@@ -434,10 +432,8 @@
                         <li><a href="dieu-khoan-su-dung.html">Điều khoản sử dụng</a></li>
                     </ul>
                 </div>
-
                 <div class="footer-widget footer-col-4">
                     <h4 class="widget-title">KẾT NỐI VỚI CHÚNG TÔI</h4>
-
                     <div class="footer-socials">
                         <a href="#" class="social-icon" aria-label="Facebook">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -455,7 +451,6 @@
                             </svg>
                         </a>
                     </div>
-
                     <a href="#" target="_blank" rel="noopener noreferrer" style="margin-top: 20px; display: inline-block;">
                         <img src="assets/images/bo-cong-thuong.png" alt="Logo Bộ Công Thương" class="bct-logo">
                     </a>
@@ -466,10 +461,16 @@
             </div>
         </div>
     </footer>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+    
+    <script src="https://unpkg.com/topojson-client@3"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqrBwjZMWzyWKpQEN7giDN98aJ7nIAeBw&libraries=places"></script>
+    <script src="https://unpkg.com/leaflet.gridlayer.googlemutant@0.4.0/Leaflet.GoogleMutant.js"></script>
+    
     <script src="assets/js/template.js"></script>
     <script type="module" src="assets/js/data-menu.js"></script>
-    
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/price-data.js"></script> 
@@ -486,13 +487,7 @@
         };
     </script>
     <script type="module">
-    // =====================================================================
-    // == SCRIPT TỔNG HỢP CUỐI CÙNG (DESKTOP & MOBILE & STICKY HEADER) ==
-    // =====================================================================
-
     document.addEventListener('DOMContentLoaded', () => {
-
-        // --- PHẦN 1: DỮ LIỆU & BIẾN TOÀN CỤC ---
         const initialMenuData = {
            "Dự án": [ { "Loại hình": "Chung cư", "Khu vực": ["TP. Hồ Chí Minh", "Bình Dương", "Đồng Nai"] }, { "Loại hình": "Khu đô thị", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Long An"] } ],
            "Mua bán": [ { "Loại hình": "Căn hộ", "Khu vực": ["TP. Hồ Chí Minh", "Lâm Đồng", "Bà Rịa - Vũng Tàu"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng"] } ],
@@ -501,27 +496,15 @@
            "Tin tức": [ { "Danh mục": "Dự án", "slug": "du-an" }, { "Danh mục": "Thị trường", "slug": "thi-truong" } ],
            "Doanh nghiệp": [ { "Danh mục": "Chủ đầu tư", "slug": "chu-dau-tu" }, { "Danh mục": "Nhà thầu thi công", "slug": "nha-thau-thi-cong" } ]
         };
-        
-        const featuredProjectsData = [
-            {
-                name: 'The Global City',
-                description: 'Khu đô thị phức hợp chuẩn quốc tế tại TP. Thủ Đức.',
-                image: 'assets/images/project-gallery-1.jpg',
-                link: '#'
-            }
-        ];
-
+        const featuredProjectsData = [ { name: 'The Global City', description: 'Khu đô thị phức hợp chuẩn quốc tế tại TP. Thủ Đức.', image: 'assets/images/project-gallery-1.jpg', link: '#' } ];
         const header = document.querySelector('.header-wrapper');
         const mainMenuContainer = document.getElementById('main-nav');
         const mainMenuUl = document.getElementById('main-menu-list');
         const hamburgerButton = document.getElementById('hamburger-button');
         const menuOverlay = document.getElementById('menu-overlay');
         const megaMenuContainer = document.getElementById('cct-mega-menu');
-        
         let activeMenuItem = null;
         let menuTimeout;
-
-        // --- PHẦN 2: CÁC HÀM TIỆN ÍCH ---
         const toSlug = (str) => {
             if (!str) return '';
             let s = str.toLowerCase();
@@ -538,7 +521,6 @@
             s = s.replace(/^-+|-+$/g, '');
             return s;
         };
-        
         function getLink(menuKey, catKey, subItem) {
             let baseUrl = '';
             let params = [];
@@ -561,14 +543,10 @@
             }
             return `${baseUrl}${params.length > 0 ? '?' : ''}${params.join('&')}`;
         }
-
         function debounce(func, delay = 250) {
             let timeout;
             return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); };
         }
-
-        // --- PHẦN 3: LOGIC MENU ---
-
         function initMenu() {
             if (window.innerWidth > 1024) {
                 handleDesktopMenu();
@@ -576,7 +554,6 @@
                 handleMobileMenu();
             }
         }
-        
         function handleDesktopMenu() {
             const nav = document.getElementById('main-nav');
             const mainMenu = document.getElementById('main-menu-list');
@@ -609,29 +586,20 @@
             megaMenuContainer.addEventListener('mouseenter', () => clearTimeout(menuTimeout));
             megaMenuContainer.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 300); });
         }
-
-        // =======================================================
-        // == HÀM ĐÃ ĐƯỢC CẬP NHẬT ĐẦY ĐỦ LOGIC MỚI NHẤT ==
-        // =======================================================
         function populateDesktopPanel(menuKey) {
             const menuItems = initialMenuData[menuKey];
-            const col1Header = document.querySelector('#cct-mega-menu .menu-panel-col.col-1 h4'); // --- ĐÃ THÊM ---
+            const col1Header = document.querySelector('#cct-mega-menu .menu-panel-col.col-1 h4');
             const col1List = document.getElementById('mega-menu-col-1-list');
             const col2List = document.getElementById('mega-menu-col-2-list');
             const col3Content = document.getElementById('mega-menu-col-3-content');
-
-            if (!col1List || !col2List || !col3Content || !col1Header) return; // --- ĐÃ SỬA ---
-            
+            if (!col1List || !col2List || !col3Content || !col1Header) return;
             col1List.innerHTML = '';
             col2List.innerHTML = '';
             col3Content.innerHTML = '';
-
             if (!menuItems || menuItems.length === 0) {
                 col1Header.textContent = '';
                 return;
             }
-
-            // --- ĐÃ THÊM: LOGIC TỰ ĐỘNG ĐẶT TIÊU ĐỀ ---
             const firstItem = menuItems[0];
             let col1Title = '';
             if (firstItem.hasOwnProperty('Loại hình')) {
@@ -640,11 +608,8 @@
                 col1Title = 'Danh mục';
             }
             col1Header.textContent = col1Title;
-            // --- KẾT THÚC PHẦN THÊM MỚI ---
-
             const isMega = firstItem.hasOwnProperty('Khu vực');
             megaMenuContainer.querySelector('.menu-panel-columns').classList.toggle('is-single-col-data', !isMega);
-            
             menuItems.forEach((item, index) => {
                 const categoryName = item["Loại hình"] || item["Danh mục"];
                 const li = document.createElement('li');
@@ -661,7 +626,6 @@
                 if (index === 0) li.classList.add('active');
                 col1List.appendChild(li);
             });
-
             if (isMega) {
                 updateDesktopSubMenu(menuItems[0]["Loại hình"], menuKey);
                 col1List.addEventListener('mouseover', e => {
@@ -673,7 +637,6 @@
                     }
                 });
             }
-            
             featuredProjectsData.forEach(project => {
                 const card = document.createElement('a');
                 card.href = project.link;
@@ -682,7 +645,6 @@
                 col3Content.appendChild(card);
             });
         }
-        
         function updateDesktopSubMenu(categoryKey, menuKey) {
             const subMenuContainer = document.getElementById('mega-menu-col-2-list');
             const menuItems = initialMenuData[menuKey];
@@ -690,7 +652,6 @@
             const subItems = targetItem ? targetItem["Khu vực"] : [];
             subMenuContainer.innerHTML = subItems.map(item => `<li><a href="${getLink(menuKey, categoryKey, item)}">${item}</a></li>`).join('');
         }
-
         function closeDesktopPanel() {
             if (megaMenuContainer) megaMenuContainer.classList.remove('is-open');
             if (activeMenuItem) {
@@ -698,7 +659,6 @@
                 activeMenuItem = null;
             }
         }
-
         function handleMobileMenu() {
             const nav = document.getElementById('main-nav');
             const overlay = document.getElementById('menu-overlay');
@@ -789,27 +749,27 @@
                 }
             });
         }
-        
-        // --- PHẦN 4: CÁC SỰ KIỆN TOÀN CỤC ---
         if (header) {
             let lastScrollTop = 0;
-            const sidebar = document.querySelector('.listing-filter-sidebar, .contact-sidebar, .sidebar-column'); 
-            window.addEventListener('scroll', () => {
-                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
-                    header.classList.add('header--hidden');
-                    if (sidebar) sidebar.classList.add('sidebar--header-hidden');
-                } else {
-                    header.classList.remove('header--hidden');
-                    if (sidebar) sidebar.classList.remove('sidebar--header-hidden');
-                }
-                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-                if (megaMenuContainer && megaMenuContainer.classList.contains('is-open')) {
-                    closeDesktopPanel();
-                }
-            });
+            // [ĐÃ CẬP NHẬT] Thêm nút Lọc mới vào danh sách các phần tử sticky
+const stickyElements = document.querySelectorAll('.listing-filter-sidebar, .map-column-container, .btn-secondary-filter');
+window.addEventListener('scroll', () => {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+        header.classList.add('header--hidden');
+        // Áp dụng cho tất cả các phần tử đã chọn
+        stickyElements.forEach(el => el.classList.add('sidebar--header-hidden'));
+    } else {
+        header.classList.remove('header--hidden');
+        // Áp dụng cho tất cả các phần tử đã chọn
+        stickyElements.forEach(el => el.classList.remove('sidebar--header-hidden'));
+    }
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    if (megaMenuContainer && megaMenuContainer.classList.contains('is-open')) {
+        closeDesktopPanel();
+    }
+});
         }
-
         document.addEventListener('click', (event) => {
             if (megaMenuContainer && mainMenuContainer && megaMenuContainer.classList.contains('is-open')) {
                 if (!mainMenuContainer.contains(event.target) && !megaMenuContainer.contains(event.target)) {
@@ -817,15 +777,9 @@
                 }
             }
         });
-
         window.addEventListener('resize', debounce(initMenu, 250));
-        
-        // --- PHẦN 5: KHỞI CHẠY LẦN ĐẦU ---
         initMenu();
     });
     </script>
-    
-    
-    
 </body>
 </html>
