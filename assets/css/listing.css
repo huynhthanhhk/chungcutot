@@ -1806,11 +1806,85 @@ body.drawer-open {
     .fab {
         display: none !important;
     }
-    body.mobile-map-view-active .listing-results-column,
-body.mobile-map-view-active .footer-wrapper {
-    display: none;
-}
+
 body.mobile-map-view-active {
     overflow: hidden;
 }
+}
+
+@media (max-width: 767px) {
+  /* Tự động ẩn header để ưu tiên không gian cho bản đồ */
+  body.mobile-map-view-active .header-wrapper {
+    transform: translateY(-100%);
+    transition: transform 0.4s ease-in-out;
+  }
+}
+@media (max-width: 767px) {
+    /* 1. Nút Icon Tìm Kiếm Mới */
+    #map-search-toggle-btn {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-color: #fff;
+        color: var(--secondary-color);
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 1002; /* Nằm trên cùng */
+        cursor: pointer;
+        display: none; /* Mặc định ẩn */
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s, opacity 0.3s;
+    }
+
+    /* Chỉ hiện icon này khi đang ở chế độ bản đồ mobile */
+    body.mobile-map-view-active #map-search-toggle-btn {
+        display: flex;
+    }
+
+    /* Ẩn icon đi khi form tìm kiếm đang mở */
+    body.mobile-map-view-active .search-section.is-expanded + #map-search-toggle-btn {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* 2. Form Tìm Kiếm */
+    /* Ẩn cột kết quả đi */
+    body.mobile-map-view-active .listing-results-column {
+        display: none;
+    }
+
+    /* Luôn hiển thị khối search-section nhưng ẩn nó đi bằng transform và opacity */
+    body.mobile-map-view-active .search-section {
+        display: block;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        width: auto;
+        z-index: 1001; /* Nằm dưới icon một chút */
+        
+        /* Trạng thái ẩn mặc định */
+        opacity: 0;
+        transform: translateY(-20px);
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Trạng thái khi form được mở rộng */
+    body.mobile-map-view-active .search-section.is-expanded {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    /* Style cho form tìm kiếm trên mobile */
+    body.mobile-map-view-active .search-section .search-form {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
 }

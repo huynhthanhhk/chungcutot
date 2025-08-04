@@ -562,7 +562,12 @@ function initMap() {
     // Thêm lớp bản đồ nền ban đầu
     updateBaseLayer();
 
-
+    map.on('click', function() {
+        const searchSection = document.querySelector('.search-section');
+        if (searchSection && searchSection.classList.contains('is-expanded')) {
+            searchSection.classList.remove('is-expanded');
+        }
+    });
     // --- 4. TẢI VÀ HIỂN THỊ DỮ LIỆU RANH GIỚI PHƯỜNG/XÃ TỪ TỆP wards.json ---
     fetch('wards.json')
         .then(response => response.json())
@@ -1002,35 +1007,73 @@ function updateBreadcrumb() {
         });
     }
     }
- function initMobileMapView() {
-    const mobileMapTrigger = document.getElementById('mobile-map-trigger');
-    if (!mobileMapTrigger) return;
+    function initMobileMapView() {
+        const mobileMapTrigger = document.getElementById('mobile-map-trigger');
+        if (!mobileMapTrigger) return;
 
-    // Lưu lại nội dung SVG của 2 icon
-    const mapIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"></path></svg>';
-    const listIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path></svg>';
+        // Lưu lại nội dung SVG của 2 icon
+        const mapIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"></path></svg>';
+        const listIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path></svg>';
 
-    const iconElement = mobileMapTrigger.querySelector('svg');
-    const textElement = mobileMapTrigger.querySelector('span');
+        const iconElement = mobileMapTrigger.querySelector('svg');
+        const textElement = mobileMapTrigger.querySelector('span');
 
-    mobileMapTrigger.addEventListener('click', () => {
-        const isMapView = document.body.classList.contains('mobile-map-view-active');
+        mobileMapTrigger.addEventListener('click', () => {
+            const isMapView = document.body.classList.contains('mobile-map-view-active');
 
-        document.body.classList.toggle('mobile-map-view-active');
-        mobileMapTrigger.classList.toggle('is-list-view');
+            document.body.classList.toggle('mobile-map-view-active');
+            mobileMapTrigger.classList.toggle('is-list-view');
 
-        if (!isMapView) {
-            // SỬA LỖI: Thay thế toàn bộ nội dung của nút
-            // Khi chuyển sang xem bản đồ -> nút trở thành "Danh sách"
-            mobileMapTrigger.innerHTML = listIconSVG + '<span>Danh sách</span>';
-        } else {
-            // SỬA LỖI: Thay thế toàn bộ nội dung của nút
-            // Khi quay lại xem danh sách -> nút trở lại thành "Bản đồ"
-            mobileMapTrigger.innerHTML = mapIconSVG + '<span>Bản đồ</span>';
+            if (!isMapView) {
+                // SỬA LỖI: Thay thế toàn bộ nội dung của nút
+                // Khi chuyển sang xem bản đồ -> nút trở thành "Danh sách"
+                mobileMapTrigger.innerHTML = listIconSVG + '<span>Danh sách</span>';
+            } else {
+                // SỬA LỖI: Thay thế toàn bộ nội dung của nút
+                // Khi quay lại xem danh sách -> nút trở lại thành "Bản đồ"
+                mobileMapTrigger.innerHTML = mapIconSVG + '<span>Bản đồ</span>';
+            }
+        });
+    }
+  
+    // THAY THẾ TOÀN BỘ HÀM CŨ BẰNG HÀM MỚI NÀY
+
+function initMobileSearchToggle() {
+    // Chỉ thực hiện trên màn hình mobile
+    if (window.innerWidth > 767) return;
+
+    const searchSection = document.querySelector('.search-section');
+    if (!searchSection) return; // An toàn hơn: thoát nếu không tìm thấy khối tìm kiếm
+
+    // ⭐ BƯỚC 1: DI CHUYỂN KHỐI TÌM KIẾM RA KHỎI THẺ CHA BỊ ẨN
+    // Đây là bước quan trọng nhất. Chúng ta đưa nó ra làm con của thẻ body.
+    document.body.appendChild(searchSection);
+
+    // --- Các bước còn lại giữ nguyên logic ---
+
+    // 2. Tạo nút icon tìm kiếm mới
+    const searchToggleBtn = document.createElement('button');
+    searchToggleBtn.id = 'map-search-toggle-btn';
+    searchToggleBtn.setAttribute('aria-label', 'Tìm kiếm trên bản đồ');
+    searchToggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>`;
+    document.body.appendChild(searchToggleBtn);
+
+    // 3. Lấy tham chiếu đến các phần tử liên quan
+    const searchInput = searchSection.querySelector('input[type="search"]');
+
+    // 4. Xử lý sự kiện khi nhấp vào icon
+    searchToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isExpanded = searchSection.classList.toggle('is-expanded');
+        // Tự động focus vào ô input khi mở form
+        if (isExpanded) {
+            searchInput.focus();
         }
     });
-}
 
+    // 5. Ngăn việc nhấp vào form tự đóng chính nó
+    searchSection.addEventListener('click', (e) => e.stopPropagation());
+}
 
 
 // Hàm làm nổi bật Phường/Xã và zoom vào
@@ -1092,6 +1135,8 @@ function updateMapMarkers() {
     }
 }
 
+
+
     function init() {
         updateBreadcrumb();
         initSidebarEvents();
@@ -1102,24 +1147,26 @@ function updateMapMarkers() {
         initMap();
         initMapData(); // <- GỌI HÀM MỚI Ở ĐÂY
         const searchForm = document.querySelector('form.search-form');
-if (searchForm) {
-    searchForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        applyFiltersAndRefresh();
+        if (searchForm) {
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                applyFiltersAndRefresh();
 
-        // Logic di chuyển bản đồ nếu tìm theo phường vẫn giữ nguyên
-        const query = searchInput.value.trim();
-        if (query && wardLayersLookup[removeDiacritics(query).toLowerCase()]) {
-             const layer = wardLayersLookup[removeDiacritics(query).toLowerCase()];
-             map.fitBounds(layer.getBounds(), { paddingTopLeft: [300, 0] });
-             layer.openPopup();
+                // Logic di chuyển bản đồ nếu tìm theo phường vẫn giữ nguyên
+                const query = searchInput.value.trim();
+                if (query && wardLayersLookup[removeDiacritics(query).toLowerCase()]) {
+                    const layer = wardLayersLookup[removeDiacritics(query).toLowerCase()];
+                    map.fitBounds(layer.getBounds(), { paddingTopLeft: [300, 0] });
+                    layer.openPopup();
+                }
+            });
         }
-    });
-}
         updateDisplay();
         initMapViewToggle();
         initMobileMapView(); 
+
+        initMobileSearchToggle();
     }
- 
+    
     init();
 });
