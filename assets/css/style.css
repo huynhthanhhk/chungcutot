@@ -1099,6 +1099,9 @@ a:hover {
         padding-left: 10px;
         transition: transform 0.3s ease;
     }
+     .footer-col-4 h4.widget-title::after {
+        display: none;
+    }
     .footer-widget h4.widget-title.accordion-toggle.active::after {
         transform: rotate(-180deg);
     }
@@ -1385,7 +1388,7 @@ a:hover {
 /* --- Cập nhật Responsive Media Queries --- */
 @media (max-width: 767px) {
 
-    /* ... các quy tắc cũ ... */
+    
     
     /* Responsive cho mục dự án liên quan */
     .related-project-item {
