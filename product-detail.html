@@ -576,6 +576,40 @@
                 </form>
             </div>
         </div>
+    
+    <div id="feng-shui-modal" class="modal-container">
+    <div class="modal-content">
+        <button class="modal-close-btn" title="Đóng">×</button>
+        
+        <div id="feng-shui-input-wrapper">
+            <h3>Xem Phong Thủy Theo Tuổi</h3>
+            <p>Nhập năm sinh và giới tính của bạn để xem hướng và màu sắc hợp mệnh.</p>
+            <div class="modal-separator"></div>
+            <form id="feng-shui-form" class="contact-form">
+                <input type="text" inputmode="numeric" pattern="[0-9]*" name="birth_year" placeholder="Nhập năm sinh (VD: 1990)" required>
+                <select name="gender" required>
+                    <option value="" disabled selected>Chọn giới tính</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                </select>
+                <div id="feng-shui-error" style="color: red; font-size: 14px; margin-top: -5px; margin-bottom: 10px; text-align: left; display: none;"></div>
+                <button type="submit" class="btn-primary">Xem kết quả</button>
+            </form>
+        </div>
+
+        <div id="feng-shui-result-wrapper" style="display: none;">
+            <h3 id="feng-shui-result-title"></h3>
+            <div class="modal-separator"></div>
+            <div id="feng-shui-result-content" class="feng-shui-result-grid">
+                <div id="feng-shui-info-col"></div>
+                <div id="feng-shui-image-col"></div>
+            </div>
+            <div id="feng-shui-huong-results" style="margin-top: 20px;"></div>
+            <button id="feng-shui-back-btn" class="btn-secondary-custom" style="margin-top: 20px;">Tra cứu lại</button>
+        </div>
+    </div>
+</div>
+
         <div id="favorites-drawer-container">
         <div class="favorites-drawer-overlay"></div>
         <div class="favorites-drawer">
@@ -660,6 +694,7 @@
     <script src="assets/js/product-details-data.js"></script>
     <script src="assets/js/product-details-data-thue.js"></script>
     <script src="assets/js/product-detail.js"></script>
+    <script src="assets/js/phong_thuy_data.js"></script> 
     <script src="assets/js/listing.js"></script> 
     <script src="assets/js/nearby-data.js"></script> 
     <script src="assets/js/price-data-thue.js"></script> 

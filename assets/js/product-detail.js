@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
             initLoanCalculator(product);
             initProductPriceHistoryChart(product);
         }
+        initFengShuiModal(); // <-- DÒNG MÃ MỚI THÊM VÀO
     }
 
     function populatePageWithProductData(product, isRental) {
@@ -144,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     value: product.view
                 }, {
                     label: "Hướng cửa",
-                    value: product.doorDirection
+                    value: `${product.doorDirection} <a href="#" id="phong-thuy-trigger" style="text-decoration: underline; font-weight: 500; margin-left: 8px;">Phong thuỷ theo tuổi</a>`
                 }, {
                     label: "Hướng ban công",
                     value: product.balconyDirection || '-'
@@ -181,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     value: product.view
                 }, {
                     label: "Hướng cửa",
-                    value: product.doorDirection
+                    value: `${product.doorDirection} <a href="#" id="phong-thuy-trigger" style="text-decoration: underline; font-weight: 500; margin-left: 8px;">Phong thuỷ theo tuổi</a>`
                 }, {
                     label: "Hướng ban công",
                     value: product.balconyDirection || '-'
@@ -470,7 +471,198 @@ document.addEventListener('DOMContentLoaded', function () {
         grid.innerHTML = cardsHTML;
         container.style.display = 'block';
     }
+    // ========================================================================
+    // == HÀM MỚI: KHỞI TẠO MODAL POPUP PHONG THỦY
+    // ========================================================================
     
+    function initFengShuiModal() {
+    if (typeof phongThuyData === 'undefined') {
+        console.error('Lỗi: Dữ liệu phong thủy (phongThuyData) không được tải. Hãy kiểm tra lại thứ tự tải tệp script trong HTML.');
+        return;
+    }
+
+     const openBtn = document.getElementById('phong-thuy-trigger');
+    const modal = document.getElementById('feng-shui-modal');
+    if (!openBtn || !modal) return;
+
+    const closeBtn = modal.querySelector('.modal-close-btn');
+    const inputWrapper = document.getElementById('feng-shui-input-wrapper');
+    const resultWrapper = document.getElementById('feng-shui-result-wrapper');
+    const form = document.getElementById('feng-shui-form');
+    const errorDiv = document.getElementById('feng-shui-error');
+    const backBtn = document.getElementById('feng-shui-back-btn');
+
+    const showInputView = () => {
+        resultWrapper.style.display = 'none';
+        inputWrapper.style.display = 'block';
+        form.reset();
+        errorDiv.style.display = 'none';
+    };
+
+    const closeModal = () => {
+        modal.style.display = 'none';
+    };
+
+    openBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        showInputView();
+        modal.style.display = 'flex';
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    backBtn.addEventListener('click', showInputView);
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+    });
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        errorDiv.style.display = 'none';
+
+        const birthYear = parseInt(form.querySelector('input[name="birth_year"]').value, 10);
+        const gender = form.querySelector('select[name="gender"]').value;
+        const birthYearStr = form.querySelector('input[name="birth_year"]').value.trim();
+        
+        if (!/^\d{4}$/.test(birthYearStr) || birthYear < 1000) {
+            errorDiv.textContent = 'Lỗi: Vui lòng nhập năm sinh hợp lệ (4 chữ số, từ 1000 trở đi).';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        if (!gender) {
+            errorDiv.textContent = 'Lỗi: Vui lòng chọn giới tính.';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        const results = calculateFengShui(birthYear, gender);
+        if (!results) {
+             errorDiv.textContent = 'Lỗi: Không thể tính toán với dữ liệu được cung cấp.';
+             errorDiv.style.display = 'block';
+             return;
+        }
+
+        displayResults(results);
+        inputWrapper.style.display = 'none';
+        resultWrapper.style.display = 'block';
+    });
+
+    function calculateFengShui(birthYear, gender) {
+        const currentYear = new Date().getFullYear();
+        const age = currentYear - birthYear + 1;
+
+        const lastDigit = birthYear % 10;
+        const thienCan = phongThuyData.thien_can.find(c => c.so_cuoi === lastDigit)?.can;
+        const chiRemainder = birthYear % 12;
+        const diaChiObj = phongThuyData.dia_chi.find(c => c.so_du === chiRemainder);
+        if (!thienCan || !diaChiObj) return null;
+        const diaChi = diaChiObj.dia_chi;
+        const diaChiImg = diaChiObj.url;
+        const lunarYearName = `${thienCan} ${diaChi}`;
+
+        const nguHanhNapAm = phongThuyData.ngu_hanh_nap_am.find(item => item.can_chi === lunarYearName)?.ngu_hanh;
+
+        const sumOfDigits = birthYear.toString().split('').reduce((sum, digit) => sum + parseInt(digit, 10), 0);
+        let cungRemainder = sumOfDigits % 9;
+        if (cungRemainder === 0) cungRemainder = 9;
+        const traCuuCungObj = phongThuyData.cung_menh.tra_cuu_cung.find(c => c.so_du === cungRemainder);
+        if (!traCuuCungObj) return null;
+        const cung = (gender === 'Nam') ? traCuuCungObj.nam : traCuuCungObj.nu;
+        
+        const hanhCung = phongThuyData.cung_menh.hanh_theo_cung.find(h => h.cung === cung)?.hanh;
+        
+        const huongObj = phongThuyData.huong.find(h => h.cung === cung);
+        if (!huongObj) return null;
+
+        const getExplanation = (y_nghia) => phongThuyData.dien_giai_huong.find(d => d.y_nghia === y_nghia)?.giai_thich || '';
+
+        const goodDirections = [
+            { name: 'Sinh khí', direction: huongObj.sinh_khi, explanation: getExplanation('Sinh khí') },
+            { name: 'Thiên y', direction: huongObj.thien_y, explanation: getExplanation('Thiên y') },
+            { name: 'Diên niên', direction: huongObj.dien_nien, explanation: getExplanation('Diên niên') },
+            { name: 'Phục vị', direction: huongObj.phuc_vi, explanation: getExplanation('Phục vị') }
+        ];
+
+        const badDirections = [
+            { name: 'Tuyệt mệnh', direction: huongObj.tuyet_menh, explanation: getExplanation('Tuyệt mệnh') },
+            { name: 'Ngũ quỷ', direction: huongObj.ngu_quy, explanation: getExplanation('Ngũ quỷ') },
+            { name: 'Lục sát', direction: huongObj.luc_sat, explanation: getExplanation('Lục sát') },
+            { name: 'Hoạ hại', direction: huongObj.hoa_hai, explanation: getExplanation('Hoạ hại') }
+        ];
+
+        const dongTuTrachHuong = ['Đông', 'Đông Nam', 'Nam', 'Bắc'];
+        const isDongTuTrach = goodDirections.some(h => dongTuTrachHuong.includes(h.direction));
+        const trach = isDongTuTrach ? 'Đông Tứ Trạch' : 'Tây Tứ Trạch';
+
+        const mauSacObj = phongThuyData.mau_sac.find(m => m.hanh === hanhCung);
+        const colors = mauSacObj ? {
+            tuong_sinh: mauSacObj.tuong_sinh,
+            hoa_hop: mauSacObj.hoa_hop,
+            che_khac: mauSacObj.che_khac,
+            bi_khac: mauSacObj.bi_khac
+        } : null;
+
+        return { birthYear, gender, age, thienCan, diaChi, diaChiImg, lunarYearName, nguHanhNapAm, cung, hanhCung, goodDirections, badDirections, trach, colors };
+    }
+
+    function displayResults(data) {
+        const { birthYear, gender, age, lunarYearName, hanhCung, trach, colors } = data;
+        
+        // --- CẬP NHẬT TIÊU ĐỀ THEO YÊU CẦU MỚI ---
+        const hopMau = colors ? `${colors.tuong_sinh}, ${colors.hoa_hop}` : "N/A";
+        const newTitle = `${gender} ${age} tuổi (${lunarYearName} ${birthYear}) Mệnh ${hanhCung}. Hợp hướng: ${trach}, hợp màu: ${hopMau}`;
+        document.getElementById('feng-shui-result-title').textContent = newTitle;
+
+        // --- Hiển thị các thông tin còn lại (giữ nguyên) ---
+        const { diaChi, diaChiImg, nguHanhNapAm, cung, thienCan } = data;
+        const infoCol = document.getElementById('feng-shui-info-col');
+        infoCol.innerHTML = `
+            <p><strong>Sinh năm âm lịch:</strong> ${lunarYearName}</p>
+            <p><strong>Giới tính:</strong> ${gender}</p>
+            <p><strong>Tuổi hiện tại:</strong> ${age}</p>
+            <p><strong>Ngũ hành:</strong> ${nguHanhNapAm || 'N/A'}</p>
+            <p><strong>Thiên can:</strong> ${thienCan}</p>
+            <p><strong>Địa chi:</strong> ${diaChi}</p>
+            <p><strong>Cung – Mệnh:</strong> ${cung} – ${hanhCung}</p>
+        `;
+
+        const imageCol = document.getElementById('feng-shui-image-col');
+        imageCol.innerHTML = `<img src="assets/images/phong-thuy/${diaChiImg}" alt="${diaChi}">`;
+
+        const { goodDirections, badDirections } = data;
+        const huongContainer = document.getElementById('feng-shui-huong-results');
+        let huongHTML = `<p style="font-size: 16px; margin-bottom: 15px;">Gia chủ thuộc: <strong style="color: var(--primary-color);">${trach}</strong></p>`;
+        
+        huongHTML += '<h5>HƯỚNG TỐT</h5>';
+        goodDirections.forEach(h => {
+            huongHTML += `<div class="huong-block huong-tot">
+                            <strong>${h.name} (${h.direction}):</strong>
+                            <span>${h.explanation}</span>
+                         </div>`;
+        });
+
+        if (colors) {
+            huongHTML += '<h5>MÀU HỢP MỆNH</h5>';
+            huongHTML += `<div class="huong-block huong-tot"><strong>Tương sinh:</strong> <span>${colors.tuong_sinh}</span></div>`;
+            huongHTML += `<div class="huong-block huong-tot"><strong>Hoà hợp:</strong> <span>${colors.hoa_hop}</span></div>`;
+        }
+
+        huongHTML += '<h5>HƯỚNG XẤU</h5>';
+        badDirections.forEach(h => {
+            huongHTML += `<div class="huong-block huong-xau">
+                            <strong>${h.name} (${h.direction}):</strong>
+                            <span>${h.explanation}</span>
+                         </div>`;
+        });
+
+        if (colors) {
+            huongHTML += '<h5>MÀU KỴ MỆNH</h5>';
+            huongHTML += `<div class="huong-block huong-xau"><strong>Chế khắc:</strong> <span>${colors.che_khac}</span></div>`;
+            huongHTML += `<div class="huong-block huong-xau"><strong>Bị khắc:</strong> <span>${colors.bi_khac}</span></div>`;
+        }
+        
+        huongContainer.innerHTML = huongHTML;
+    }
+}
     /**
      * BỔ SUNG: Tìm và hiển thị các tin đăng tương tự dựa trên một bộ quy tắc.
      * @param {object} currentProduct - Đối tượng sản phẩm cho trang hiện tại.
