@@ -93,6 +93,9 @@
                             <h2 id="muc-1">Tiêu đề phụ cấp 1 (thẻ h2)</h2>
                             <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehiculah.</p>
                             <blockquote>Đây là một đoạn trích dẫn quan trọng trong bài viết, dùng để nhấn mạnh một ý kiến hoặc một câu nói đáng chú ý.</blockquote>
+                            <a href="#" class="open-nam-mua-nha-modal" style="text-decoration: underline; font-weight: bold;">
+        xem năm mua/xây nhà hợp tuổi
+    </a> 
                             
                             <h3 id="muc-2">Tiêu đề phụ cấp 2 (thẻ h3)</h3>
                             <p>Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis. Morbi in sem quis dui placerat ornare. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu. Cras consequat.</p>
@@ -329,6 +332,7 @@
     <script src="assets/js/template.js"></script>
     <script src="assets/js/wiki-data.js"></script>
     <script src="assets/js/news-data.js"></script> <script src="assets/js/article-detail.js"></script> 
+    <script src="assets/js/phong_thuy_data.js"></script>
     <script type="module" src="assets/js/data-menu.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/listing.js"></script>
@@ -671,5 +675,45 @@
         initMenu();
     });
     </script>
+    <div id="nam-mua-nha-modal" class="modal-container">
+    <div class="modal-content">
+        <button class="modal-close-btn" title="Đóng">×</button>
+
+        <div id="xay-nha-input-wrapper">
+            <h3>Kiểm tra năm mua/xây nhà</h3>
+            <p>Nhập thông tin của bạn và năm dự kiến xây nhà để nhận phân tích chi tiết.</p>
+            <div class="modal-separator"></div>
+            <form id="xay-nha-form" class="contact-form">
+                <input type="text" inputmode="numeric" name="birth_year" placeholder="Năm sinh của bạn (VD: 1990)" required>
+                <select name="gender" required>
+                    <option value="" disabled selected>Chọn giới tính</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                </select>
+                <input type="text" inputmode="numeric" name="build_year" placeholder="Năm dự kiến mua/xây nhà (VD: 2025)" required>
+                <div id="xay-nha-error" style="color: red; font-size: 14px; margin-top: -5px; margin-bottom: 10px; text-align: left; display: none;"></div>
+                <button type="submit" class="btn-primary">Xem kết quả</button>
+            </form>
+        </div>
+
+        <div id="xay-nha-result-wrapper" style="display: none;">
+            <h3 id="xay-nha-result-title">Tổng quan tuổi làm nhà</h3>
+            
+            <div id="xay-nha-info-grid" class="info-grid">
+                <div id="xay-nha-info-col-1"></div>
+                <div id="xay-nha-info-col-2"></div>
+            </div>
+
+            <div id="xay-nha-details"></div>
+
+            <div id="xay-nha-suggestions"></div>
+            <p class="modal-disclaimer">
+                <strong>Lưu ý quan trọng:</strong> Các kết quả và thông tin được cung cấp bởi tiện ích này chỉ mang tính chất tham khảo và giải trí. Chúng tôi không đảm bảo tính chính xác tuyệt đối và không chịu bất kỳ trách nhiệm nào về các quyết định, hành động, hoặc tổn thất của người dùng dựa trên những thông tin này.
+            </p>
+
+            <button id="xay-nha-back-btn" class="btn-secondary-custom" style="margin-top: 20px;">Tra cứu lại</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

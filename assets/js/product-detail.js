@@ -495,8 +495,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const showInputView = () => {
         resultWrapper.style.display = 'none';
         inputWrapper.style.display = 'block';
-        form.reset();
+        // THAY ĐỔI: Xóa dòng form.reset() để giữ lại thông tin đã nhập.
         errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
     };
 
     const closeModal = () => {
@@ -505,7 +506,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     openBtn.addEventListener('click', (event) => {
         event.preventDefault();
-        showInputView();
         modal.style.display = 'flex';
     });
 
@@ -607,12 +607,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function displayResults(data) {
         const { birthYear, gender, age, lunarYearName, hanhCung, trach, colors } = data;
         
-        // --- CẬP NHẬT TIÊU ĐỀ THEO YÊU CẦU MỚI ---
         const hopMau = colors ? `${colors.tuong_sinh}, ${colors.hoa_hop}` : "N/A";
         const newTitle = `${gender} ${age} tuổi (${lunarYearName} ${birthYear}) Mệnh ${hanhCung}. Hợp hướng: ${trach}, hợp màu: ${hopMau}`;
         document.getElementById('feng-shui-result-title').textContent = newTitle;
 
-        // --- Hiển thị các thông tin còn lại (giữ nguyên) ---
         const { diaChi, diaChiImg, nguHanhNapAm, cung, thienCan } = data;
         const infoCol = document.getElementById('feng-shui-info-col');
         infoCol.innerHTML = `
