@@ -1860,17 +1860,21 @@
 
 #feng-shui-result-title {
     font-size: 20px;
-    color: var(--primary-color);
+    line-height: 1.5; /* Cải thiện khả năng đọc */
+    color: var(--text-dark); /* Màu chữ mặc định */
+}
+
+#feng-shui-result-title strong {
+    color: var(--primary-color); /* Chỉ tô màu cho phần văn bản quan trọng */
+    font-weight: 700; /* Đảm bảo chữ luôn đậm */
 }
 /* ========================================================================
    CSS CHO KẾT QUẢ PHÂN TÍCH HƯỚNG
    ======================================================================== */
 #feng-shui-huong-results h5 {
     font-size: 16px;
-    margin-top: 15px;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 5px;
+
 }
 
 .huong-block {
@@ -1905,4 +1909,97 @@
 }
 .huong-block.huong-xau strong {
     color: #c62828;
+}
+/* ========================================================================
+   CSS CHO KẾT QUẢ PHÂN TÍCH HƯỚNG (ĐÃ ĐỒNG BỘ)
+   ======================================================================== */
+
+
+.analysis-item {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.analysis-item .analysis-icon {
+    flex-shrink: 0;
+}
+
+.analysis-item .analysis-content {
+    flex-grow: 1;
+}
+
+.analysis-item .analysis-content h5 {
+    margin: 0 0 5px 0;
+    padding: 0;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+
+.analysis-item .analysis-content p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Style cho kết quả Tốt */
+.analysis-item.good {
+    background-color: #e9f5e9;
+    border-left: 4px solid #4CAF50;
+}
+.analysis-item.good .analysis-content h5 {
+    color: var(--secondary-color);
+}
+.analysis-item.good .analysis-content p {
+    color: #1b5e20;
+}
+
+/* Style cho kết quả Xấu */
+.analysis-item.bad {
+    background-color: #ffebee;
+    border-left: 4px solid #f44336;
+}
+.analysis-item.bad .analysis-content h5 {
+    color: #c62828;
+}
+.analysis-item.bad .analysis-content p {
+    color: #b71c1c;
+}
+/* ========================================================================
+   RESPONSIVE CHO MODAL PHONG THỦY (MOBILE)
+   ======================================================================== */
+@media (max-width: 767px) {
+    .feng-shui-result-grid {
+        flex-direction: column; /* Chuyển sang bố cục cột */
+        align-items: center;    /* Căn giữa các mục */
+    }
+
+    #feng-shui-image-col {
+        order: -1; /* Di chuyển hình ảnh lên trên cùng */
+        margin-bottom: 15px; /* Tạo khoảng cách với khối thông tin bên dưới */
+         margin-top: 15px;
+    }
+}
+
+@media (max-width: 767px) {
+    .feng-shui-result-grid {
+        flex-direction: column; /* Chuyển sang bố cục cột */
+        align-items: center;    /* Căn giữa các mục */
+    }
+
+    #feng-shui-image-col {
+        order: -1; /* Di chuyển hình ảnh lên trên cùng */
+        margin-bottom: 15px; /* Tạo khoảng cách với khối thông tin bên dưới */
+    }
+
+    /* === RULE MỚI ĐƯỢC THÊM VÀO ĐỂ LOẠI BỎ ĐƯỜNG KẺ === */
+    #feng-shui-result-wrapper .modal-separator {
+        display: none;
+    }
+    /* === KẾT THÚC RULE MỚI === */
 }

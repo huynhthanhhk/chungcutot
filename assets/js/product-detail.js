@@ -604,62 +604,95 @@ document.addEventListener('DOMContentLoaded', function () {
         return { birthYear, gender, age, thienCan, diaChi, diaChiImg, lunarYearName, nguHanhNapAm, cung, hanhCung, goodDirections, badDirections, trach, colors };
     }
 
-    function displayResults(data) {
-        const { birthYear, gender, age, lunarYearName, hanhCung, trach, colors } = data;
-        
-        const hopMau = colors ? `${colors.tuong_sinh}, ${colors.hoa_hop}` : "N/A";
-        const newTitle = `${gender} ${age} tuổi (${lunarYearName} ${birthYear}) Mệnh ${hanhCung}. Hợp hướng: ${trach}, hợp màu: ${hopMau}`;
-        document.getElementById('feng-shui-result-title').textContent = newTitle;
+   function displayResults(data) {
+    const { birthYear, gender, age, lunarYearName, hanhCung, trach, colors } = data;
+    
+    const hopMau = colors ? `${colors.tuong_sinh}, ${colors.hoa_hop}` : "N/A";
+    const newTitleHTML = `${gender} ${age} tuổi (${lunarYearName} ${birthYear}) Mệnh ${hanhCung}. Hợp hướng: <strong>${trach}</strong>, hợp màu: <strong>${hopMau}</strong>`;
+    document.getElementById('feng-shui-result-title').innerHTML = newTitleHTML;
 
-        const { diaChi, diaChiImg, nguHanhNapAm, cung, thienCan } = data;
-        const infoCol = document.getElementById('feng-shui-info-col');
-        infoCol.innerHTML = `
-            <p><strong>Sinh năm âm lịch:</strong> ${lunarYearName}</p>
-            <p><strong>Giới tính:</strong> ${gender}</p>
-            <p><strong>Tuổi hiện tại:</strong> ${age}</p>
-            <p><strong>Ngũ hành:</strong> ${nguHanhNapAm || 'N/A'}</p>
-            <p><strong>Thiên can:</strong> ${thienCan}</p>
-            <p><strong>Địa chi:</strong> ${diaChi}</p>
-            <p><strong>Cung – Mệnh:</strong> ${cung} – ${hanhCung}</p>
-        `;
+    const { diaChi, diaChiImg, nguHanhNapAm, cung, thienCan } = data;
+    const infoCol = document.getElementById('feng-shui-info-col');
+    infoCol.innerHTML = `
+        <p><strong>Sinh năm:</strong> ${lunarYearName}</p>
+        <p><strong>Giới tính:</strong> ${gender}</p>
+        <p><strong>Tuổi âm lịch:</strong> ${age}</p>
+        <p><strong>Ngũ hành:</strong> ${nguHanhNapAm || 'N/A'}</p>
+        <p><strong>Thiên can:</strong> ${thienCan}</p>
+        <p><strong>Địa chi:</strong> ${diaChi}</p>
+        <p><strong>Cung – Mệnh:</strong> ${cung} – ${hanhCung}</p>
+    `;
 
-        const imageCol = document.getElementById('feng-shui-image-col');
-        imageCol.innerHTML = `<img src="assets/images/phong-thuy/${diaChiImg}" alt="${diaChi}">`;
+    const imageCol = document.getElementById('feng-shui-image-col');
+    imageCol.innerHTML = `<img src="assets/images/phong-thuy/${diaChiImg}" alt="${diaChi}">`;
 
-        const { goodDirections, badDirections } = data;
-        const huongContainer = document.getElementById('feng-shui-huong-results');
-        let huongHTML = `<p style="font-size: 16px; margin-bottom: 15px;">Gia chủ thuộc: <strong style="color: var(--primary-color);">${trach}</strong></p>`;
-        
-        huongHTML += '<h5>HƯỚNG TỐT</h5>';
-        goodDirections.forEach(h => {
-            huongHTML += `<div class="huong-block huong-tot">
-                            <strong>${h.name} (${h.direction}):</strong>
-                            <span>${h.explanation}</span>
-                         </div>`;
-        });
+    const { goodDirections, badDirections } = data;
+    const huongContainer = document.getElementById('feng-shui-huong-results');
+    let huongHTML = `<p style="font-size: 16px; margin-bottom: 15px;">Gia chủ thuộc: <strong style="color: var(--primary-color);">${trach}</strong></p>`;
+    
+    const goodIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#4CAF50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>`;
+    const badIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#f44336"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>`;
+    
+    huongHTML += '<h5>HƯỚNG TỐT</h5>';
+    goodDirections.forEach(h => {
+        huongHTML += `<div class="analysis-item good">
+                        <div class="analysis-icon">${goodIconSVG}</div>
+                        <div class="analysis-content">
+                            <h5>${h.name} (${h.direction})</h5>
+                            <p>${h.explanation}</p>
+                        </div>
+                     </div>`;
+    });
 
-        if (colors) {
-            huongHTML += '<h5>MÀU HỢP MỆNH</h5>';
-            huongHTML += `<div class="huong-block huong-tot"><strong>Tương sinh:</strong> <span>${colors.tuong_sinh}</span></div>`;
-            huongHTML += `<div class="huong-block huong-tot"><strong>Hoà hợp:</strong> <span>${colors.hoa_hop}</span></div>`;
-        }
-
-        huongHTML += '<h5>HƯỚNG XẤU</h5>';
-        badDirections.forEach(h => {
-            huongHTML += `<div class="huong-block huong-xau">
-                            <strong>${h.name} (${h.direction}):</strong>
-                            <span>${h.explanation}</span>
-                         </div>`;
-        });
-
-        if (colors) {
-            huongHTML += '<h5>MÀU KỴ MỆNH</h5>';
-            huongHTML += `<div class="huong-block huong-xau"><strong>Chế khắc:</strong> <span>${colors.che_khac}</span></div>`;
-            huongHTML += `<div class="huong-block huong-xau"><strong>Bị khắc:</strong> <span>${colors.bi_khac}</span></div>`;
-        }
-        
-        huongContainer.innerHTML = huongHTML;
+    if (colors) {
+        huongHTML += '<h5>MÀU HỢP MỆNH</h5>';
+        huongHTML += `<div class="analysis-item good">
+                        <div class="analysis-icon">${goodIconSVG}</div>
+                        <div class="analysis-content">
+                            <h5>Tương sinh</h5>
+                            <p>${colors.tuong_sinh}</p>
+                        </div>
+                     </div>`;
+        huongHTML += `<div class="analysis-item good">
+                        <div class="analysis-icon">${goodIconSVG}</div>
+                        <div class="analysis-content">
+                            <h5>Hoà hợp</h5>
+                            <p>${colors.hoa_hop}</p>
+                        </div>
+                     </div>`;
     }
+
+    huongHTML += '<h5>HƯỚNG XẤU</h5>';
+    badDirections.forEach(h => {
+        huongHTML += `<div class="analysis-item bad">
+                        <div class="analysis-icon">${badIconSVG}</div>
+                        <div class="analysis-content">
+                            <h5>${h.name} (${h.direction})</h5>
+                            <p>${h.explanation}</p>
+                        </div>
+                     </div>`;
+    });
+
+    if (colors) {
+        huongHTML += '<h5>MÀU KỴ MỆNH</h5>';
+        huongHTML += `<div class="analysis-item bad">
+                        <div class="analysis-icon">${badIconSVG}</div>
+                        <div class="analysis-content">
+                            <h5>Chế khắc</h5>
+                            <p>${colors.che_khac}</p>
+                        </div>
+                     </div>`;
+        huongHTML += `<div class="analysis-item bad">
+                        <div class="analysis-icon">${badIconSVG}</div>
+                        <div class="analysis-content">
+                            <h5>Bị khắc</h5>
+                            <p>${colors.bi_khac}</p>
+                        </div>
+                     </div>`;
+    }
+    
+    huongContainer.innerHTML = huongHTML;
+}
 }
     /**
      * BỔ SUNG: Tìm và hiển thị các tin đăng tương tự dựa trên một bộ quy tắc.

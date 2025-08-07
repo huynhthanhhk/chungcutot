@@ -3322,15 +3322,7 @@ a:hover {
     overflow-y: auto;
 }
 .modal-close-btn {
-    position: absolute;
-    top: 10px; right: 10px;
-    font-size: 28px;
-    color: #aaa;
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
+    
 }
 .modal-content h3 {
     text-align: center;
@@ -3403,17 +3395,7 @@ a:hover {
     max-height: 90vh;
     overflow-y: auto;
 }
-.modal-close-btn {
-    position: absolute;
-    top: 10px; right: 10px;
-    font-size: 28px;
-    color: #aaa;
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-}
+
 .modal-content h3 {
     text-align: center;
     color: var(--secondary-color);
@@ -3493,17 +3475,7 @@ a:hover {
     max-height: 90vh; /* Giới hạn chiều cao */
     overflow-y: auto; /* Tự động có thanh cuộn */
 }
-.modal-close-btn {
-    position: absolute;
-    top: 10px; right: 10px;
-    font-size: 28px;
-    color: #aaa;
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-}
+
 .modal-content h3 {
     text-align: center;
     color: var(--secondary-color);
@@ -5130,19 +5102,6 @@ img {
     position: relative;
 }
 
-/* Nút đóng (dấu X) đã có trong product-detail.css, có thể tái sử dụng */
-/* Nếu chưa có, bạn có thể dùng lại style nút đóng của modal phong thủy */
-.modal-close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 28px;
-    line-height: 1;
-    color: #aaa;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
 /* ========================================================================
    CSS ĐỒNG BỘ CHO TẤT CẢ MODAL POPUP
    ======================================================================== */
@@ -5234,7 +5193,7 @@ img {
     flex-shrink: 0;
 }
 
-.analysis-item .analysis-content h4 {
+.analysis-item .analysis-content h5 {
     margin: 0 0 5px 0;
     padding: 0;
     border: none;
@@ -5252,7 +5211,7 @@ img {
     border-left: 4px solid #4CAF50;
 }
 .analysis-item.good .result-text {
-    color: #2e7d32;
+    color: var(--secondary-color);
     font-weight: 700;
 }
 
@@ -5296,7 +5255,7 @@ img {
     flex-shrink: 0;
     width: 120px; /* Độ rộng cố định */
     text-align: center;
-    padding-top: 20px; /* Căn chỉnh ảnh xuống một chút cho đẹp */
+    padding-top: 15px; /* Căn chỉnh ảnh xuống một chút cho đẹp */
 }
 
 #xay-nha-info-col-2 .zodiac-image {
@@ -5324,7 +5283,7 @@ img {
 }
 
 /* --- Responsive cho màn hình nhỏ --- */
-@media (max-width: 500px) {
+@media (max-width: 768px) {
     #xay-nha-info-grid {
         flex-direction: column; /* Xếp dọc trên mobile */
         align-items: center;   /* Căn giữa */
@@ -5336,6 +5295,34 @@ img {
     }
     .info-details p strong {
         width: 120px; /* Thu nhỏ chiều rộng label trên mobile */
+    }
+    #xay-nha-info-grid {
+        flex-direction: column; /* Xếp dọc trên mobile */
+        align-items: center;   /* Căn giữa */
+    }
+    #xay-nha-info-col-2 {
+        order: -1; /* Đưa ảnh lên đầu */
+        padding-top: 0;
+        margin-bottom: 15px;
+    }
+    .info-details p strong {
+        width: 120px; /* Thu nhỏ chiều rộng label trên mobile */
+    }
+     #xay-nha-info-grid {
+        flex-direction: column; 
+        align-items: center;   
+    }
+    #xay-nha-info-col-2 {
+        order: -1; 
+        padding-top: 0;
+        margin-bottom: 15px;
+    }
+    .info-details p strong {
+        width: 120px;
+    }
+    #xay-nha-result-title {
+        font-size: 16px;
+        font-weight: 700;
     }
 }
 /* ========================================================================
@@ -5385,35 +5372,18 @@ img {
     color: #fff;
 }
 
-/* --- Responsive cho màn hình nhỏ --- */
-@media (max-width: 500px) {
-    #xay-nha-info-grid {
-        flex-direction: column; /* Xếp dọc trên mobile */
-        align-items: center;   /* Căn giữa */
-    }
-    #xay-nha-info-col-2 {
-        order: -1; /* Đưa ảnh lên đầu */
-        padding-top: 0;
-        margin-bottom: 15px;
-    }
-    .info-details p strong {
-        width: 120px; /* Thu nhỏ chiều rộng label trên mobile */
-    }
-}
-/* ========================================================================
-   CSS BỔ SUNG CHO MODAL XEM NĂM XÂY NHÀ (ĐỂ ĐỒNG BỘ)
-   ======================================================================== */
+
 
 /* --- Định dạng cho tiêu đề kết quả mới --- */
 #xay-nha-result-title {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 700;
     line-height: 1.5;
     text-align: center;
     color: var(--text-dark);
 }
 #xay-nha-result-title .good-year {
-    color: #2e7d32;
+    color: var(--primary-color);
     font-weight: 700;
 }
 #xay-nha-result-title .bad-year {
@@ -5468,24 +5438,7 @@ img {
     color: #fff;
 }
 
-/* --- Responsive cho màn hình nhỏ --- */
-@media (max-width: 500px) {
-    #xay-nha-info-grid {
-        flex-direction: column; 
-        align-items: center;   
-    }
-    #xay-nha-info-col-2 {
-        order: -1; 
-        padding-top: 0;
-        margin-bottom: 15px;
-    }
-    .info-details p strong {
-        width: 120px;
-    }
-    #xay-nha-result-title {
-        font-size: 16px;
-    }
-}
+
 /* ==========================================================
 // == CSS MỚI: Định dạng cho Tuyên bố miễn trừ trách nhiệm ==
 // ========================================================== */
@@ -5504,3 +5457,32 @@ img {
     font-style: normal;
     color: var(--text-dark);
 }
+.modal-content h3 {
+    font-weight: 700;
+}
+.modal-content h3 {
+    font-weight: 700;
+}
+/* 2. Cố định nút đóng (X) trên màn hình nhỏ khi cuộn */
+.modal-close-btn {
+        position: -webkit-sticky; /* Hỗ trợ trình duyệt Safari cũ */
+        position: sticky;         /* Giúp nút "dính" lại ở trên cùng khi cuộn */         /* Giữ khoảng cách 15px với cạnh trên */
+        float: right;             /* Đẩy nút về phía bên phải */
+       /* Kéo nội dung bên dưới lên để không bị chiếm không gian */
+        z-index: 10001;           /* Đảm bảo nút luôn nằm trên các nội dung khác */
+
+        /* Cải thiện hiển thị để nút dễ nhìn hơn khi có nội dung lướt qua */
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(3px);
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+        top: 0px; right: 0px;
+        font-size: 28px;
+        color: #aaa;
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+    }
