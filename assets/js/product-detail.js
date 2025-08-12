@@ -628,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const { goodDirections, badDirections } = data;
     const huongContainer = document.getElementById('feng-shui-huong-results');
-    let huongHTML = `<p style="font-size: 16px; margin-bottom: 15px;">Gia chủ thuộc: <strong style="color: var(--primary-color);">${trach}</strong></p>`;
+    let huongHTML = `<p style="font-size: 16px; margin-bottom: 15px;"><strong>Thuộc:</strong> <strong style="color: var(--primary-color);">${trach}</strong></p>`;
     
     const goodIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#4CAF50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>`;
     const badIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#f44336"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>`;

@@ -5486,3 +5486,674 @@ img {
         width: 40px;
         height: 40px;
     }
+
+    /* Custom styles for toggle switch */
+.toggle-checkbox:checked {
+    right: 0;
+    border-color: var(--primary-color);
+}
+.toggle-checkbox:checked + .toggle-label {
+    background-color: var(--primary-color);
+}
+/* Custom styles for accordion on mobile */
+details summary::-webkit-details-marker {
+    display: none;
+}
+details summary {
+    list-style: none;
+}
+/* Custom styles for stepper */
+.step-item.active .step-circle {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+.step-item.completed .step-circle {
+    background-color: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+.step-item.completed .step-line {
+    background-color: var(--secondary-color);
+}
+/* Style for disabled button */
+button:disabled {
+    background-color: #9CA3AF !important;
+    cursor: not-allowed !important;
+}
+/* Style for zoomable image */
+.cursor-zoom-in {
+    cursor: zoom-in;
+}
+
+
+/* ==========================================================
+// == BẮT ĐẦU: CSS CHO CÔNG CỤ DỰ TOÁN XÂY DỰNG (MỚI) ==
+// ========================================================== */
+
+/* --- General Layout --- */
+.estimator-wrapper {
+    font-family: 'Be Vietnam Pro', sans-serif; /* Sử dụng font của website */
+    --primary-color: #53b966;
+    --secondary-color: #004238;
+}
+.estimator-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-align: center;
+}
+.estimator-subtitle {
+    color: var(--text-light);
+    text-align: center;
+    margin-top: 8px;
+}
+.hidden {
+    display: none !important;
+}
+
+/* --- Stepper (VERSION SỬA LỖI) --- */
+.estimator-stepper {
+    max-width: 700px;
+    margin: 30px auto 40px auto;
+}
+.stepper-track {
+    display: flex;
+    align-items: flex-start; /* Căn các step theo chiều trên cùng */
+}
+
+/* Item cha chứa (Vòng tròn + Chữ) VÀ (Đường kẻ) */
+.step-item {
+    display: flex;
+    align-items: center;
+    flex-grow: 1; /* Cho phép Step 1, 2 giãn ra */
+}
+
+/* Quan trọng: Ngăn Step 3 bị co lại */
+.step-item:last-child {
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+/* Khối chứa Vòng tròn và Chữ */
+.step-circle-wrapper {
+    display: flex;
+    align-items: center;
+    /* Không cho phép khối này co lại, giữ nguyên kích thước */
+    flex-shrink: 0;
+}
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    border: 2px solid #D1D5DB;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    flex-shrink: 0; /* Đảm bảo vòng tròn không bị méo */
+}
+
+.step-label {
+    margin-left: 12px;
+}
+.step-title {
+    font-weight: 700;
+    color: #6B7280;
+}
+.step-desc {
+    font-size: 14px;
+    color: #9CA3AF;
+}
+
+/* Quan trọng: Đường kẻ sẽ tự giãn ra */
+.step-line {
+    flex-grow: 1; /* Cho phép đường kẻ lấp đầy không gian */
+    height: 2px;
+    background-color: #D1D5DB;
+    margin: 0 16px;
+    transition: background-color 0.3s ease;
+}
+
+/* Ẩn đường kẻ của Step cuối cùng */
+.step-item:last-child .step-line {
+    display: none;
+}
+
+/* Stepper States */
+.step-item.active .step-circle {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+.step-item.active .step-title {
+    color: var(--text-dark);
+}
+.step-item.completed .step-circle {
+    background-color: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+.step-item.completed .step-title {
+    color: var(--text-dark);
+}
+.step-item.completed .step-line {
+    background-color: var(--secondary-color);
+}
+.step-item.completed .step-circle::before {
+    content: '✓';
+    font-size: 20px;
+}
+
+/* --- Main Layout Step 1 --- */
+.estimator-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+@media (min-width: 768px) {
+    .estimator-layout {
+        grid-template-columns: 2fr 1fr;
+        gap: 40px;
+    }
+}
+
+/* --- Form --- */
+.estimator-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.form-fieldset {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    padding: 20px 0 0 0;
+    margin-top: 15px;
+}
+.form-fieldset.full-width {
+    grid-column: 1 / -1;
+}
+.form-fieldset legend {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    padding-right: 15px;
+    margin-left: 10px;
+}
+.form-grid-columns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px 30px;
+    margin-top: 15px;
+}
+@media (min-width: 768px) {
+    .form-grid-columns.two-cols { grid-template-columns: 1fr 1fr; }
+    .form-grid-columns.three-cols { grid-template-columns: 1fr 1fr 1fr; }
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+.form-group label {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+.form-group input[type="number"], .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 15px;
+}
+.form-group input[readonly] {
+    background-color: #F3F4F6;
+}
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-top: 5px;
+}
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: normal;
+    margin-bottom: 0;
+}
+.form-error-message {
+    color: #EF4444;
+    font-size: 13px;
+    margin-top: 5px;
+}
+.full-width { grid-column: 1 / -1; }
+.form-separator { border-top: 1px solid var(--border-color); margin-top: 10px; padding-top: 20px; }
+.full-width-placeholder { display: none; }
+@media (min-width: 768px) {
+    .full-width-placeholder { display: block; }
+}
+
+
+/* Toggle Switch */
+.toggle-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F9FAFB;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #E5E7EB;
+    height: 100%; /* Giúp các ô cùng hàng cao bằng nhau */
+    box-sizing: border-box;
+}
+.toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 24px;
+}
+.toggle-label {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #D1D5DB;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+.toggle-group label {
+    margin-bottom: 0;
+    font-weight: 500;
+}
+.toggle-checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.toggle-checkbox + .toggle-label::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.2s ease-in-out;
+}
+.toggle-checkbox:checked + .toggle-label {
+    background-color: var(--primary-color);
+}
+.toggle-checkbox:checked + .toggle-label::after {
+    transform: translateX(24px);
+}
+
+
+/* --- Image Preview --- */
+.estimator-preview-sticky {
+    position: sticky;
+    top: 20px;
+}
+.estimator-image-wrapper {
+    background-color: #F9FAFB;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+}
+.estimator-image-wrapper img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 6px;
+}
+#cong-trinh-caption {
+    text-align: center;
+    font-weight: 500;
+    margin-top: 12px;
+    color: var(--text-dark);
+}
+.cursor-zoom-in { cursor: zoom-in; }
+
+/* --- Navigation --- */
+.estimator-navigation {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.estimator-navigation button {
+    padding: 10px 24px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid #D1D5DB;
+    cursor: pointer;
+}
+.estimator-navigation button#back-btn {
+    background-color: #F3F4F6;
+}
+.estimator-navigation button:disabled {
+    background-color: #E5E7EB !important;
+    color: #9CA3AF;
+    cursor: not-allowed !important;
+}
+
+/* --- Zoom Modal --- */
+.estimator-zoom-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    z-index: 10001;
+}
+.estimator-zoom-modal #close-zoom-modal {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    color: white;
+    font-size: 50px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.estimator-zoom-modal #zoomed-image {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+/* --- Mobile Responsive for Stepper --- */
+@media (max-width: 640px) {
+    .step-label {
+        display: none;
+    }
+    .step-line {
+        margin: 0 8px;
+    }
+}
+.form-grid-columns.one-col {
+    grid-template-columns: 1fr;
+    gap: 15px; /* Giảm khoảng cách dọc cho các khối compound */
+}
+
+/* Khối bao ngoài cho mỗi cặp toggle-input */
+.form-group-compound {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* Cho phép rớt dòng trên màn hình nhỏ */
+    background-color: #F9FAFB;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #E5E7EB;
+}
+
+/* Phần chứa label và toggle */
+.compound-label {
+    flex: 1; /* Chiếm phần lớn không gian */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 200px; /* Đảm bảo không bị vỡ layout */
+    padding-right: 20px;
+}
+
+.compound-label label {
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+/* Phần chứa ô nhập liệu */
+.compound-input {
+    flex: 1; /* Chiếm phần còn lại */
+    min-width: 250px; /* Đặt chiều rộng tối thiểu */
+}
+
+.compound-input label {
+    display: none; /* Ẩn label thừa */
+}
+.input-hidden {
+    visibility: hidden; /* Ẩn đi nhưng vẫn chiếm không gian */
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+/* Định dạng cho ô nhập liệu khi nó hiện ra */
+#dien-tich-bc-truoc-container, #dien-tich-bc-sau-container {
+    opacity: 1;
+    visibility: visible;
+}
+/* --- CSS cho Image Slider --- */
+.image-slider-container {
+    position: relative; /* Cần thiết để định vị các nút điều khiển */
+    line-height: 0; /* Loại bỏ khoảng trống thừa dưới ảnh */
+}
+
+.slider-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none; /* Mặc định ẩn, JS sẽ điều khiển */
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 5px 10px;
+    border-radius: 20px;
+    backdrop-filter: blur(3px);
+}
+
+.slider-button {
+    background: transparent;
+    color: white;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: transform 0.2s ease;
+}
+
+.slider-button:hover:not(:disabled) {
+    transform: scale(1.2);
+}
+
+.slider-button:disabled {
+    color: rgba(255, 255, 255, 0.3);
+    cursor: not-allowed;
+}
+
+#image-index {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 40px;
+    text-align: center;
+}
+/* Thêm vào cuối file style.css để làm nổi bật các dòng tổng kết */
+.payment-schedule-table .summary-row {
+    font-weight: 700;
+    background-color: #f7fafc;
+    color: var(--secondary-color);
+}
+.payment-schedule-table .summary-row td {
+    color: var(--secondary-color);
+}
+.payment-schedule-table .summary-row-background {
+    background-color: #f7fafc;
+}
+
+/* Style cho các ô trong dòng tổng kết để làm nổi bật chữ */
+.payment-schedule-table .summary-cell {
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+/* ==========================================================
+// == CSS CHO MŨI TÊN ĐÓNG/MỞ TRONG ESTIMATOR MODAL ==
+// ========================================================== */
+
+/* 1. Bỏ marker mặc định và đảm bảo summary có thể chứa flexbox */
+#khai-toan-xay-dung-modal details > summary {
+    list-style: none;
+}
+#khai-toan-xay-dung-modal details > summary::-webkit-details-marker {
+    display: none;
+}
+
+/* 2. Thiết lập layout cho SPAN chứa text để có thể thêm mũi tên */
+#khai-toan-xay-dung-modal details > summary > span:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px; /* Khoảng cách giữa mũi tên và text */
+}
+
+/* 3. Tạo mũi tên tùy chỉnh bằng pseudo-element ::before */
+#khai-toan-xay-dung-modal details > summary > span:first-child::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-style: solid;
+    border-color: var(--text-dark);
+    /* Tạo hình tam giác chỉ với border top và right */
+    border-width: 0 2px 2px 0;
+    transform: rotate(-45deg); /* Xoay để thành mũi tên chỉ sang phải (trạng thái đóng) */
+    transition: transform 0.3s ease-in-out;
+    flex-shrink: 0; /* Ngăn mũi tên bị co lại */
+}
+
+/* 4. Xoay mũi tên khi <details> được mở (có attribute 'open') */
+#khai-toan-xay-dung-modal details[open] > summary > span:first-child::before {
+    transform: rotate(45deg); /* Xoay để thành mũi tên chỉ xuống dưới (trạng thái mở) */
+}
+/* ==========================================================
+// == CSS CHO KHUNG TỔNG CHI PHÍ DỰ TÍNH (MỚI) ==
+// ========================================================== */
+.total-cost-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Mặc định 1 cột trên mobile */
+    gap: 15px;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .total-cost-summary-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 cột trên desktop */
+    }
+}
+
+.summary-cost-item {
+    padding: 15px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.summary-cost-item h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+.summary-cost-item p {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1.3;
+}
+
+.summary-cost-item p span {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--secondary-color);
+}
+/* ==========================================================
+// == CSS CHO TOOLTIP (ĐÃ CHỈNH SỬA ĐỂ TRÁNH BỊ TRÀN) ==
+// ========================================================== */
+
+.label-with-tooltip {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Khoảng cách giữa label và icon */
+    margin-bottom: 8px;
+}
+
+.label-with-tooltip label {
+    margin-bottom: 0; /* Ghi đè margin mặc định của label trong form */
+}
+
+/* ==========================================================
+// == CSS CHO TOOLTIP (MỚI) ==
+// ========================================================== */
+
+.label-with-tooltip {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Khoảng cách giữa label và icon */
+    margin-bottom: 8px;
+}
+
+.label-with-tooltip label {
+    margin-bottom: 0; /* Ghi đè margin mặc định của label trong form */
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.tooltip-icon {
+    width: 16px;
+    height: 16px;
+    color: #9CA3AF; /* Màu xám nhạt */
+    cursor: help; /* Con trỏ hình dấu chấm hỏi */
+}
+
+.tooltip-text {
+    visibility: hidden; /* Mặc định ẩn */
+    opacity: 0;
+    width: 180px; /* Độ rộng của tooltip */
+    background-color: #333; /* Nền đen */
+    color: #fff; /* Chữ trắng */
+    text-align: left;
+    font-weight: 400; /* Chữ không in đậm */
+    font-size: 13px;
+    line-height: 1.6;
+    border-radius: 6px;
+    padding: 12px;
+    
+    /* Định vị tooltip */
+    position: absolute;
+    z-index: 10;
+    bottom: 140%; /* Hiển thị phía trên icon */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    transition: opacity 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Tạo mũi tên nhỏ bên dưới tooltip */
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* Nằm ở cạnh dưới của tooltip */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+/* Hiển thị tooltip khi hover vào container */
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

@@ -137,5 +137,27 @@ const phongThuyData = {
         { "hanh": "Thủy", "tuong_sinh": "Trắng, xám, ghi", "hoa_hop": "Đen, xanh nước", "che_khac": "Đỏ, hồng, tím", "bi_khac": "Vàng, nâu đất" },
         { "hanh": "Hỏa", "tuong_sinh": "Xanh lục", "hoa_hop": "Đỏ, hồng, tím", "che_khac": "Trắng, xám, ghi", "bi_khac": "Đen, xanh nước" },
         { "hanh": "Thổ", "tuong_sinh": "Đỏ, hồng, tím", "hoa_hop": "Vàng, nâu đất", "che_khac": "Trắng, xám, ghi", "bi_khac": "Xanh lục" }
-    ]
+    ],
+     "hoangOc": {
+        "lookup": {
+            10: "Nhất Cát", 11: "Nhì Nghi", 12: "Tam Địa Sát", 13: "Tứ Tấn Tài", 14: "Ngũ Thọ Tử", 15: "Lục Hoang Ốc",
+            16: "Nhất Cát", 17: "Nhì Nghi", 18: "Tam Địa Sát", 19: "Tứ Tấn Tài", 20: "Nhì Nghi", 21: "Tam Địa Sát",
+            22: "Tứ Tấn Tài", 23: "Ngũ Thọ Tử", 24: "Lục Hoang Ốc", 25: "Nhất Cát", 26: "Nhì Nghi", 27: "Tam Địa Sát",
+            28: "Tứ Tấn Tài", 29: "Ngũ Thọ Tử", 30: "Tam Địa Sát", 31: "Tứ Tấn Tài", 32: "Ngũ Thọ Tử", 33: "Lục Hoang Ốc",
+            34: "Nhất Cát", 35: "Nhì Nghi", 36: "Tam Địa Sát", 37: "Tứ Tấn Tài", 38: "Ngũ Thọ Tử", 39: "Lục Hoang Ốc",
+            40: "Tứ Tấn Tài", 41: "Ngũ Thọ Tử", 42: "Lục Hoang Ốc", 43: "Nhất Cát", 44: "Nhì Nghi", 45: "Tam Địa Sát",
+            46: "Tứ Tấn Tài", 47: "Ngũ Thọ Tử", 48: "Lục Hoang Ốc", 49: "Nhất Cát", 50: "Ngũ Thọ Tử", 51: "Lục Hoang Ốc",
+            52: "Nhất Cát", 53: "Nhì Nghi", 54: "Tam Địa Sát", 55: "Tứ Tấn Tài", 56: "Ngũ Thọ Tử", 57: "Lục Hoang Ốc",
+            58: "Nhất Cát", 59: "Nhì Nghi", 60: "Lục Hoang Ốc", 61: "Nhất Cát", 62: "Nhì Nghi", 63: "Tam Địa Sát",
+            64: "Tứ Tấn Tài", 65: "Ngũ Thọ Tử", 66: "Lục Hoang Ốc", 67: "Nhất Cát", 68: "Nhì Nghi", 69: "Tam Địa Sát"
+        },
+        "dienGiai": {
+            "Nhất Cát": { "isTot": true, "yNghia": "Đây là cung tốt, làm nhà gặp cung này sẽ có được sự ổn định, mọi việc thuận lợi, tài lộc dồi dào." },
+            "Nhì Nghi": { "isTot": true, "yNghia": "Cung tốt, mang lại tiền bạc, giúp gia chủ làm ăn thuận lợi, phát đạt, giàu sang, phú quý." },
+            "Tam Địa Sát": { "isTot": false, "yNghia": "Cung xấu. Khi làm nhà phạm vào cung này gia chủ dễ sinh bệnh tật, hao tốn tài sản hoặc mất mạng." },
+            "Tứ Tấn Tài": { "isTot": true, "yNghia": "Đây cũng là 1 cung tốt. Làm nhà gặp cung này gia chủ sẽ gặp được phúc lộc, làm ăn phát tài." },
+            "Ngũ Thọ Tử": { "isTot": false, "yNghia": "Là một cung xấu, khi phạm phải cung này gia cảnh trên dưới sẽ lục đục, bất hòa." },
+            "Lục Hoang Ốc": { "isTot": false, "yNghia": "Là một trong 3 cung xấu. Khi gặp cung này vận hạn sẽ khó thăng tiến, công danh dễ lụi bại." }
+        }
+    }
 };

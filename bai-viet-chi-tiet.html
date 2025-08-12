@@ -94,11 +94,15 @@
                             <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehiculah.</p>
                             <blockquote>Đây là một đoạn trích dẫn quan trọng trong bài viết, dùng để nhấn mạnh một ý kiến hoặc một câu nói đáng chú ý.</blockquote>
                             <a href="#" class="open-nam-mua-nha-modal" style="text-decoration: underline; font-weight: bold;">
-        xem năm mua/xây nhà hợp tuổi
-    </a> 
+                                Xem năm mua/xây nhà hợp tuổi
+                            </a> 
+                            
                             
                             <h3 id="muc-2">Tiêu đề phụ cấp 2 (thẻ h3)</h3>
                             <p>Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis. Morbi in sem quis dui placerat ornare. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu. Cras consequat.</p>
+                            <a href="#" class="open-khai-toan-modal" style="text-decoration: underline; font-weight: bold;">
+                                Khái toán xây dựng
+                            </a>
                             <ul>
                                 <li>Đây là một mục trong danh sách.</li>
                                 <li>Phù hợp để liệt kê các ý chính.</li>
@@ -334,8 +338,16 @@
     <script src="assets/js/news-data.js"></script> <script src="assets/js/article-detail.js"></script> 
     <script src="assets/js/phong_thuy_data.js"></script>
     <script type="module" src="assets/js/data-menu.js"></script>
+    <script src="assets/js/estimator-data.js"></script>
+    <script src="assets/js/don-gia-data.js"></script>
+    <script src="assets/js/estimator-config.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/listing.js"></script>
+
+    
+    <script src="assets/js/dataHaoPhi.js"></script> 
+    
+  
     <script type="module">
     // =====================================================================
     // == SCRIPT TỔNG HỢP CUỐI CÙNG (DESKTOP & MOBILE & STICKY HEADER) ==
@@ -714,6 +726,332 @@
             <button id="xay-nha-back-btn" class="btn-secondary-custom" style="margin-top: 20px;">Tra cứu lại</button>
         </div>
     </div>
+</div>
+<div id="khai-toan-xay-dung-modal" class="modal-container">
+    <div class="modal-content" style="max-width: 1100px;">
+        <button class="modal-close-btn" title="Đóng">&times;</button>
+        <div class="estimator-wrapper">
+            <h1 class="estimator-title">Dự Toán Chi Phí Xây Dựng</h1>
+            <p class="estimator-subtitle">Hoàn thành 3 bước đơn giản để nhận báo giá sơ bộ chính xác nhất.</p>
+
+            <div id="stepper" class="estimator-stepper">
+                <div class="stepper-track">
+                    <div id="step-item-1" class="step-item active">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">
+                            <div class="step-title">Thông số</div>
+                            <div class="step-desc">Nhập thông tin</div>
+                        </div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div id="step-item-2" class="step-item">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">
+                            <div class="step-title">Đơn giá</div>
+                            <div class="step-desc">Tùy chỉnh</div>
+                        </div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div id="step-item-3" class="step-item">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">
+                            <div class="step-title">Kết quả</div>
+                            <div class="step-desc">Xem dự toán</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-1">
+                <div class="estimator-layout">
+                    <form id="construction-form" class="estimator-form">
+                        <div class="form-grid">
+                            <fieldset class="form-fieldset full-width">
+                                <legend>Thông Tin Chung</legend>
+                                <div class="form-grid-columns three-cols">
+                                    <div class="form-group">
+                                        <label for="khu-vuc">Khu vực thi công</label>
+                                        <select id="khu-vuc">
+                                            <option>Hồ Chí Minh</option>
+                                            <option>Đồng Nai</option>
+                                            <option>Long An</option>
+                                            <option>Khác</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="loai-cong-trinh">Loại hình công trình</label>
+                                        <select id="loai-cong-trinh">
+                                            
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="label-with-tooltip">
+                                            <label for="loai-cong-trinh">Gói vật liệu hoàn thiện</label>
+                                            <div class="tooltip-container">
+                                                <svg class="tooltip-icon" xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 24 24" width="16px" fill="currentColor">
+                                                <path d="M0 0h24v24H0V0z" fill="none"/>
+                                                <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                                                </svg>
+                                                <div class="tooltip-text">
+                                                    <b>Phần hoàn thiện được quy định:</b> đứng trong nhà thứ gì có thể thấy được (không bao gồm nội thất) thì được xem là hoàn thiện: Gạch ốp lát, trần, đèn, thiết bị vệ sinh, cửa, ổ cắm công tắc, sơn nước,...
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="radio-group">
+                                            <label><input type="radio" name="vat-lieu" value="Thuong" checked> Thường</label>
+                                            <label><input type="radio" name="vat-lieu" value="Kha"> Khá</label>
+                                            <label><input type="radio" name="vat-lieu" value="Tot"> Tốt</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset class="form-fieldset full-width">
+                                <legend>Kết Cấu & Quy Mô</legend>
+                                <div class="form-grid-columns three-cols">
+                                    <div class="form-group">
+                                        <div class="label-with-tooltip">
+                                            <label>Loại móng</label>
+                                            <div class="tooltip-container">
+                                                <svg class="tooltip-icon" xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 24 24" width="16px" fill="currentColor">
+                                                <path d="M0 0h24v24H0V0z" fill="none"/>
+                                                <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                                                </svg>
+                                                <div class="tooltip-text">
+                                                    Không bao gồm phần cọc, khối lượng cọc sẽ được tính theo thực tế thi công.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="radio-group">
+                                            <label><input type="radio" name="mong" value="Móng đơn/băng" checked> Móng đơn/băng</label>
+                                            <label><input type="radio" name="mong" value="Móng cọc"> Móng cọc</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tang-ham">Tầng hầm</label>
+                                        <select id="tang-ham">
+                                            <option>Không</option>
+                                            <option>Bán hầm</option>
+                                            <option>1 hầm</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="so-tang">Số tầng nổi</label>
+                                        <input type="number" id="so-tang" value="3" min="1" max="10">
+                                        <p id="so-tang-error" class="form-error-message hidden"></p>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset class="form-fieldset full-width">
+                                <legend>Kích Thước</legend>
+                                <div class="form-grid-columns three-cols">
+                                    <div class="form-group">
+                                        <label for="chieu-dai">Chiều dài nhà (m)</label>
+                                        <input type="number" id="chieu-dai" value="15" min="5">
+                                        <p id="chieu-dai-error" class="form-error-message hidden"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="chieu-rong">Chiều rộng nhà (m)</label>
+                                        <input type="number" id="chieu-rong" value="5" min="3">
+                                        <p id="chieu-rong-error" class="form-error-message hidden"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dien-tich">Diện tích xây dựng (m²)</label>
+                                        <input type="number" id="dien-tich" readonly>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            
+                            <fieldset id="mai-only-fieldset" class="form-fieldset full-width hidden">
+                                <legend>Thông Tin Mái</legend>
+                                <div class="form-grid-columns two-cols">
+                                    <div class="form-group">
+                                        <label for="loai-mai-sotang-1">Loại mái</label>
+                                        <select id="loai-mai-sotang-1">
+                                            <option>Mái bằng – BTCT</option>
+                                            <option>Mái tôn gác xà gỗ đơn giản</option>
+                                            <option>Mái ngói</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dien-tich-mai-sotang-1">Diện tích mái (m²)</label>
+                                        <input type="number" id="dien-tich-mai-sotang-1" value="75">
+                                        <p id="dt-mai-sotang-1-error" class="form-error-message hidden"></p>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset id="hang-muc-mo-rong-fieldset" class="form-fieldset full-width">
+    <legend>Hạng Mục Mở Rộng</legend>
+    <p id="combined-area-error" class="form-error-message hidden"></p>
+
+    <div class="form-grid-columns two-cols">
+        <div class="form-group toggle-group">
+            <label>Ban công trước</label>
+            <div class="toggle-switch">
+                <input type="checkbox" id="ban-cong-truoc-toggle" class="toggle-checkbox"/>
+                <label for="ban-cong-truoc-toggle" class="toggle-label"></label>
+            </div>
+        </div>
+        <div id="dien-tich-bc-truoc-container" class="form-group hidden">
+            <label for="dien-tich-bc-truoc">DT ban công trước (m²)</label>
+            <input type="number" id="dien-tich-bc-truoc" value="6">
+            <p id="dt-bc-truoc-error" class="form-error-message hidden"></p>
+        </div>
+
+        <div class="form-group toggle-group">
+            <label>Ban công sau</label>
+            <div class="toggle-switch">
+                <input type="checkbox" id="ban-cong-sau-toggle" class="toggle-checkbox"/>
+                <label for="ban-cong-sau-toggle" class="toggle-label"></label>
+            </div>
+        </div>
+        <div id="dien-tich-bc-sau-container" class="form-group hidden">
+            <label for="dien-tich-bc-sau">DT ban công sau (m²)</label>
+            <input type="number" id="dien-tich-bc-sau" value="4">
+            <p id="dt-bc-sau-error" class="form-error-message hidden"></p>
+        </div>
+    </div>
+
+    <div class="form-separator full-width"></div>
+    <div class="form-grid-columns two-cols full-width">
+        <div class="form-group">
+            <label for="san-thuong">Loại Sân thượng</label>
+            <select id="san-thuong">
+               
+            </select>
+        </div>
+        
+        <div id="loai-mai-container" class="form-group hidden">
+            <label for="loai-mai">Loại mái</label>
+            <select id="loai-mai">
+                <option>Mái bằng – BTCT</option>
+                <option>Mái tôn gác xà gỗ đơn giản</option>
+                <option>Mái ngói</option>
+            </select>
+        </div>
+        <div id="dien-tich-mai-container" class="form-group hidden">
+            <label for="dien-tich-mai">Diện tích mái (m²)</label>
+            <input type="number" id="dien-tich-mai" value="75">
+            <p id="dt-mai-error" class="form-error-message hidden"></p>
+        </div>
+        <div id="dien-tich-tum-container" class="form-group hidden">
+            <label for="dien-tich-tum">Diện tích tum thang (m²)</label>
+            <input type="number" id="dien-tich-tum">
+            <p id="dt-tum-error" class="form-error-message hidden"></p>
+        </div>
+        <div id="dien-tich-st-trong-container" class="form-group hidden">
+            <label for="dien-tich-st-trong">DT sân thượng trống (m²)</label>
+            <input type="number" id="dien-tich-st-trong">
+            <p id="dt-st-trong-error" class="form-error-message hidden"></p>
+        </div>
+        <div id="dien-tich-gian-hoa-container" class="form-group hidden">
+            <label for="dien-tich-gian-hoa">DT giàn hoa/mái tôn (m²)</label>
+            <input type="number" id="dien-tich-gian-hoa" value="20">
+            <p id="dt-gian-hoa-error" class="form-error-message hidden"></p>
+        </div>
+        <div id="dien-tich-mai-ngoi-container" class="form-group hidden">
+            <label for="dien-tich-mai-ngoi">Diện tích mái ngói (m²)</label>
+            <input type="number" id="dien-tich-mai-ngoi" value="30">
+            <p id="dt-mai-ngoi-error" class="form-error-message hidden"></p>
+        </div>
+        <div id="loai-phong-container" class="form-group hidden">
+            <label for="loai-phong">Loại phòng trên sân thượng</label>
+            <select id="loai-phong">
+               
+            </select>
+        </div>
+        <div id="dien-tich-phong-container" class="form-group hidden">
+            <label for="dien-tich-phong">Diện tích phòng (m²)</label>
+            <input type="number" id="dien-tich-phong" value="25">
+            <p id="dt-phong-error" class="form-error-message hidden"></p>
+        </div>
+    </div>
+</fieldset>
+                        </div>
+                    </form>
+
+                    <div class="estimator-preview">
+                        <div class="estimator-preview estimator-preview-sticky">
+                            <div class="estimator-image-wrapper">
+                                <div class="image-slider-container">
+                                    <img id="cong-trinh-image" src="https://placehold.co/800x600/cccccc/FFFFFF?text=Chọn+đủ+thông+tin" alt="Ảnh minh họa công trình" class="cursor-zoom-in">
+                                    <div class="slider-controls">
+                                        <button id="prev-image" class="slider-button" title="Ảnh trước">←</button>
+                                        <span id="image-index">0/0</span>
+                                        <button id="next-image" class="slider-button" title="Ảnh sau">→</button>
+                                    </div>
+                                </div>
+                                <p id="cong-trinh-caption">Chọn các tùy chọn để xem hình ảnh minh họa.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-2" class="hidden">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <h2 style="font-size: 20px; font-weight: 600; color: var(--text-dark);">Bước 2: Tùy Chỉnh Đơn Giá Vật Tư & Nhân Công</h2>
+                    <p style="color: var(--text-light); margin-top: 4px;">
+                        Đơn giá dưới đây được đề xuất cho khu vực 
+                        <span id="khu-vuc-don-gia" style="font-weight: 700; color: var(--primary-color);">Hồ Chí Minh</span>. 
+                        Bạn có thể chỉnh sửa nếu cần.
+                    </p>
+                </div>
+                
+                <div class="table-scroll-wrapper">
+                    <p style="text-align: center;"><i>(Nội dung bảng tùy chỉnh đơn giá sẽ được phát triển ở giai đoạn sau.)</i></p>
+                </div>
+            </div>
+
+            <div id="step-3" class="hidden">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <h2 style="font-size: 20px; font-weight: 600; color: var(--text-dark);">Bước 3: Kết Quả Dự Toán Chi Tiết</h2>
+                    <p style="color: var(--text-light); margin-top: 4px;">Dưới đây là chi phí dự toán dựa trên thông số bạn cung cấp.</p>
+                </div>
+
+                <div id="total-cost-summary-container" style="background-color: #F0FFF4; border: 2px solid #C6F6D5; border-radius: 8px; padding: 24px; margin-bottom: 32px;">
+                </div>
+
+                <div style="margin-bottom: 32px; display: flex; flex-direction: column; gap: 12px;">
+                    <details id="converted-area-details" style="background-color: #F7FAFC; padding: 16px; border-radius: 8px;">
+                        <summary style="font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                            <span>Xem chi tiết cách tính Diện tích Quy đổi</span>
+                            <span id="total-converted-area-span" style="font-size: 18px; font-weight: 700; color: var(--text-dark);">Tổng: ... m²</span>
+                        </summary>
+                        <div id="converted-area-table-container" style="margin-top: 16px;">
+                             <p style="font-size: 14px; color: var(--text-light); margin-top: 8px;">Điền đầy đủ thông tin ở Bước 1 để xem kết quả.</p>
+                        </div>
+                    </details>
+                    
+                    <details style="background-color: #F7FAFC; padding: 16px; border-radius: 8px;">
+                        <summary style="font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                            <span>Xem chi tiết dự toán chi phí</span>
+                        </summary>
+                        <div id="step-3-result-wrapper" style="margin-top: 16px;"></div>
+                    </details>
+                </div>
+
+                <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: center;">
+                    <button id="back-btn-step3" style="background-color: #E2E8F0; color: #2D3748; padding: 10px 24px; border-radius: 8px; font-weight: 600; border: 1px solid #CBD5E0;">
+                        Quay lại
+                    </button>
+                    <button id="restart-btn" style="background-color: #E2E8F0; color: #2D3748; padding: 10px 24px; border-radius: 8px; font-weight: 600; border: 1px solid #CBD5E0;">
+                        🔄 Tính Lại Từ Đầu
+                    </button>
+                </div>
+            </div>
+
+            <div id="navigation-buttons" class="estimator-navigation">
+                <button id="back-btn" disabled>Quay lại</button>
+                <button id="next-btn" class="btn-primary">Tiếp tục</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="image-zoom-modal" class="estimator-zoom-modal hidden">
+    <span id="close-zoom-modal">&times;</span>
+    <img id="zoomed-image" src="" alt="Ảnh công trình phóng to">
 </div>
 </body>
 </html>
