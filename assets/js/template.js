@@ -863,7 +863,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             step3ResultWrapper.innerHTML = finalHtml;
         }
-
+        modalContainer.addEventListener('input', function(event) {
+            if (event.target.classList.contains('don-gia-input')) {
+                if (parseFloat(event.target.value) < 0) {
+                    event.target.value = 0; // Tự động sửa giá trị âm thành 0
+                }
+            }
+        });
         function renderPriceTable(priceData) {
             if (!step2ContentWrapper) return;
             step2ContentWrapper.innerHTML = '';
@@ -890,7 +896,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <td>${index + 1}</td>
                     <td>${item.ten}</td>
                     <td>${item.don_vi_tinh}</td>
-                    <td><input type="number" class="don-gia-input" data-id="${item.id}" value="${item.don_gia}" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></td>
+                    <td><input type="number" class="don-gia-input" min="0" data-id="${item.id}" value="${item.don_gia}" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></td>
                     <td>${item.quy_cach || '-'}</td>
                 `;
                 tableBody.appendChild(row);
@@ -901,7 +907,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${priceData.length + 1}</td>
                 <td>Quản lý, lợi nhuận</td>
                 <td>%</td>
-                <td><input type="number" class="don-gia-input" data-id="loi_nhuan" value="15" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></td>
+                <td><input type="number" class="don-gia-input" min="0" data-id="loi_nhuan" value="15" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></td>
                 <td>Tính trên tổng chi phí vật tư, nhân công</td>
             `;
             tableBody.appendChild(profitRow);
