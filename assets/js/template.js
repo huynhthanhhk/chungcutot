@@ -549,7 +549,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
             const dienTichSan = estimationData.dienTich || 0;
             
-            addItem('Loại móng', dienTichSan, heSoMongFinal);
+            addItem('Móng', dienTichSan, heSoMongFinal);
         
             if (tangHam && tangHam !== 'Không') {
                 addItem('Tầng hầm', dienTichSan, heSoQuyDoi[tangHam] || 0);
