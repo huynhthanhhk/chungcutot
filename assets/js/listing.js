@@ -735,7 +735,113 @@ function applyFiltersAndRefresh() {
         }
     }
 
-    function initPriceHistoryForRent() { /* ... Logic cho trang thuê ... */ }
+    function initPriceHistoryForRent() {
+        const tabsContainer = document.getElementById('price-year-tabs');
+        const tableContainer = document.getElementById('summary-table-container');
+        const dataSource = typeof priceHistoryData_Thue !== 'undefined' ? priceHistoryData_Thue : priceHistoryData;
+        if (!tabsContainer || !tableContainer || typeof dataSource === 'undefined') {
+            const priceHistorySection = document.querySelector('.price-history-section');
+            if (priceHistorySection) priceHistorySection.style.display = 'none';
+            return;
+        }
+        function renderTable(year) {
+            const yearData = dataSource[year] || [];
+            tableContainer.innerHTML = '';
+            const transactionsByBedroom = {};
+            yearData.forEach(transaction => {
+                const bedrooms = transaction.bedrooms;
+                if (!transactionsByBedroom[bedrooms]) {
+                    transactionsByBedroom[bedrooms] = [];
+                }
+                transactionsByBedroom[bedrooms].push(transaction);
+            });
+            const sortedBedroomKeys = Object.keys(transactionsByBedroom).sort((a, b) => a - b);
+            for (const bedrooms of sortedBedroomKeys) {
+                const groupDetails = transactionsByBedroom[bedrooms];
+                if (groupDetails.length === 0) continue;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'summary-row-wrapper';
+                const prices = groupDetails.map(d => d.price);
+                const minPrice = Math.min(...prices);
+                const maxPrice = Math.max(...prices);
+                const priceString = (minPrice === maxPrice) 
+                    ? `${maxPrice.toLocaleString('vi-VN')} triệu/tháng` 
+                    : `${minPrice.toLocaleString('vi-VN')} - ${maxPrice.toLocaleString('vi-VN')} triệu/tháng`;
+                const summaryRow = document.createElement('div');
+                summaryRow.className = 'summary-row accordion-trigger';
+                summaryRow.innerHTML = `
+                    <span class="summary-label">${bedrooms} Phòng ngủ</span>
+                    <span class="summary-value">${priceString}</span>
+                    <span class="summary-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg></span>
+                `;
+                const detailContent = document.createElement('div');
+                detailContent.className = 'detailed-table-content';
+                let tableHTML = `
+                    <table class="detailed-table">
+                        <thead>
+                            <tr>
+                                <th>Thời gian <span class="unit">(tháng)</span></th>
+                                <th>Diện tích <span class="unit">(m²)</span></th>
+                                <th>Giá thuê <span class="unit">(triệu/tháng)</span></th>
+                                <th>Nội thất</th>
+                                <th>Thời hạn thuê</th>
+                                <th>WC</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                groupDetails.forEach(detail => {
+                    // Lấy tháng từ publishedAt
+                    const month = new Date(detail.publishedAt).getMonth() + 1;
+                    tableHTML += `
+                        <tr>
+                            <td>T${month}</td>
+                            <td>${detail.area}</td>
+                            <td>${detail.price.toLocaleString('vi-VN')}</td>
+                            <td>${detail.furniture}</td>
+                            <td>${detail.leaseTerm}</td>
+                            <td>${detail.wc}</td>
+                        </tr>`;
+                });
+                tableHTML += '</tbody></table>';
+                detailContent.innerHTML = tableHTML;
+                wrapper.appendChild(summaryRow);
+                wrapper.appendChild(detailContent);
+                tableContainer.appendChild(wrapper);
+            }
+            addAccordionEvents();
+        }
+        function addAccordionEvents() {
+            tableContainer.querySelectorAll('.accordion-trigger').forEach(trigger => {
+                trigger.addEventListener('click', function () {
+                    const wrapper = this.closest('.summary-row-wrapper');
+                    wrapper.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    if (content.style.maxHeight) { content.style.maxHeight = null; } 
+                    else { content.style.maxHeight = content.scrollHeight + "px"; }
+                });
+            });
+        }
+        function createYearTabs() {
+            const years = Object.keys(dataSource).sort((a, b) => b - a);
+            if (years.length === 0) return;
+            tabsContainer.innerHTML = '';
+            years.forEach((year, index) => {
+                const button = document.createElement('button');
+                button.className = 'year-tab-btn';
+                button.dataset.year = year;
+                button.textContent = `Năm ${year}`;
+                if (index === 0) button.classList.add('active');
+                button.addEventListener('click', function() {
+                    if(tabsContainer.querySelector('.active')) { tabsContainer.querySelector('.active').classList.remove('active'); }
+                    this.classList.add('active');
+                    renderTable(this.dataset.year);
+                });
+                tabsContainer.appendChild(button);
+            });
+            renderTable(years[0]);
+        }
+        createYearTabs();
+    }
 
     function initPriceHistoryForSale() {
         const tabsContainer = document.getElementById('price-year-tabs');
@@ -831,7 +937,144 @@ function applyFiltersAndRefresh() {
         }
     }
 
-    function initScatterChartForRent() { /* ... Logic cho trang thuê ... */ }
+    function initScatterChartForRent() {
+        const ctx = document.getElementById('price-history-chart')?.getContext('2d');
+        const yearFiltersContainer = document.getElementById('chart-year-filters');
+        const bedroomFilterSelect = document.getElementById('chart-bedroom-filter');
+        const chartTitleElement = document.getElementById('chart-dynamic-title');
+        const dataSource = typeof priceHistoryData_Thue !== 'undefined' ? priceHistoryData_Thue : priceHistoryData;
+
+        if (!ctx || !yearFiltersContainer || !bedroomFilterSelect || !dataSource) return;
+        chartTitleElement.textContent = 'Biểu đồ Phân tán Giá thuê theo Diện tích';
+
+        const FURNITURE_COLORS = {
+            'Nội thất cơ bản': 'rgba(54, 162, 235, 0.7)',  // Blue
+            'Đầy đủ nội thất': 'rgba(75, 192, 192, 0.7)', // Green
+            'Không nội thất': 'rgba(255, 99, 132, 0.7)',   // Red
+            'Nhà thô': 'rgba(255, 99, 132, 0.7)',
+            'Bàn giao thô': 'rgba(255, 99, 132, 0.7)'
+        };
+        const YEAR_SHAPES = { '2025': 'circle', '2024': 'rect', '2023': 'triangle' };
+        let priceChart;
+
+        function updateChart() {
+            const selectedYears = Array.from(yearFiltersContainer.querySelectorAll('button.active')).map(btn => btn.dataset.year);
+            const selectedBedrooms = bedroomFilterSelect.value;
+
+            let filteredData = [];
+            selectedYears.forEach(year => {
+                if (dataSource[year]) {
+                    const yearData = dataSource[year].map(d => ({...d, year: year}));
+                    filteredData.push(...yearData);
+                }
+            });
+
+            if (selectedBedrooms !== 'all') {
+                filteredData = filteredData.filter(d => d.bedrooms == selectedBedrooms);
+            }
+
+            const datasets = [];
+            const groupedByFurniture = {};
+            filteredData.forEach(item => {
+                const furniture = item.furniture;
+                if(!groupedByFurniture[furniture]) {
+                    groupedByFurniture[furniture] = [];
+                }
+                groupedByFurniture[furniture].push(item);
+            });
+            
+            for (const furniture in groupedByFurniture) {
+                datasets.push({
+                    label: furniture,
+                    data: groupedByFurniture[furniture].map(item => ({
+                        x: item.area,
+                        y: item.price,
+                        details: item
+                    })),
+                    backgroundColor: FURNITURE_COLORS[furniture] || 'rgba(201, 203, 207, 0.7)',
+                    pointStyle: groupedByFurniture[furniture].map(item => YEAR_SHAPES[item.year] || 'circle'),
+                    radius: 7,
+                    hoverRadius: 9
+                });
+            }
+
+            const config = {
+                type: 'scatter',
+                data: { datasets: datasets },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: { display: true, text: 'Diện tích (m²)' }
+                        },
+                        y: { title: { display: true, text: 'Giá thuê (triệu VNĐ)' } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                const details = context.raw.details;
+                                if (!details) return '';
+                                // Lấy tháng từ publishedAt
+                                const month = new Date(details.publishedAt).getMonth() + 1;
+                                return [
+                                    `ID: ${details.id}`,
+                                    `Giá: ${details.price} triệu`,
+                                    `Diện tích: ${details.area} m²`,
+                                    `Nội thất: ${details.furniture}`,
+                                    `Phòng ngủ: ${details.bedrooms} PN`,
+                                    `WC: ${details.wc} WC`,
+                                    `Thời gian: T${month}/${details.year}` // Sử dụng biến tháng mới
+                                ];
+                            }
+                            }
+                        }
+                    }
+                }
+            };
+
+            if (!priceChart) {
+                priceChart = new Chart(ctx, config);
+            } else {
+                priceChart.data.datasets = datasets;
+                priceChart.update();
+            }
+        }
+        
+        function setupFilters() {
+            const years = Object.keys(dataSource).sort((a,b) => b-a);
+            yearFiltersContainer.innerHTML = ''; 
+            years.forEach((year) => {
+                if (YEAR_SHAPES[year]) {
+                    const button = document.createElement('button'); 
+                    button.dataset.year = year; 
+                    button.textContent = year;
+                    button.classList.add('active');
+                    button.addEventListener('click', function() { 
+                        this.classList.toggle('active'); 
+                        updateChart(); 
+                    });
+                    yearFiltersContainer.appendChild(button);
+                }
+            });
+
+            const allBedrooms = new Set(Object.values(dataSource).flat().map(item => item.bedrooms));
+            bedroomFilterSelect.innerHTML = '<option value="all">Tất cả</option>';
+            Array.from(allBedrooms).sort((a,b) => a-b).forEach(num => {
+                const option = document.createElement('option');
+                option.value = num;
+                option.textContent = `${num} PN`;
+                bedroomFilterSelect.appendChild(option);
+            });
+            bedroomFilterSelect.addEventListener('change', updateChart);
+        }
+        
+        setupFilters();
+        updateChart();
+    }
 
     function initLineChartForSale() {
         const ctx = document.getElementById('price-history-chart')?.getContext('2d');
@@ -1144,8 +1387,10 @@ function updateMapMarkers() {
         
         renderFavoritesDrawer();
         
+        if (document.getElementById('map-placeholder')) {
         initMap();
-        initMapData(); // <- GỌI HÀM MỚI Ở ĐÂY
+        initMapData();
+        }
         const searchForm = document.querySelector('form.search-form');
         if (searchForm) {
             searchForm.addEventListener('submit', (e) => {
