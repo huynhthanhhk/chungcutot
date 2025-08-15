@@ -1123,10 +1123,49 @@ document.addEventListener('DOMContentLoaded', function () {
             const summaries = calculateSummaries(chartData);
             document.getElementById('summary-card-current').textContent = summaries.current;
             document.getElementById('summary-card-avg').textContent = summaries.avg;
+            const currentCardValueEl = document.getElementById('summary-card-current');
+            if (currentCardValueEl && currentCardValueEl.parentElement) {
+                const currentCardLabelEl = currentCardValueEl.parentElement.querySelector('.card-label');
+                if (currentCardLabelEl) {
+                    if (summaries.latestMonth && summaries.latestYear) {
+                        currentCardLabelEl.textContent = `Giá phổ biến (T${summaries.latestMonth}/${summaries.latestYear})`;
+                    } else {
+                        currentCardLabelEl.textContent = 'Giá phổ biến (Tháng gần nhất)';
+                    }
+                }
+            }
+            const avgCardValueEl = document.getElementById('summary-card-avg');
+            if (avgCardValueEl && avgCardValueEl.parentElement) {
+                const avgCardLabelEl = avgCardValueEl.parentElement.querySelector('.card-label');
+                if (avgCardLabelEl) {
+                    if (summaries.startMonth && summaries.startYear && summaries.latestMonth && summaries.latestYear) {
+                        // Xử lý trường hợp chỉ có dữ liệu trong 1 tháng
+                        if (summaries.startYear === summaries.latestYear && summaries.startMonth === summaries.latestMonth) {
+                             avgCardLabelEl.textContent = `Trung bình (T${summaries.startMonth}/${summaries.startYear})`;
+                        } else {
+                             avgCardLabelEl.textContent = `Trung bình 12 tháng (T${summaries.startMonth}/${summaries.startYear} - T${summaries.latestMonth}/${summaries.latestYear})`;
+                        }
+                    } else {
+                        avgCardLabelEl.textContent = 'Trung bình 12 tháng';
+                    }
+                }
+            }
             const yoyEl = document.getElementById('summary-card-yoy');
             yoyEl.textContent = summaries.yoy;
             yoyEl.className = 'card-value';
             if (summaries.yoyClass) yoyEl.classList.add(summaries.yoyClass);
+            if (yoyEl && yoyEl.parentElement) {
+                const yoyLabelEl = yoyEl.parentElement.querySelector('.card-label');
+                if (yoyLabelEl) {
+                    // Kiểm tra xem phép tính có thành công không và có đủ thông tin ngày tháng không
+                    if (summaries.yoy !== '--' && summaries.latestMonth && summaries.latestYear) {
+                        const previousYear = parseInt(summaries.latestYear, 10) - 1;
+                        yoyLabelEl.textContent = `Biến động giá (T${summaries.latestMonth}/${previousYear} - T${summaries.latestMonth}/${summaries.latestYear})`;
+                    } else {
+                        yoyLabelEl.textContent = 'Biến động giá / 1 năm';
+                    }
+                }
+            }
             const productpublishedAt = new Date(product.publishedAt),
                 productMonthIndex = productpublishedAt.getMonth(),
                 productUnitPrice = (product.price * 1000 / product.area),
@@ -1295,10 +1334,12 @@ document.addEventListener('DOMContentLoaded', function () {
             };
             const latestYear = sortedYears[0];
             let latestMonthIndex = -1;
+            let latestYearStr = '';
             for (let i = 11; i >= 0; i--) {
                 if (chartData[latestYear] && chartData[latestYear].avg[i] !== null) {
                     latestMonthIndex = i;
                     latestMonthData = chartData[latestYear].avg[i];
+                    latestYearStr = latestYear;
                     break;
                 }
             }
@@ -1309,11 +1350,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
             let count = 0;
+            let startMonth = null, startYear = null; // <-- Dòng mới
             for (const year of sortedYears) {
                 for (let i = 11; i >= 0; i--) {
                     if (count >= 12) break;
                     if (chartData[year] && chartData[year].avg[i] !== null) {
                         allPricesLast12Months.push(chartData[year].avg[i]);
+                        startMonth = i + 1; // <-- Dòng mới
+                        startYear = parseInt(year, 10); // <-- Dòng mới
                         count++;
                     }
                 }
@@ -1332,7 +1376,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 current,
                 avg,
                 yoy,
-                yoyClass
+                yoyClass,
+                latestMonth: latestMonthIndex !== -1 ? latestMonthIndex + 1 : null,
+                latestYear: latestYearStr || null,
+                startMonth: startMonth, // <-- Dòng mới
+                startYear: startYear // <-- Dòng mới
             };
         };
         setupFilters();
