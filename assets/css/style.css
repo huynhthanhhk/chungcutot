@@ -6157,3 +6157,115 @@ button:disabled {
     visibility: visible;
     opacity: 1;
 }
+.mega-menu-search {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+    .mega-menu-search:focus {
+        outline: none;
+        border-color: #53b966;
+        box-shadow: 0 0 0 2px rgba(83, 185, 102, 0.2);
+    }
+
+    /* === SỬA LỖI THANH CUỘN CỘT 2 (KHU VỰC) === */
+    .mega-menu-list-wrapper {
+        /* Đặt chiều cao tối đa để thanh cuộn xuất hiện */
+        max-height: 300px; /* Bạn có thể điều chỉnh giá trị này */
+        overflow-y: auto;
+        width: 100%;
+    box-sizing: border-box;
+        /* QUAN TRỌNG: Thêm đệm bên phải để tạo không gian cho thanh cuộn */
+        padding-right: 15px;
+    }
+
+    .mega-menu-group-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        margin: 15px 0 10px 0;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .mega-menu-group-title:first-child {
+        margin-top: 0;
+    }
+    .mega-menu-sub-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    #mega-menu-col-1-list li {
+    margin: 2px 0; /* Thêm một chút khoảng cách dọc giữa các mục */
+}
+
+    #mega-menu-col-1-list li a {
+        color: #333; /* Màu mặc định cho các mục chưa chọn */
+        transition: color 0.2s ease;
+         display: block; /* Cho phép thẻ <a> chiếm toàn bộ không gian của thẻ <li> */
+    padding: 8px 15px; /* Thêm vùng đệm để dễ click hơn */
+    border-radius: 6px; /* Bo góc cho đẹp hơn */
+    transition: background-color 0.2s ease, color 0.2s ease; /* Hiệu ứng chuyển động mượt mà */
+    }
+    #mega-menu-col-1-list li a:hover {
+        color: #53b966; /* Màu khi di chuột qua */
+    }
+    #mega-menu-col-1-list li.active > a {
+        color: #53b966; /* Màu active cho mục được chọn */
+        font-weight: 700;
+    }
+
+    /* === CSS CHO THANH CUỘN CỘT 3 (DỰ ÁN NỔI BẬT) === */
+    #mega-menu-col-3-content {
+        overflow-y: auto;
+        max-height: 350px; 
+        padding-right: 15px;
+        padding-left: 5px;
+    }
+
+    /* Tùy chọn: Làm đẹp thanh cuộn trên Chrome/Safari */
+    .mega-menu-list-wrapper::-webkit-scrollbar,
+    #mega-menu-col-3-content::-webkit-scrollbar {
+        width: 6px;
+    }
+    .mega-menu-list-wrapper::-webkit-scrollbar-track,
+    #mega-menu-col-3-content::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    .mega-menu-list-wrapper::-webkit-scrollbar-thumb,
+    #mega-menu-col-3-content::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+    .mega-menu-list-wrapper::-webkit-scrollbar-thumb:hover,
+    #mega-menu-col-3-content::-webkit-scrollbar-thumb:hover {
+        background: #aaa;
+    }
+    body.scroll-locked {
+        overflow: hidden;
+    }
+
+
+    .panel-search-wrapper {
+        padding: 0 15px 15px 15px;
+        border-bottom: 1px solid #eee;
+    }
+    .mobile-menu-search {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        box-sizing: border-box;
+        margin-top: 15px;
+    }
+    .mobile-menu-search:focus {
+        outline: none;
+        border-color: #53b966;
+    }

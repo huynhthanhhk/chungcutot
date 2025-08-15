@@ -458,8 +458,8 @@
 
         // --- PHẦN 1: DỮ LIỆU & BIẾN TOÀN CỤC ---
         const initialMenuData = {
-           "Dự án": [ { "Loại hình": "Chung cư", "Khu vực": ["TP. Hồ Chí Minh", "Bình Dương", "Đồng Nai"] }, { "Loại hình": "Khu đô thị", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Long An"] } ],
-           "Mua bán": [ { "Loại hình": "Căn hộ", "Khu vực": ["TP. Hồ Chí Minh", "Lâm Đồng", "Bà Rịa - Vũng Tàu"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng"] } ],
+           "Dự án": [ { "Loại hình": "Chung cư", "Khu vực": ["TP. Hồ Chí Minh", "Bình Dương", "Đồng Nai", "Hà Nội", "Long An", "Bà Rịa - Vũng Tàu", "Lâm Đồng", "Đà Nẵng", "Vĩnh Long"] }, { "Loại hình": "Khu đô thị", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Long An"] } ],
+           "Mua bán": [ { "Loại hình": "Căn hộ", "Khu vực": ["Hà Nội", "Hải Phòng", "Đà Nẵng", "Cần Thơ", "TP. Hồ Chí Minh", "Hà Giang", "Cao Bằng", "Lào Cai", "Sơn La", "Quảng Ninh", "Bắc Ninh", "Hưng Yên", "Ninh Bình", "Thanh Hóa", "Nghệ An", "Hà Tĩnh", "Quảng Bình", "Thừa Thiên Huế", "Quảng Nam", "Bình Định", "Khánh Hòa", "Ninh Thuận", "Bình Thuận", "Kon Tum", "Gia Lai", "Đắk Lắk", "Đắk Nông", "Lâm Đồng", "Bình Phước", "Tây Ninh", "Bình Dương", "Đồng Nai", "Bà Rịa - Vũng Tàu", "Long An", "Tiền Giang", "Bến Tre", "Đồng Tháp", "An Giang", "Kiên Giang", "Cà Mau"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng"] } ],
            "Cho thuê": [ { "Loại hình": "Căn hộ", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Vĩnh Long"] } ],
            "Wiki": [ { "Danh mục": "Pháp lý", "slug": "phap-ly" }, { "Danh mục": "Kinh nghiệm", "slug": "kinh-nghiem" }, { "Danh mục": "Phong thuỷ", "slug": "phong-thuy" } ],
            "Tin tức": [ { "Danh mục": "Dự án", "slug": "du-an" }, { "Danh mục": "Thị trường", "slug": "thi-truong" } ],
@@ -472,6 +472,18 @@
                 description: 'Khu đô thị phức hợp chuẩn quốc tế tại TP. Thủ Đức.',
                 image: 'assets/images/project-gallery-1.jpg',
                 link: '#'
+            },
+            {
+                name: 'Vinhomes Grand Park',
+                description: 'Đại đô thị thông minh đẳng cấp quốc tế tại TP. Thủ Đức.',
+                image: 'assets/images/duan3.jpeg',
+                link: '#'
+            },
+            {
+                name: 'Aqua City',
+                description: 'Khu đô thị sinh thái thông minh phía Đông TP.HCM.',
+                image: 'assets/images/duan1.jpg',
+                link: '#'
             }
         ];
 
@@ -483,19 +495,22 @@
         const megaMenuContainer = document.getElementById('cct-mega-menu');
         
         let activeMenuItem = null;
-        let menuTimeout;
-
+        let isMouseOverMenu = false;
+        
         // --- PHẦN 2: CÁC HÀM TIỆN ÍCH ---
+        const normalizeText = (str) => {
+            if (!str) return '';
+            return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd');
+        };
+
         const toSlug = (str) => {
             if (!str) return '';
-            let s = str.toLowerCase();
-            if (s === 'hồ chí minh') return 'tp-ho-chi-minh';
-            if (s === 'hà nội') return 'tp-ha-noi';
-            if (s === 'đà nẵng') return 'tp-da-nang';
-            if (s === 'cần thơ') return 'tp-can-tho';
-            if (s === 'hải phòng') return 'tp-hai-phong';
-            s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            s = s.replace(/[đĐ]/g, 'd');
+            let s = normalizeText(str);
+            if (s === 'tp ho chi minh') return 'tp-ho-chi-minh';
+            if (s === 'ha noi') return 'tp-ha-noi';
+            if (s === 'da nang') return 'tp-da-nang';
+            if (s === 'can tho') return 'tp-can-tho';
+            if (s === 'hai phong') return 'tp-hai-phong';
             s = s.replace(/([^0-9a-z-\s])/g, '');
             s = s.replace(/(\s+)/g, '-');
             s = s.replace(/-+/g, '-');
@@ -545,6 +560,7 @@
             const nav = document.getElementById('main-nav');
             const mainMenu = document.getElementById('main-menu-list');
             if (!nav || !mainMenu || !megaMenuContainer) return;
+
             mainMenu.innerHTML = ''; 
             for (const menuKey in initialMenuData) {
                 const li = document.createElement('li');
@@ -554,6 +570,7 @@
                 a.textContent = menuKey;
                 li.appendChild(a);
                 mainMenu.appendChild(li);
+
                 a.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (activeMenuItem === e.target.parentElement) {
@@ -567,24 +584,27 @@
                     }
                 });
             }
-            megaMenuContainer.querySelector('.menu-panel-overlay')?.addEventListener('click', closeDesktopPanel);
-            nav.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 300); });
-            nav.addEventListener('mouseenter', () => clearTimeout(menuTimeout));
-            megaMenuContainer.addEventListener('mouseenter', () => clearTimeout(menuTimeout));
-            megaMenuContainer.addEventListener('mouseleave', () => { menuTimeout = setTimeout(closeDesktopPanel, 300); });
+            
+            megaMenuContainer.addEventListener('mouseenter', () => {
+                isMouseOverMenu = true;
+                if (megaMenuContainer.classList.contains('is-open')) {
+                    document.body.classList.add('scroll-locked');
+                }
+            });
+            megaMenuContainer.addEventListener('mouseleave', () => {
+                isMouseOverMenu = false;
+                document.body.classList.remove('scroll-locked');
+            });
         }
 
-        // =======================================================
-        // == HÀM ĐÃ ĐƯỢC CẬP NHẬT ĐẦY ĐỦ LOGIC MỚI NHẤT ==
-        // =======================================================
         function populateDesktopPanel(menuKey) {
             const menuItems = initialMenuData[menuKey];
-            const col1Header = document.querySelector('#cct-mega-menu .menu-panel-col.col-1 h4'); // --- ĐÃ THÊM ---
+            const col1Header = document.querySelector('#cct-mega-menu .menu-panel-col.col-1 h4');
             const col1List = document.getElementById('mega-menu-col-1-list');
             const col2List = document.getElementById('mega-menu-col-2-list');
             const col3Content = document.getElementById('mega-menu-col-3-content');
 
-            if (!col1List || !col2List || !col3Content || !col1Header) return; // --- ĐÃ SỬA ---
+            if (!col1List || !col2List || !col3Content || !col1Header) return;
             
             col1List.innerHTML = '';
             col2List.innerHTML = '';
@@ -595,7 +615,6 @@
                 return;
             }
 
-            // --- ĐÃ THÊM: LOGIC TỰ ĐỘNG ĐẶT TIÊU ĐỀ ---
             const firstItem = menuItems[0];
             let col1Title = '';
             if (firstItem.hasOwnProperty('Loại hình')) {
@@ -604,17 +623,20 @@
                 col1Title = 'Danh mục';
             }
             col1Header.textContent = col1Title;
-            // --- KẾT THÚC PHẦN THÊM MỚI ---
 
             const isMega = firstItem.hasOwnProperty('Khu vực');
             megaMenuContainer.querySelector('.menu-panel-columns').classList.toggle('is-single-col-data', !isMega);
             
-            menuItems.forEach((item, index) => {
+            menuItems.forEach((item) => {
                 const categoryName = item["Loại hình"] || item["Danh mục"];
                 const li = document.createElement('li');
                 li.dataset.category = categoryName;
                 if (isMega) {
-                    li.textContent = categoryName;
+                    const link = document.createElement('a');
+                    link.href = getLink(menuKey, categoryName);
+                    link.textContent = categoryName;
+                    link.dataset.action = 'show-sub-items';
+                    li.appendChild(link);
                 } else {
                     const link = document.createElement('a');
                     link.href = getLink(menuKey, categoryName);
@@ -622,20 +644,32 @@
                     link.className = 'direct-link';
                     li.appendChild(link);
                 }
-                if (index === 0) li.classList.add('active');
                 col1List.appendChild(li);
             });
 
             if (isMega) {
-                updateDesktopSubMenu(menuItems[0]["Loại hình"], menuKey);
-                col1List.addEventListener('mouseover', e => {
-                    const targetLi = e.target.closest('li');
-                    if (targetLi && targetLi.dataset.category) {
-                        col1List.querySelectorAll('li').forEach(li => li.classList.remove('active'));
-                        targetLi.classList.add('active');
-                        updateDesktopSubMenu(targetLi.dataset.category, menuKey);
+                col1List.addEventListener('click', e => {
+                    const targetLink = e.target.closest('a');
+                    if (targetLink && targetLink.dataset.action === 'show-sub-items') {
+                        e.preventDefault();
+                        const targetLi = targetLink.parentElement;
+                        if (targetLi && targetLi.dataset.category) {
+                            if (targetLi.classList.contains('active')) return;
+                            col1List.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+                            targetLi.classList.add('active');
+                            updateDesktopSubMenu(targetLi.dataset.category, menuKey);
+                        }
                     }
                 });
+
+                const firstItemLi = col1List.querySelector('li:first-child');
+                if (firstItemLi) {
+                    firstItemLi.classList.add('active');
+                    const firstCategory = firstItemLi.dataset.category;
+                    if (firstCategory) {
+                        updateDesktopSubMenu(firstCategory, menuKey);
+                    }
+                }
             }
             
             featuredProjectsData.forEach(project => {
@@ -652,7 +686,50 @@
             const menuItems = initialMenuData[menuKey];
             const targetItem = menuItems.find(item => item["Loại hình"] === categoryKey);
             const subItems = targetItem ? targetItem["Khu vực"] : [];
-            subMenuContainer.innerHTML = subItems.map(item => `<li><a href="${getLink(menuKey, categoryKey, item)}">${item}</a></li>`).join('');
+            
+            subMenuContainer.innerHTML = '';
+
+            const searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.placeholder = '🔍 Tìm kiếm khu vực...';
+            searchInput.className = 'mega-menu-search';
+            subMenuContainer.appendChild(searchInput);
+
+            const listWrapper = document.createElement('div');
+            listWrapper.className = 'mega-menu-list-wrapper';
+            subMenuContainer.appendChild(listWrapper);
+
+            const majorCities = ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng"];
+            const majorGroup = subItems.filter(item => majorCities.includes(item));
+            const otherGroup = subItems.filter(item => !majorCities.includes(item));
+
+            let listHTML = '';
+            if (majorGroup.length > 0) {
+                listHTML += `<h5 class="mega-menu-group-title">Thành phố lớn</h5>`;
+                listHTML += `<ul class="mega-menu-sub-list">` + majorGroup.map(item => `<li><a href="${getLink(menuKey, categoryKey, item)}">${item}</a></li>`).join('') + `</ul>`;
+            }
+            if (otherGroup.length > 0) {
+                listHTML += `<h5 class="mega-menu-group-title">Các tỉnh thành khác</h5>`;
+                listHTML += `<ul class="mega-menu-sub-list">` + otherGroup.map(item => `<li><a href="${getLink(menuKey, categoryKey, item)}">${item}</a></li>`).join('') + `</ul>`;
+            }
+            listWrapper.innerHTML = listHTML;
+
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = normalizeText(e.target.value);
+                const allListItems = listWrapper.querySelectorAll('li');
+                const allGroupTitles = listWrapper.querySelectorAll('.mega-menu-group-title');
+
+                allListItems.forEach(li => {
+                    const text = normalizeText(li.textContent);
+                    li.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+
+                allGroupTitles.forEach(title => {
+                    const nextList = title.nextElementSibling;
+                    const hasVisibleItems = nextList && nextList.querySelector('li[style=""]');
+                    title.style.display = hasVisibleItems ? '' : 'none';
+                });
+            });
         }
 
         function closeDesktopPanel() {
@@ -661,16 +738,22 @@
                 activeMenuItem.classList.remove('active');
                 activeMenuItem = null;
             }
+            document.body.classList.remove('scroll-locked');
+            isMouseOverMenu = false;
         }
 
+        // === BẮT ĐẦU CẬP NHẬT LOGIC CHO MOBILE MENU ===
         function handleMobileMenu() {
             const nav = document.getElementById('main-nav');
             const overlay = document.getElementById('menu-overlay');
             const hamburger = document.getElementById('hamburger-button');
             if (!nav || !overlay || !hamburger) return;
+
             nav.innerHTML = '<div class="menu-slider"></div>';
             const slider = nav.querySelector('.menu-slider');
-            const createPanel = (level, title, content) => {
+
+            // THAY ĐỔI 1: Cập nhật hàm createPanel để nhận thêm nội dung cho search
+            const createPanel = (level, title, listContent, extraHeaderContent = '') => {
                 const panel = document.createElement('div');
                 panel.className = 'menu-panel';
                 panel.dataset.level = level;
@@ -680,9 +763,10 @@
                 } else {
                     headerHTML += `<button class="mobile-menu-close">&times;</button>`;
                 }
-                panel.innerHTML = `<div class="panel-header">${headerHTML}</div><ul class="panel-list">${content}</ul>`;
+                panel.innerHTML = `<div class="panel-header">${headerHTML}</div>${extraHeaderContent}<ul class="panel-list">${listContent}</ul>`;
                 return panel;
             };
+
             const openMenu = () => {
                 if (!slider.querySelector('[data-level="0"]')) {
                     const level1Content = Object.keys(initialMenuData).map(key => `<li class="has-submenu" data-level="0" data-key="${key}"><a href="#">${key}</a></li>`).join('');
@@ -694,6 +778,7 @@
                 overlay.classList.add('is-visible');
                 document.body.style.overflow = 'hidden';
             };
+
             const closeMenu = () => {
                 nav.classList.remove('is-open');
                 overlay.classList.remove('is-visible');
@@ -703,8 +788,10 @@
                     slider.querySelectorAll('.menu-panel').forEach(p => { if (p.dataset.level > 0) p.remove(); });
                 }, 350);
             };
+
             hamburger.onclick = openMenu;
             overlay.onclick = closeMenu;
+
             slider.addEventListener('click', (e) => {
                 const linkTarget = e.target.closest('a');
                 if (linkTarget && linkTarget.getAttribute('href') !== '#') {
@@ -715,19 +802,22 @@
                 const target = e.target;
                 const currentPanel = target.closest('.menu-panel');
                 if (!currentPanel) return;
+
                 if (target.closest('.panel-back-button')) {
                     const currentLevel = parseInt(currentPanel.dataset.level, 10);
                     slider.style.transform = `translateX(-${(currentLevel - 1) * 100}%)`;
                     setTimeout(() => currentPanel.remove(), 350);
                     return;
                 }
+
                 const targetLi = target.closest('li[data-key]');
                 if (targetLi) {
                     if(e.target.closest('a')?.getAttribute('href') === '#') { e.preventDefault(); }
                     const level = parseInt(targetLi.dataset.level, 10);
                     const menuKey = targetLi.dataset.key;
                     const category = targetLi.dataset.category;
-                    let nextLevelContent = '', nextLevelTitle = '';
+                    let nextLevelContent = '', nextLevelTitle = '', extraHeader = '';
+                    
                     if (level === 0) {
                         nextLevelTitle = menuKey;
                         const items = initialMenuData[menuKey];
@@ -737,24 +827,40 @@
                             const link = hasSubmenu ? '#' : getLink(menuKey, name, null);
                             return `<li class="${hasSubmenu ? 'has-submenu' : ''}" data-level="1" data-key="${menuKey}" data-category="${name}"><a href="${link}">${name}</a></li>`;
                         }).join('');
-                    }
-                    else if (level === 1) {
+                    } else if (level === 1) {
                         const parentItem = initialMenuData[menuKey].find(item => (item["Loại hình"] || item["Danh mục"]) === category);
                         if (!parentItem || !parentItem["Khu vực"]) return;
                         nextLevelTitle = category;
                         const khuVucItems = parentItem["Khu vực"];
                         nextLevelContent = khuVucItems.map(kv => `<li><a href="${getLink(menuKey, category, kv)}">${kv}</a></li>`).join('');
+                        
+                        // THAY ĐỔI 2: Tạo HTML cho ô tìm kiếm
+                        extraHeader = `<div class="panel-search-wrapper"><input type="text" class="mobile-menu-search" placeholder="🔍 Tìm kiếm khu vực..."></div>`;
                     }
+
                     if (nextLevelContent) {
-                        const newPanel = createPanel(level + 1, nextLevelTitle, nextLevelContent);
+                        const newPanel = createPanel(level + 1, nextLevelTitle, nextLevelContent, extraHeader);
                         slider.appendChild(newPanel);
-                        slider.style.transform = `translateX(-${(level+1) * 100}%)`;
+                        slider.style.transform = `translateX(-${(level + 1) * 100}%)`;
+
+                        // THAY ĐỔI 3: Gán sự kiện tìm kiếm nếu có
+                        if (extraHeader) {
+                            const searchInput = newPanel.querySelector('.mobile-menu-search');
+                            const listItems = newPanel.querySelectorAll('.panel-list li');
+                            searchInput.addEventListener('input', (event) => {
+                                const searchTerm = normalizeText(event.target.value);
+                                listItems.forEach(li => {
+                                    const text = normalizeText(li.textContent);
+                                    li.style.display = text.includes(searchTerm) ? '' : 'none';
+                                });
+                            });
+                        }
                     }
                 }
             });
         }
+        // === KẾT THÚC CẬP NHẬT LOGIC CHO MOBILE MENU ===
         
-        // --- PHẦN 4: CÁC SỰ KIỆN TOÀN CỤC ---
         if (header) {
             let lastScrollTop = 0;
             const sidebar = document.querySelector('.listing-filter-sidebar, .contact-sidebar, .sidebar-column'); 
@@ -768,26 +874,32 @@
                     if (sidebar) sidebar.classList.remove('sidebar--header-hidden');
                 }
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
                 if (megaMenuContainer && megaMenuContainer.classList.contains('is-open')) {
-                    closeDesktopPanel();
+                    if (!isMouseOverMenu) {
+                        closeDesktopPanel();
+                    }
                 }
-            });
+            }, { passive: true });
         }
 
         document.addEventListener('click', (event) => {
-            if (megaMenuContainer && mainMenuContainer && megaMenuContainer.classList.contains('is-open')) {
-                if (!mainMenuContainer.contains(event.target) && !megaMenuContainer.contains(event.target)) {
-                    closeDesktopPanel();
-                }
+            if (!megaMenuContainer || !megaMenuContainer.classList.contains('is-open')) {
+                return;
             }
+            const navTriggers = mainMenuContainer;
+            const panelContent = megaMenuContainer.querySelector('.menu-panel-columns');
+            if (navTriggers.contains(event.target) || (panelContent && panelContent.contains(event.target))) {
+                return;
+            }
+            closeDesktopPanel();
         });
 
         window.addEventListener('resize', debounce(initMenu, 250));
         
-        // --- PHẦN 5: KHỞI CHẠY LẦN ĐẦU ---
         initMenu();
     });
-    </script>
+</script>
     
 </body>
 </html>
