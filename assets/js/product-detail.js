@@ -1386,7 +1386,47 @@ document.addEventListener('DOMContentLoaded', function () {
         setupFilters();
         updateChart();
     }
+    // >> BẮT ĐẦU ĐOẠN MÃ MỚI >>
+    function updateRentalSummaryCards(marketData, currentProduct) {
+        const container = document.getElementById('rental-summary-cards');
+        const avgEl = document.getElementById('summary-card-rent-avg');
+        const rangeEl = document.getElementById('summary-card-rent-range');
+        const comparisonEl = document.getElementById('summary-card-rent-comparison');
 
+        if (!container || !avgEl || !rangeEl || !comparisonEl || marketData.length === 0) {
+            if(container) container.style.display = 'none';
+            return;
+        }
+
+        // 1. Tính giá thuê trung bình
+        const totalRent = marketData.reduce((sum, item) => sum + item.price, 0);
+        const averageRent = totalRent / marketData.length;
+        avgEl.textContent = `${averageRent.toFixed(1).replace('.', ',')} triệu/tháng`;
+
+        // 2. Tính khoảng giá phổ biến
+        const prices = marketData.map(item => item.price);
+        const minRent = Math.min(...prices);
+        const maxRent = Math.max(...prices);
+        rangeEl.textContent = `${minRent.toFixed(1).replace('.', ',')} - ${maxRent.toFixed(1).replace('.', ',')} triệu/tháng`;
+
+        // 3. So sánh giá sản phẩm hiện tại với trung bình
+        const difference = currentProduct.price - averageRent;
+        const percentageChange = (difference / averageRent) * 100;
+        
+        comparisonEl.classList.remove('positive', 'negative'); // Xóa class màu cũ
+        if (difference > 0) {
+            comparisonEl.innerHTML = `▲ Đắt hơn ${Math.abs(percentageChange).toFixed(1).replace('.', ',')}%`;
+            comparisonEl.classList.add('negative'); // Đắt hơn là "tiêu cực" cho người thuê
+        } else if (difference < 0) {
+            comparisonEl.innerHTML = `▼ Rẻ hơn ${Math.abs(percentageChange).toFixed(1).replace('.', ',')}%`;
+            comparisonEl.classList.add('positive'); // Rẻ hơn là "tích cực" cho người thuê
+        } else {
+            comparisonEl.textContent = 'Bằng trung bình';
+        }
+
+        container.style.display = 'flex'; // Hiển thị Sumcard sau khi tính toán xong
+    }
+    // << KẾT THÚC ĐOẠN MÃ MỚI <<
     function initProductDetailChartForRent(product) {
         const chartSection = document.querySelector('.price-history-section-detail');
         if (!chartSection) return;
@@ -1429,6 +1469,8 @@ document.addEventListener('DOMContentLoaded', function () {
             chartSection.innerHTML = `<h2 class="section-title">Phân tích giá thuê</h2><p class="chart-disclaimer">Không có đủ dữ liệu để tạo biểu đồ so sánh cho sản phẩm này.</p>`;
             return;
         }
+        const marketData = comparableData.filter(item => !item.isCurrent);
+        updateRentalSummaryCards(marketData, product);
         const FURNITURE_COLORS = {
             'Cơ bản': 'rgba(54, 162, 235, 0.7)',
             'Đầy đủ': 'rgba(75, 192, 192, 0.7)',

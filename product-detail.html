@@ -462,41 +462,55 @@
                     </div>
                     </div>
                     <section class="price-history-section-detail" style="margin-top: 50px;">
-    <h2 id="detail-chart-dynamic-title">Biểu đồ biến động đơn giá</h2>
-    
-    <div class="price-summary-cards">
-        <div class="summary-card">
-            <span class="card-label">Giá phổ biến (Tháng gần nhất)</span>
-            <span class="card-value" id="summary-card-current">--</span>
-        </div>
-        <div class="summary-card">
-            <span class="card-label">Trung bình 12 tháng</span>
-            <span class="card-value" id="summary-card-avg">--</span>
-        </div>
-        <div class="summary-card">
-            <span class="card-label">Biến động giá / 1 năm</span>
-            <span class="card-value" id="summary-card-yoy">--</span>
-        </div>
-    </div>
-
-    <div class="price-chart-container-detail">
-        <div class="chart-header-detail">
-            <div class="chart-filters-detail">
-                <div class="chart-filter-group-detail">
-                    <label>Năm:</label>
-                    <div class="year-filter-buttons" id="detail-chart-year-filters">
+                        <h2 id="detail-chart-dynamic-title">Biểu đồ biến động đơn giá</h2>
+                        
+                        <div class="price-summary-cards">
+                            <div class="summary-card">
+                                <span class="card-label">Giá phổ biến (Tháng gần nhất)</span>
+                                <span class="card-value" id="summary-card-current">--</span>
+                            </div>
+                            <div class="summary-card">
+                                <span class="card-label">Trung bình 12 tháng</span>
+                                <span class="card-value" id="summary-card-avg">--</span>
+                            </div>
+                            <div class="summary-card">
+                                <span class="card-label">Biến động giá / 1 năm</span>
+                                <span class="card-value" id="summary-card-yoy">--</span>
+                            </div>
                         </div>
-                </div>
-            </div>
-        </div>
-        <div class="chart-wrapper-detail">
-            <canvas id="product-price-history-chart"></canvas>
-        </div>
-    </div>
-    <p class="chart-disclaimer">
-        Lưu ý: Phân tích này dựa trên dữ liệu của website chungcutot.net. Các yếu tố khác như vị trí cụ thể, tầng, hướng, tình trạng nội thất chi tiết, pháp lý riêng của từng căn có thể ảnh hưởng đến giá trị thực tế và sự hấp dẫn của sản phẩm.
-    </p>
-</section>
+                        <div class="price-summary-cards" id="rental-summary-cards" style="display: none;">
+                            <div class="summary-card">
+                                <span class="card-label">Giá thuê trung bình</span>
+                                <span class="card-value" id="summary-card-rent-avg">--</span>
+                            </div>
+                            <div class="summary-card">
+                                <span class="card-label">Khoảng giá phổ biến</span>
+                                <span class="card-value" id="summary-card-rent-range">--</span>
+                            </div>
+                            <div class="summary-card">
+                                <span class="card-label">So với trung bình</span>
+                                <span class="card-value" id="summary-card-rent-comparison">--</span>
+                            </div>
+                        </div>
+                        <div class="price-chart-container-detail">
+                            <div class="chart-header-detail">
+                                <div class="chart-filters-detail">
+                                    <div class="chart-filter-group-detail">
+                                        <label>Năm:</label>
+                                        <div class="year-filter-buttons" id="detail-chart-year-filters">
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper-detail">
+                                <canvas id="product-price-history-chart"></canvas>
+                            </div>
+                        </div>
+                        <p class="chart-disclaimer">
+                            Lưu ý: Phân tích này dựa trên dữ liệu của website BDSTot.net. Các yếu tố khác như vị trí cụ thể, tầng, hướng, tình trạng nội thất chi tiết, pháp lý riêng của từng căn có thể ảnh hưởng đến giá trị thực tế và sự hấp dẫn của sản phẩm.
+                        </p>
+                        
+                    </section>
                     <section id="nearby-comparison-container" class="nearby-comparison-section" style="display: none;">
                         <h2 id="nearby-comparison-title">So sánh giá cùng khu vực</h2>
                         <div id="comparison-grid" class="comparison-grid">
