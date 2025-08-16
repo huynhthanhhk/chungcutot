@@ -769,7 +769,117 @@
         }
 
         function handleMobileMenu() {
-            // ... (Phần code này giữ nguyên, không thay đổi)
+            const nav = document.getElementById('main-nav');
+            const overlay = document.getElementById('menu-overlay');
+            const hamburger = document.getElementById('hamburger-button');
+            if (!nav || !overlay || !hamburger) return;
+
+            nav.innerHTML = '<div class="menu-slider"></div>';
+            const slider = nav.querySelector('.menu-slider');
+
+            const createPanel = (level, title, listContent, extraHeaderContent = '') => {
+                const panel = document.createElement('div');
+                panel.className = 'menu-panel';
+                panel.dataset.level = level;
+                let headerHTML = `<h4 class="panel-title">${title}</h4>`;
+                if (level > 0) {
+                    headerHTML = `<a href="#" class="panel-back-button"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg></a>` + headerHTML;
+                } else {
+                    headerHTML += `<button class="mobile-menu-close">&times;</button>`;
+                }
+                panel.innerHTML = `<div class="panel-header">${headerHTML}</div>${extraHeaderContent}<ul class="panel-list">${listContent}</ul>`;
+                return panel;
+            };
+
+            const openMenu = () => {
+                if (!slider.querySelector('[data-level="0"]')) {
+                    const level1Content = Object.keys(initialMenuData).map(key => `<li class="has-submenu" data-level="0" data-key="${key}"><a href="#">${key}</a></li>`).join('');
+                    const panel1 = createPanel(0, 'Menu', level1Content);
+                    slider.appendChild(panel1);
+                    panel1.querySelector('.mobile-menu-close').addEventListener('click', closeMenu);
+                }
+                nav.classList.add('is-open');
+                overlay.classList.add('is-visible');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeMenu = () => {
+                nav.classList.remove('is-open');
+                overlay.classList.remove('is-visible');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    slider.style.transform = 'translateX(0%)';
+                    slider.querySelectorAll('.menu-panel').forEach(p => { if (p.dataset.level > 0) p.remove(); });
+                }, 350);
+            };
+
+            hamburger.onclick = openMenu;
+            overlay.onclick = closeMenu;
+
+            slider.addEventListener('click', (e) => {
+                const linkTarget = e.target.closest('a');
+                if (linkTarget && linkTarget.getAttribute('href') !== '#') {
+                    closeMenu();
+                    return;
+                }
+                e.preventDefault();
+                const target = e.target;
+                const currentPanel = target.closest('.menu-panel');
+                if (!currentPanel) return;
+
+                if (target.closest('.panel-back-button')) {
+                    const currentLevel = parseInt(currentPanel.dataset.level, 10);
+                    slider.style.transform = `translateX(-${(currentLevel - 1) * 100}%)`;
+                    setTimeout(() => currentPanel.remove(), 350);
+                    return;
+                }
+
+                const targetLi = target.closest('li[data-key]');
+                if (targetLi) {
+                    if(e.target.closest('a')?.getAttribute('href') === '#') { e.preventDefault(); }
+                    const level = parseInt(targetLi.dataset.level, 10);
+                    const menuKey = targetLi.dataset.key;
+                    const category = targetLi.dataset.category;
+                    let nextLevelContent = '', nextLevelTitle = '', extraHeader = '';
+                    
+                    if (level === 0) {
+                        nextLevelTitle = menuKey;
+                        const items = initialMenuData[menuKey];
+                        nextLevelContent = items.map(item => {
+                            const name = item["Loại hình"] || item["Danh mục"];
+                            const hasSubmenu = item.hasOwnProperty('Khu vực');
+                            const link = hasSubmenu ? '#' : getLink(menuKey, name, null);
+                            return `<li class="${hasSubmenu ? 'has-submenu' : ''}" data-level="1" data-key="${menuKey}" data-category="${name}"><a href="${link}">${name}</a></li>`;
+                        }).join('');
+                    } else if (level === 1) {
+                        const parentItem = initialMenuData[menuKey].find(item => (item["Loại hình"] || item["Danh mục"]) === category);
+                        if (!parentItem || !parentItem["Khu vực"]) return;
+                        nextLevelTitle = category;
+                        const khuVucItems = parentItem["Khu vực"];
+                        nextLevelContent = khuVucItems.map(kv => `<li><a href="${getLink(menuKey, category, kv)}">${kv}</a></li>`).join('');
+                        
+                        extraHeader = `<div class="panel-search-wrapper"><input type="text" class="mobile-menu-search" placeholder="🔍 Tìm kiếm khu vực..."></div>`;
+                    }
+
+                    if (nextLevelContent) {
+                        const newPanel = createPanel(level + 1, nextLevelTitle, nextLevelContent, extraHeader);
+                        slider.appendChild(newPanel);
+                        slider.style.transform = `translateX(-${(level + 1) * 100}%)`;
+
+                        if (extraHeader) {
+                            const searchInput = newPanel.querySelector('.mobile-menu-search');
+                            const listItems = newPanel.querySelectorAll('.panel-list li');
+                            searchInput.addEventListener('input', (event) => {
+                                const searchTerm = normalizeText(event.target.value);
+                                listItems.forEach(li => {
+                                    const text = normalizeText(li.textContent);
+                                    li.style.display = text.includes(searchTerm) ? '' : 'none';
+                                });
+                            });
+                        }
+                    }
+                }
+            });
         }
         
         if (header) {
