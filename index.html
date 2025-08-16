@@ -458,7 +458,7 @@
 
         // --- PHẦN 1: DỮ LIỆU & BIẾN TOÀN CỤC ---
         const initialMenuData = {
-           "Dự án": [ { "Loại hình": "Chung cư", "Khu vực": ["TP. Hồ Chí Minh", "Bình Dương", "Đồng Nai", "Hà Nội", "Long An", "Bà Rịa - Vũng Tàu", "Lâm Đồng", "Đà Nẵng", "Vĩnh Long"] }, { "Loại hình": "Khu đô thị", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Long An"] } ],
+           "Dự án": [ { "Loại hình": "Chung cư", "Khu vực": ["Hà Nội", "Hải Phòng", "Đà Nẵng", "Cần Thơ", "TP. Hồ Chí Minh", "Hà Giang", "Cao Bằng", "Lào Cai", "Sơn La", "Quảng Ninh", "Bắc Ninh", "Hưng Yên", "Ninh Bình", "Thanh Hóa", "Nghệ An", "Hà Tĩnh", "Quảng Bình", "Thừa Thiên Huế", "Quảng Nam", "Bình Định", "Khánh Hòa", "Ninh Thuận", "Bình Thuận", "Kon Tum", "Gia Lai", "Đắk Lắk", "Đắk Nông", "Lâm Đồng", "Bình Phước", "Tây Ninh", "Bình Dương", "Đồng Nai", "Bà Rịa - Vũng Tàu", "Long An", "Tiền Giang", "Bến Tre", "Đồng Tháp", "An Giang", "Kiên Giang", "Cà Mau"] }, { "Loại hình": "Khu đô thị", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Long An"] } ],
            "Mua bán": [ { "Loại hình": "Căn hộ", "Khu vực": ["Hà Nội", "Hải Phòng", "Đà Nẵng", "Cần Thơ", "TP. Hồ Chí Minh", "Hà Giang", "Cao Bằng", "Lào Cai", "Sơn La", "Quảng Ninh", "Bắc Ninh", "Hưng Yên", "Ninh Bình", "Thanh Hóa", "Nghệ An", "Hà Tĩnh", "Quảng Bình", "Thừa Thiên Huế", "Quảng Nam", "Bình Định", "Khánh Hòa", "Ninh Thuận", "Bình Thuận", "Kon Tum", "Gia Lai", "Đắk Lắk", "Đắk Nông", "Lâm Đồng", "Bình Phước", "Tây Ninh", "Bình Dương", "Đồng Nai", "Bà Rịa - Vũng Tàu", "Long An", "Tiền Giang", "Bến Tre", "Đồng Tháp", "An Giang", "Kiên Giang", "Cà Mau"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Đà Nẵng"] } ],
            "Cho thuê": [ { "Loại hình": "Căn hộ", "Khu vực": ["Hà Nội", "Hải Phòng", "Đà Nẵng", "Cần Thơ", "TP. Hồ Chí Minh", "Hà Giang", "Cao Bằng", "Lào Cai", "Sơn La", "Quảng Ninh", "Bắc Ninh", "Hưng Yên", "Ninh Bình", "Thanh Hóa", "Nghệ An", "Hà Tĩnh", "Quảng Bình", "Thừa Thiên Huế", "Quảng Nam", "Bình Định", "Khánh Hòa", "Ninh Thuận", "Bình Thuận", "Kon Tum", "Gia Lai", "Đắk Lắk", "Đắk Nông", "Lâm Đồng", "Bình Phước", "Tây Ninh", "Bình Dương", "Đồng Nai", "Bà Rịa - Vũng Tàu", "Long An", "Tiền Giang", "Bến Tre", "Đồng Tháp", "An Giang", "Kiên Giang", "Cà Mau"] }, { "Loại hình": "Shophouse", "Khu vực": ["TP. Hồ Chí Minh", "Hà Nội", "Vĩnh Long"] } ],
            "Wiki": [ { "Danh mục": "Pháp lý", "slug": "phap-ly" }, { "Danh mục": "Kinh nghiệm", "slug": "kinh-nghiem" }, { "Danh mục": "Phong thuỷ", "slug": "phong-thuy" } ],
@@ -590,13 +590,11 @@
                 li.appendChild(a);
                 mainMenu.appendChild(li);
 
-                // === THAY ĐỔI LOGIC KHÓA CUỘN 1: Khóa cuộn khi mở menu ===
                 a.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (activeMenuItem === e.target.parentElement) {
                         closeDesktopPanel();
                     } else {
-                        // Khóa cuộn và bù trừ padding NGAY KHI mở menu
                         document.body.classList.add('scroll-locked');
                         document.body.style.paddingRight = `${scrollbarWidth}px`;
                         header.style.paddingRight = `${scrollbarWidth}px`;
@@ -610,8 +608,6 @@
                 });
             }
             
-            // === THAY ĐỔI LOGIC KHÓA CUỘN 2: Đơn giản hóa mouseenter/mouseleave ===
-            // Các sự kiện này bây giờ chỉ dùng để xác định vị trí chuột cho sự kiện scroll
             megaMenuContainer.addEventListener('mouseenter', () => {
                 isMouseOverMenu = true;
             });
@@ -761,7 +757,6 @@
                 activeMenuItem.classList.remove('active');
                 activeMenuItem = null;
             }
-            // === THAY ĐỔI LOGIC KHÓA CUỘN 3: Mở khóa cuộn khi đóng menu ===
             document.body.classList.remove('scroll-locked');
             document.body.style.paddingRight = '';
             header.style.paddingRight = '';
@@ -887,13 +882,18 @@
             const sidebar = document.querySelector('.listing-filter-sidebar, .contact-sidebar, .sidebar-column'); 
             window.addEventListener('scroll', () => {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
-                    header.classList.add('header--hidden');
-                    if (sidebar) sidebar.classList.add('sidebar--header-hidden');
-                } else {
-                    header.classList.remove('header--hidden');
-                    if (sidebar) sidebar.classList.remove('sidebar--header-hidden');
+
+                // === THAY ĐỔI: Logic ẩn/hiện header chỉ áp dụng cho màn hình lớn ===
+                if (window.innerWidth > 1024) {
+                    if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                        header.classList.add('header--hidden');
+                        if (sidebar) sidebar.classList.add('sidebar--header-hidden');
+                    } else {
+                        header.classList.remove('header--hidden');
+                        if (sidebar) sidebar.classList.remove('sidebar--header-hidden');
+                    }
                 }
+                
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 
                 if (megaMenuContainer && megaMenuContainer.classList.contains('is-open')) {
