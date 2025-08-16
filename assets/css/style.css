@@ -6269,3 +6269,7 @@ button:disabled {
         outline: none;
         border-color: #53b966;
     }
+    .header-wrapper.scroll-locked {
+        /* Bù trừ padding cho header có position: fixed */
+        padding-right: var(--scrollbar-width, 0px);
+    }
