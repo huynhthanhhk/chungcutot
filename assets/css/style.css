@@ -1692,7 +1692,7 @@ a:hover {
 }
 .project-params-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 20px;
     padding: 25px;
     background-color: #fff;
@@ -1701,6 +1701,8 @@ a:hover {
 }
 .param-item {
     font-size: 15px;
+    align-items: center;
+    
 }
 .param-item strong {
     font-weight: 600;
